@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout/layout :: layout(~{:: title},~{:: #css},~{:: .content-wrapper},~{:: #js})}">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Chi tiết banner</title>
+
+    <th:block id="css">
+        <!--Easymde-->
+        <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/highlight.js/latest/styles/github.min.css" />
+
+        <!--Summernote-->
+        <link rel="stylesheet" href="/admin-assets/plugins/summernote/summernote-bs4.min.css">
+
+        <!--Select2-->
+        <link rel="stylesheet" href="/admin-assets/plugins/select2/css/select2.min.css" />
+        <link rel="stylesheet" href="/admin-assets/dist/css/style.css">
+        <style>
+        </style>
+
+
+    </th:block>
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-12">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="#">Dashboard</a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a th:href="@{/admin/banners}">Danh sách banner</a>
+                            </li>
+                            <li class="breadcrumb-item active">
+                                Chi tiết banner
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row py-2">
+                    <div class="col-6">
+                        <button type="button" class="btn btn-info px-4" id="btnCreateBanner">
+                            Cập nhật
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <form id="form-banner">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <div class="form-group">
+                                                <label>Tên banner</label>
+                                                <input type="text" class="form-control" id="name" name="name" th:value="${banner.name}"/>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Link điều hướng</label>
+                                                <input type="text" id="link" class="form-control" name="link" th:value="${banner.url}"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <div class="thumbnail-preview-container mb-3">
+                                                    <img th:src="${banner.thumbnail}" alt="" id="thumbnail">
+                                                </div>
+                                                <label for="input-thumbnail" class="btn btn-info btn-flat" data-toggle="modal" data-target="#modal-xl">
+                                                    Chọn hình ảnh
+                                                </label>
+                                                <input type="file" id="input-thumbnail" class="d-none">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<th:block id="js">
+    //Summernote
+    <script src="/admin-assets/plugins/summernote/summernote-bs4.min.js"></script>
+
+    <script src="/admin-assets/plugins/select2/js/select2.full.min.js"></script>
+
+    <script th:inline="javascript">
+        let banner = [[${banner}]]
+
+        $('#form-banner').validate({
+            rules: {
+                name: {
+                    required: true,
+                },
+                link: {
+                    required: true,
+                }
+            },
+            messages: {
+                name: {
+                    required: "Tên banner không được để trống",
+                },
+                link: {
+                    required: "Link không được để trống",
+                }
+
+            },
+            errorElement: 'span',
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                element.closest('.form-group').append(error);
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).removeClass('is-invalid');
+            }
+        });
+
+        const btnCreateBannerEl = document.getElementById("btnCreateBanner");
+
+        btnCreateBannerEl.addEventListener('click', async (e) => {
+            e.preventDefault();
+            console.log("Form submission attempted");
+
+            // Kiểm tra tính hợp lệ của form
+            if (!$('#form-banner').valid()) {
+                return;
+            }
+
+            // Lấy dữ liệu từ form
+            const data = {
+                name: document.getElementById('name').value,
+                link: document.getElementById('link').value,
+            };
+
+            try {
+                let res = await axios.put(`/api/admin/banners/${banner.id}/update`, data);
+                toastr.success("Cập nhật banner thành công");
+            } catch (e) {
+                // Xử lý lỗi
+                console.log(e)
+                toastr.error(e.response.data.message || "Có lỗi xảy ra");
+            }
+        });
+
+        //Upload Image
+        const inputThumbnailEl = document.getElementById("input-thumbnail")
+        const thumbnailEl = document.getElementById("thumbnail")
+        inputThumbnailEl.addEventListener("change",async (event) =>{
+            //lấy file upload
+            const files = event.target.files;
+
+            //Tạo đối tượng form data
+            const formData = new FormData();
+            formData.append("file",files[0])
+
+            //Gọi API
+            try {
+                let res = await axios.post(`/api/admin/banners/${banner.id}/upload-thumbnail`,formData)
+                console.log(res)
+                thumbnailEl.src = res.data;
+            }catch (e){
+                console.log(e)
+                toastr.error(e.response.data.message);
+            }
+        })
+    </script>
+</th:block>
+</body>
+
+</html>

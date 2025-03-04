@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="zxx" xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:replace="~{web/layout/layout :: layout(~{::title},~{:: #css},~{:: #content},~{:: #js})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Male_Fashion Template">
+    <meta name="keywords" content="Male_Fashion, unica, creative, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Male-Fashion | Lịch sử mua hàng</title>
+
+    <th:block id="css">
+        <link rel="stylesheet" href="/admin-assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+        <link rel="stylesheet" href="/admin-assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+        <link rel="stylesheet" href="/admin-assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+        <style>
+            .order-history{
+                margin-top: 75px;
+                margin-bottom: 75px;
+            }
+
+
+            .checkout__order h4 {
+                margin-bottom: 15px;
+            }
+
+            .checkout__order__products, .checkout__total__products, .checkout__total__all {
+                list-style-type: none;
+                padding: 0;
+            }
+
+            .checkout__order__products {
+                font-weight: bold;
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .checkout__total__products li, .checkout__total__all li {
+                display: flex;
+                justify-content: space-between;
+                padding: 5px 0;
+            }
+
+            .checkout__total__all {
+                margin-top: 15px;
+                font-weight: bold;
+            }
+
+            .order-detail-price {
+                font-weight: normal;
+            }
+
+            p {
+                margin: 10px 0;
+            }
+
+            .customer-info {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .customer-info div {
+                display: flex;
+                margin-bottom: 10px;
+            }
+
+            .customer-info strong {
+                width: 150px;
+                flex-shrink: 0;
+            }
+
+            .customer-info span {
+                flex-grow: 1;
+            }
+
+            .status-container {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                margin-bottom: 40px;
+            }
+
+            .status-icon i{
+                font-size: 4rem;
+                margin-bottom: 1.5rem;
+            }
+
+
+            .status-text h4 {
+                font-weight: bold;
+                margin-bottom: 10px;
+            }
+
+        </style>
+    </th:block>
+</head>
+
+<body>
+<th:block id="content">
+    <!-- Breadcrumb Section Begin -->
+    <section class="breadcrumb-option">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__text">
+                        <h4>Lịch sử mua hàng</h4>
+                        <div class="breadcrumb__links">
+                            <a th:href="@{/}">Trang chủ</a>
+                            <span>Lịch sử mua hàng</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Breadcrumb Section End -->
+
+
+    <section class="order-history">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="table table-bordered table-hover" id="table-order">
+                                <thead >
+                                <tr>
+                                    <th>Mã đơn hàng</th>
+                                    <th>Số tiền</th>
+                                    <th>Hình thức thanh toán</th>
+                                    <th>Ngày giao dịch</th>
+                                    <th>Trạng thái</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="order : ${ordersByUserId}">
+                                    <td>
+                                        <span style="cursor: pointer"
+                                              class="text-primary"
+                                              th:onclick="'openModal('+${order.id}+')'">
+                                            #[[${order.codeOrder}]]</span>
+                                    </td>
+                                    <td><span class="formatted-price" th:text="${order.finalTotal}"></span></td>
+                                    <td th:text="${order.payment.toString()}"></td>
+                                    <td th:text="${#temporals.format(order.getCreatedAt(),'dd/MM/yyyy')}"></td>
+                                    <td th:id="'order-status-table-'+${order.id}"
+                                        th:text="${order.status.toString() == 'CHO_XAC_NHAN' ? 'Chờ xác nhận' :
+                                                 order.status.toString() == 'CHO_GIAO_HANG' ? 'Chờ giao hàng' :
+                                                 order.status.toString() == 'DANG_GIAO' ? 'Đang giao' :
+                                                 order.status.toString() == 'DA_GIAO' ? 'Đã giao' :
+                                                 order.status.toString() == 'DA_HUY' ? 'Đã hủy' :
+                                                 order.status.toString() == 'TRA_HANG' ? 'Trả hàng' :
+                                                 'Unknown Status'}" >
+                                    </td>
+
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!--Modal-->
+    <div class="modal fade" id="order-modal" tabindex="-1" aria-labelledby="orderModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="orderModalLabel">Chi tiết đơn hàng</h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="checkout__order" id="order-info">
+                                <h4 class="order__title">Thông tin khách hàng</h4>
+                                <div class="customer-info">
+                                    <div><strong>Họ tên:</strong> <span id="receiverName">Bui Quang Tien</span></div>
+                                    <div><strong>SĐT:</strong> <span id="phone">1234567899</span></div>
+                                    <div><strong>Email:</strong> <span id="email">abc@gmail.com</span></div>
+                                    <div><strong>Địa chỉ:</strong> <span id="addressDetail">123 abc, abc, ab</span></div>
+                                    <div><strong>Ngày đặt:</strong> <span id="createdAt"></span></div>
+                                    <div><strong>Trạng thái:</strong>
+                                        <span id="status"></span>
+                                    </div>
+                                    <div><strong>Vận chuyển:</strong>
+                                        <span id="delivery" ></span>
+                                    </div>
+                                    <div><strong>Thanh toán:</strong>
+                                        <span id="payment"></span>
+                                    </div>
+                                    <div><strong>Ghi chú:</strong> <span id="notes"></span></div>
+                                </div>
+                            </div>
+                             <div class="row mt-5">
+                        <div class="col-lg-12">
+                            <div class="checkout__order" id="orderDetail-info">
+                                <h4 class="order__title">Thông tin sản phẩm</h4>
+                                <div class="checkout__order__products">Sản phẩm <span>Thành tiền</span></div>
+                                <ul class="checkout__total__products" id="orderDetail-group">
+                                    <li>
+                                        <th:block>1</th:block> x <th:block>Abc</th:block><br>
+                                        <th:block>&emsp;- Màu: Đen</th:block><br>
+                                        <th:block>&emsp;- Kích thước: S</th:block>
+                                        <span><span class="order-detail-price">100000 VNĐ</span></span>
+                                    </li>
+                                </ul>
+                                <ul class="checkout__total__all">
+                                    <li>Thành tiền <span id="total-price">100000 VNĐ</span></li>
+                                    <li>Giảm giá <span id="discount-amount">0 VNĐ</span></li>
+                                    <li>Tổng tiền <span id="final-total">100000 VNĐ</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                            <div class="text-end modal-footer-btn">
+                                <button class="mt-5 bg-secondary text-white border-0 rounded p-2 mr-auto">Hủy đơn hàng</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</th:block>
+
+<th:block id="js">
+    <!--DataTable	-->
+    <script src="/admin-assets/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="/admin-assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="/admin-assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="/admin-assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="/admin-assets/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="/admin-assets/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <script th:inline="javascript">
+        $('#table-order').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+            "order": [3, 'desc'],
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cập nhật giá thành tiền của các sản phẩm
+            document.querySelectorAll('.order-detail-price').forEach(function(element) {
+                let rawValue = parseLong(element.textContent);
+                element.textContent = formatCurrency(rawValue);
+            });
+
+            // Cập nhật các giá tổng cộng
+            let totalPriceElement = document.getElementById('total-price');
+            if (totalPriceElement) {
+                let totalPrice = parseLong(totalPriceElement.textContent);
+                totalPriceElement.textContent = formatCurrency(totalPrice);
+            }
+
+            let discountAmountElement = document.getElementById('discount-amount');
+            if (discountAmountElement) {
+                let discountAmount = parseLong(discountAmountElement.textContent);
+                discountAmountElement.textContent = formatCurrency(discountAmount);
+            }
+
+            let finalTotalElement = document.getElementById('final-total');
+            if (finalTotalElement) {
+                let finalTotal = parseLong(finalTotalElement.textContent);
+                finalTotalElement.textContent = formatCurrency(finalTotal);
+            }
+
+            document.querySelectorAll('.formatted-price').forEach(function(element) {
+                let rawValue = parseLong(element.textContent);
+                element.textContent = formatCurrency(rawValue);
+            });
+        });
+
+
+        const modalOrderEl = document.getElementById("order-modal");
+        const myModalOrderEl = new bootstrap.Modal(modalOrderEl, {
+            keyboard: false
+        })
+
+        let orderDetailGroupEl = document.getElementById("orderDetail-group")
+        const renderOrderDetailInfo =(orderDetails)=> {
+            let html=""
+            orderDetails.forEach(o=>{
+                let totalPriceOrderDetail = o.quantity*o.product.newPrice;
+                let finalTotalPriceOrderDetail = formatCurrency(totalPriceOrderDetail);
+                html+=`
+                 <li>
+                    ${o.quantity} x ${o.product.name}<br>
+                    &emsp;- Màu: ${o.color.colorName}<br>
+                    &emsp;- Kích thước: ${o.size.sizeName}
+                    <span><span class="order-detail-price">${finalTotalPriceOrderDetail}</span></span>
+                </li>
+                `
+            })
+            orderDetailGroupEl.innerHTML=html;
+        }
+
+        const getOrderDetailsByOrderId = async (orderId)=>{
+            try {
+                let res = await axios.get(`/api/orderDetails/order/${orderId}`)
+                console.log(res.data)
+                renderOrderDetailInfo(res.data)
+            }catch (e){
+                console.log(e)
+                toastr.error(e.response.data.message);
+            }
+        }
+        const formatDate = dateStr => {
+            const date = new Date(dateStr);
+            const day = `0${date.getDate()}`.slice(-2); // 01 -> 01, 015 -> 15
+            const month = `0${date.getMonth() + 1}`.slice(-2);
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+
+        async function CancelOrder (orderId) {
+            const confirm = window.confirm("Bạn có chắc chắn muốn hủy không")
+            if(confirm){
+                try {
+                    let res = await axios.put(`/api/orders/cancelOrder/${orderId}`)
+                    document.getElementById(`order-status-table-${orderId}`).innerText="Đã hủy"
+                    myModalOrderEl.hide()
+                    toastr.success("Bạn đã hủy đơn hàng thành công")
+                }catch (e){
+                    console.error(e)
+                }
+            }
+        }
+
+        const openModal = async (orderId)=>{
+            try {
+                let res = await axios.get(`/api/orders/${orderId}`)
+                document.getElementById("orderModalLabel").innerText=`Chi tiết đơn hàng #${res.data.codeOrder}`
+                document.getElementById("receiverName").innerText=res.data.receiverName;
+                document.getElementById("phone").innerText=res.data.phone;
+                document.getElementById("email").innerText=res.data.email;
+                document.getElementById("addressDetail").innerText=res.data.addressDetail;
+                document.getElementById("createdAt").innerText=formatDate(res.data.createdAt);
+                const statusElement = document.getElementById("status");
+
+                const cancelButtonContainer = document.querySelector(".modal-footer-btn");
+                const cancelButton = document.querySelector(".modal-footer-btn button");
+                switch (res.data.status) {
+                    case 'CHO_XAC_NHAN':
+                        statusElement.innerText = 'Chờ xác nhận';
+                        cancelButtonContainer.style.display = 'block'; // Hiển thị nút hủy đơn hàng
+                        cancelButton.onclick = () => CancelOrder(res.data.id);
+                        break;
+                    case 'CHO_GIAO_HANG':
+                        statusElement.innerText = 'Chờ giao hàng';
+                        cancelButtonContainer.style.display = 'none'; // Ẩn nút hủy đơn hàng
+                        break;
+                    case 'DANG_GIAO':
+                        statusElement.innerText = 'Đang giao';
+                        cancelButtonContainer.style.display = 'none'; // Ẩn nút hủy đơn hàng
+                        break;
+                    case 'DA_GIAO':
+                        statusElement.innerText = 'Đã giao';
+                        cancelButtonContainer.style.display = 'none'; // Ẩn nút hủy đơn hàng
+                        break;
+                    case 'DA_HUY':
+                        statusElement.innerText = 'Đã hủy';
+                        cancelButtonContainer.style.display = 'none'; // Ẩn nút hủy đơn hàng
+                        break;
+                    case 'TRA_HANG':
+                        statusElement.innerText = 'Trả hàng';
+                        cancelButtonContainer.style.display = 'none'; // Ẩn nút hủy đơn hàng
+                        break;
+                    default:
+                        statusElement.innerText = 'Trạng thái không xác định';
+                        cancelButtonContainer.style.display = 'none'; // Ẩn nút hủy đơn hàng
+                        break;
+                }
+
+                if (res.data.delivery.toString()== 'STANDARD'){
+                    document.getElementById("delivery").innerText ='Giao hàng tiêu chuẩn'
+                }else {
+                    document.getElementById("delivery").innerText ='Giao hàng nhanh'
+                }
+                document.getElementById("payment").innerText = res.data.payment;
+                document.getElementById("notes").innerText = res.data.notes;
+                document.getElementById("total-price").innerText=formatCurrency(res.data.totalPrice);
+                document.getElementById("discount-amount").innerText=formatCurrency(res.data.discountAmount);
+                document.getElementById("final-total").innerText=formatCurrency(res.data.finalTotal);
+                getOrderDetailsByOrderId(orderId)
+                myModalOrderEl.show()
+            }catch (e){
+                console.error(e)
+            }
+
+
+        }
+    </script>
+</th:block>
+
+</body>
+
+</html>

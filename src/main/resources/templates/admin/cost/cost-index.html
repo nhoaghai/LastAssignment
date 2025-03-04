@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout/layout :: layout(~{:: title},~{:: #css},~{:: .content-wrapper},~{:: #js})}">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Danh sách phiếu chi</title>
+
+    <th:block id="css">
+        <!--Data table-->
+        <link rel="stylesheet" href="/admin-assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+        <link rel="stylesheet" href="/admin-assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+        <link rel="stylesheet" href="/admin-assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+        <!--Select2-->
+        <link rel="stylesheet" href="/admin-assets/plugins/select2/css/select2.min.css" />
+        <link rel="stylesheet" href="/admin-assets/dist/css/style.css">
+    </th:block>
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-12">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a th:href="@{/admin/dashboard}">Dashboard</a>
+                            </li>
+                            <li class="breadcrumb-item active">
+                                Danh sách phiếu chi
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+                <!--Button-->
+                <div class="row py-2">
+                    <div class="col-12">
+                        <button type="button" class="btn btn-primary" onclick="window.location.href='/admin/costs/create'">
+                            <i class="fas fa-plus"></i> Tạo phiếu chi
+                        </button>
+                    </div>
+                </div>
+
+                <!--cost Table-->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <table class="table table-bordered table-hover" id="table-cost">
+                                    <thead >
+                                    <tr>
+                                        <th>Mã phiếu chi</th>
+                                        <th>Mục đích chi</th>
+                                        <th>Số tiền</th>
+                                        <th>Người chi</th>
+                                        <th>Mô tả</th>
+                                        <th>Ngày tạo</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="cost : ${costs}" th:data-cost-id="${cost.id}">
+                                        <td>
+                                            <a th:href="@{/admin/costs/{id} (id=${cost.id})}" th:text="${cost.id}"></a>
+                                        </td>
+                                        <td th:text="${cost.name}"></td>
+                                        <td class="formatted-price">[[${cost.amount}]]</td>
+                                        <td><a th:href="@{/admin/users/{id}(id=${cost.user.id})}">[[${cost.user.name}]]</a></td>
+                                        <td th:text="${cost.description}"></td>
+                                        <td th:text="${#temporals.format(cost.createdAt,'dd/MM/yyyy')}"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<th:block id="js">
+    <!--DataTable	-->
+    <script src="/admin-assets/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="/admin-assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="/admin-assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="/admin-assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="/admin-assets/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="/admin-assets/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+
+    <!--Select2-->
+    <script src="/admin-assets/plugins/select2/js/select2.full.min.js"></script>
+
+    <script th:inline="javascript">
+        $('#table-cost').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+        });
+
+
+    </script>
+</th:block>
+</body>
+
+</html>

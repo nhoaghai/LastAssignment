@@ -1,0 +1,634 @@
+ <!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout/layout :: layout(~{:: title},~{:: #css},~{:: .content-wrapper},~{:: #js})}">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tạo sản phẩm</title>
+
+   <th:block id="css">
+       <!--Easymde-->
+       <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css" />
+       <link rel="stylesheet" href="https://cdn.jsdelivr.net/highlight.js/latest/styles/github.min.css" />
+
+       <!--Summernote-->
+       <link rel="stylesheet" href="/admin-assets/plugins/summernote/summernote-bs4.min.css">
+
+       <!--Select2-->
+       <link rel="stylesheet" href="/admin-assets/plugins/select2/css/select2.min.css" />
+       <link rel="stylesheet" href="/admin-assets/dist/css/style.css">
+       <style>
+           /* Tùy chỉnh kích thước và kiểu dáng của các label màu */
+           .color-label {
+               height: 15px;
+               width: 15px;
+               border-radius: 50%;
+               position: relative;
+               margin-right: 10px;
+               display: inline-block;
+               vertical-align: middle; /* Căn giữa label với văn bản */
+           }
+
+           /* Tùy chỉnh tên màu sắc */
+           .color-name,.size-name {
+               vertical-align: middle;
+           }
+
+           /* Tùy chỉnh padding và khoảng cách của các tùy chọn trong danh sách */
+           .select2-results__option {
+               padding: 5px 10px;
+               display: flex; /* Để label màu và văn bản nằm trên cùng một hàng */
+               align-items: center;
+           }
+
+           /* Tùy chỉnh hiệu ứng khi chọn một tùy chọn */
+           .select2-results__option--highlighted {
+               background-color: #f0f0f0;
+           }
+
+           /* Tùy chỉnh kiểu dáng của các tùy chọn đã chọn */
+           .select2-selection__rendered {
+               display: flex;
+               align-items: center;
+               flex-wrap: wrap; /* Cho phép văn bản và các label màu nằm trên nhiều dòng */
+           }
+
+           /* Tùy chỉnh các tùy chọn đã chọn */
+           .select2-selection__choice {
+               margin: 2px;
+               padding: 4px 8px;
+               border-radius: 16px;
+               background-color: #e9ecef;
+               border: 1px solid #ccc;
+               display: flex;
+               align-items: center;
+               position: relative; /* Để có thể căn chỉnh dấu x */
+               overflow: hidden; /* Đảm bảo không có phần tử nào vượt ra ngoài */
+           }
+
+           /* Tùy chỉnh dấu x bỏ chọn */
+           .select2-selection__choice__remove {
+               cursor: pointer;
+               position: absolute; /* Đặt dấu x ở vị trí tương đối với phần tử chứa */
+               right: 2px; /* Khoảng cách từ bên phải */
+               top: 50%;
+               transform: translateY(-50%);
+               font-size: 14px;
+           }
+       </style>
+
+
+   </th:block>
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+   <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-12">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="#">Dashboard</a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a th:href="@{/admin/products}">Danh sách sản phẩm</a>
+                            </li>
+                            <li class="breadcrumb-item active">
+                                Tạo sản phẩm
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+
+                <div class="row py-2">
+                    <div class="col-6">
+                        <button type="button" class="btn btn-info px-4" id="btnCreateProduct">
+                            Lưu
+                        </button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <form id="form-product">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <div class="form-group">
+                                                <label>Tên sản phẩm</label>
+                                                <input type="text" class="form-control" id="name" name="name"/>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Mô tả ngắn</label>
+                                                <textarea id="description" class="form-control" rows="3" name="description"></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Trạng thái</label>
+                                                <select id="status" class="form-control" name="status">
+                                                    <option value="" >Chọn trạng thái</option>
+                                                    <option value="0">
+                                                        Ẩn
+                                                    </option>
+                                                    <option value="1">
+                                                        Công khai
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Giá tiền</label>
+                                                <input type="number" class="form-control" id="price" name="price"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Danh mục cha</label>
+                                                <select id="categoryParent" class="form-control" name="categoryParent">
+                                                    <option value="">Chọn danh mục cha</option>
+                                                    <option th:each="categoryParent : ${categoryParents}"
+                                                            th:value="${categoryParent.id}"
+                                                            th:text="${categoryParent.name}">
+                                                    </option>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>Danh mục con</label>
+                                                <select id="categoryChild" class="form-control" name="categoryChild" disabled >
+                                                    <option value="0">Chọn danh mục con</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Màu sắc</label>
+                                                <div class="select2-purple">
+                                                    <select class="select2 form-control" multiple="multiple" id="color" name="color">
+                                                        <!-- Ví dụ sử dụng Thymeleaf để lặp qua danh sách màu -->
+                                                        <option th:each="color : ${colors}"
+                                                                th:text="${color.colorName}"
+                                                                th:value="${color.id}"
+                                                                th:data-color="${color.colorCode}">
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Kiểu kích thước</label>
+                                                <select id="sizeType" class="form-control" name="sizeType">
+                                                    <option value="" >Chọn kiểu kích thước</option>
+                                                    <option th:each="sizetype : ${sizeTypes}" th:value="${sizetype}" th:text="${sizetype.getName()}" >
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Kích thước</label>
+                                                <div class="select2-purple">
+                                                    <select class="select2 form-control" multiple="multiple" id="size" name="size" disabled>
+                                                        <option></option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+
+                                          <!--  <div class="form-group">
+                                                <div class="thumbnail-preview-container mb-3">
+                                                    <img src="" alt="" id="poster">
+                                                </div>
+                                                <label for="input-poster" class="btn btn-info btn-flat" data-toggle="modal" data-target="#modal-xl">
+                                                    Chọn hình ảnh
+                                                </label>
+                                                <input type="file" id="input-poster" class="d-none">
+                                            </div>-->
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row quantity-table"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<th:block id="js">
+    //Summernote
+    <script src="/admin-assets/plugins/summernote/summernote-bs4.min.js"></script>
+
+    <script src="/admin-assets/plugins/select2/js/select2.full.min.js"></script>
+
+
+
+    <script th:inline="javascript">
+        //Initialize Select2 Elements
+        // Chọn màu
+        $('#color').select2({
+            templateResult: formatStateColor,
+            templateSelection: formatStateColor,
+            placeholder: "Chọn màu sắc"
+        });
+
+        function formatStateColor(state) {
+            if (!state.id) {
+                return state.text;
+            }
+            var color = $(state.element).data('color');
+            var $state = $(
+                '<span class="color-name">' + state.text + '</span>'+
+                '&ensp;<span class="color-label" style="background-color:' + color + '"></span>;'
+            );
+            return $state;
+        }
+        //Chọn Size
+        let sizeEl = document.getElementById("size");
+
+        function formatStateSize(state) {
+            if (!state.id) {
+                return state.text;
+            }
+            var $state = $(
+                '<span class="size-name">' + state.text + '&ensp;' + '</span>'
+            );
+            return $state;
+        }
+
+        $(sizeEl).select2({
+            placeholder: "Chọn kích thước",
+            autoWidth: true,
+            templateResult: formatStateSize,
+            templateSelection: formatStateSize,
+        });
+
+        $('#sizeType').change(async function() {
+            let selectedValue = $(this).val();
+            $(sizeEl).val(null).trigger('change');
+            if (selectedValue) {
+                try {
+                    updateQuantityTable()
+                    let res = await axios.get(`/api/admin/sizes/sizeType/${selectedValue}`);
+                    let sizes = res.data;
+                    $(sizeEl).val()
+                    $(sizeEl).empty().append(new Option('Chọn kích thước', ''));
+
+
+                    $(sizeEl).append(new Option('Chọn kích thước', ''));
+                    sizes.forEach(size => {
+                        $(sizeEl).append(new Option(size.sizeName, size.id)); // Adjust `size.name` and `size.id` based on your data structure
+                    });
+                    sizeEl.disabled = false;
+                    $(sizeEl).select2({
+                        placeholder: "Chọn kích thước",
+                        autoWidth: true,
+                        templateResult: formatStateSize,
+                        templateSelection: formatStateSize,
+                    });
+                    console.log(!$('#categoryParent').val()=="")
+                    if (!$('#categoryParent').val()==""){
+                        $(this).prop('disabled', true); // Vô hiệu hóa sizeType
+                    }
+
+                } catch (error) {
+                    console.error('Error fetching sizes:', error);
+                }
+            } else {
+                updateQuantityTable()
+                $(sizeEl).empty().append(new Option('Chọn kích thước', '')).prop('disabled', true);
+            }
+        });
+
+
+        //Chọn category
+        let categoryChildEl = document.getElementById("categoryChild");
+        $('#categoryParent').on('change', async function() {
+            let categoryParentId = $(this).val();
+            if (categoryParentId) {
+                if (categoryParentId==3){
+                    $('#sizeType').val('SHOES_SIZE').trigger('change');
+                }else {
+                    $('#sizeType').val('CLOTHES_SIZE').trigger('change');
+                }
+                try {
+                    let res = await axios.get(`/api/admin/categories/categoryParent/${categoryParentId}`);
+                    let categoryChild = res.data;
+                    $(categoryChildEl).empty();
+                    $(categoryChildEl).append(new Option('Chọn danh mục con', ''));
+
+                    categoryChild.forEach(c => {
+                        $(categoryChildEl).append(new Option(c.name, c.id));
+                    });
+
+                    $(categoryChildEl).prop('disabled', false);
+                } catch (e) {
+                    console.error('Error fetching category children:', e);
+                }
+            } else {
+                $(categoryChildEl).empty().append(new Option('Chọn danh mục con', '')).prop('disabled', true);
+            }
+        });
+
+
+        let quantityData = {};
+
+        // Cập nhật bảng số lượng
+        function updateQuantityTable() {
+            let selectedColors = $('#color').val() || [];
+            let selectedSizes = $('#size').val() || [];
+            console.log(selectedSizes);
+
+            // Xóa nội dung cũ
+            let tableHtml = '<table class="table table-bordered"><thead><tr><th>Màu sắc</th><th>Kích thước</th><th>Số lượng</th></tr></thead><tbody>';
+
+            selectedColors.forEach(color => {
+                let colorText = $('#color option:selected').filter(`[value="${color}"]`).text();
+
+                selectedSizes.forEach(size => {
+                    if (size !== "") {
+                        let sizeText = $('#size option:selected').filter(`[value="${size}"]`).text();
+                        let key = `${color}-${size}`;
+                        let quantityValue = quantityData[key] || '0'; // Lấy giá trị đã lưu hoặc để trống nếu không có
+
+                        tableHtml += `<tr><td>${colorText}</td><td>${sizeText}</td><td><input type="number" class="form-control" name="quantity" value="${quantityValue}" data-key="${key}" /></td></tr>`;
+                    }
+                });
+            });
+
+            tableHtml += '</tbody></table>';
+            $('.quantity-table').html(tableHtml);
+        }
+
+        // Lưu giá trị khi người dùng thay đổi số lượng
+        function saveQuantityValue() {
+            $('.quantity-table').on('input', 'input[name="quantity"]', function() {
+                let key = $(this).data('key');
+                quantityData[key] = $(this).val();
+            });
+        }
+
+        $('#color').on('change', function() {
+            updateQuantityTable();
+            saveQuantityValue();
+        });
+        $('#size').on('change', function() {
+            updateQuantityTable();
+            saveQuantityValue();
+        });
+
+        saveQuantityValue();
+
+        //Validate
+
+        $('#form-product').validate({
+
+            rules: {
+                name: {
+                    required: true,
+                    pattern: /^\s*\S.*$/,
+                },
+                description: {
+                    required: true,
+                    pattern: /^\s*\S.*$/,
+                },
+                price: {
+                    required: true,
+                    number: true,
+                    min: 0,
+                },
+                status: {
+                    required: true,
+                    min: 0,
+                    max: 1
+                },
+                categoryParent: {
+                    required: true,
+                },
+                categoryChild: {
+                    required: true,
+                },
+                color: {
+                    required: true,
+                },
+                size: {
+                    required: true,
+                }
+            },
+            messages: {
+                name: {
+                    required: "Vui lòng nhập tên sản phẩm",
+                    pattern: "Tên sản phẩm không được chỉ chứa khoảng trắng"
+                },
+                description: {
+                    required: "Vui lòng nhập mô tả",
+                    pattern: "Mô tả không được chỉ chứa khoảng trắng"
+                },
+                price: {
+                    required: "Vui lòng nhập giá tiền",
+                    number: "Giá tiền phải là số",
+                    min: "Giá tiền không được dưới 0"
+                },
+                status: {
+                    required: "Vui lòng chọn trạng thái",
+                    min: "Trạng thái không hợp lệ",
+                    max: "Trạng thái không hợp lệ"
+                },
+                categoryParent: {
+                    required: "Vui lòng chọn danh mục cha",
+                },
+                categoryChild: {
+                    required: "Vui lòng chọn danh mục con",
+                },
+                color: {
+                    required: "Vui lòng chọn màu sắc",
+                },
+                sizeType: {
+                    required: "Vui lòng chọn kiểu kích thước",
+                },
+                size: {
+                    required: "Vui lòng chọn kích thước",
+                }
+            },
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                element.closest('.form-group').append(error);
+            },
+            highlight: function (element) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element) {
+                $(element).removeClass('is-invalid');
+            }
+        });
+
+        //Create
+        const btnCreateProduct = document.getElementById('btnCreateProduct');
+        btnCreateProduct.addEventListener('click', async (e) => {
+            e.preventDefault(); // Ngăn chặn hành vi mặc định của việc gửi biểu mẫu
+            console.log("Đã ấn nút");
+            // Kiểm tra tính hợp lệ của biểu mẫu
+            if (!$('#form-product').valid()) {
+                return;
+            }
+            // Thu thập dữ liệu từ biểu mẫu
+            const data = {
+                name: document.getElementById('name').value,
+                description: document.getElementById('description').value,
+                price: document.getElementById('price').value,
+                newPrice: document.getElementById('price').value,
+                categoryId: document.getElementById('categoryChild').value,
+                colorIds: $('#color').val(),
+                sizeIds: $('#size').val(),
+                status: document.getElementById('status').value === "1",
+                quantityData: quantityData
+            };
+            // Gọi API
+            try {
+                let res = await axios.post("/api/admin/products/create", data);
+                toastr.success("Tạo sản phẩm thành công");
+                setTimeout(() => {
+                    window.location.href = '/admin/products';
+                }, 1000);
+            } catch (e) {
+                console.log(e);
+                toastr.error(e.response?.data?.message || "Có lỗi xảy ra!");
+            }
+        });
+
+
+
+
+
+        // // Initialize editor
+        // const easyMDE = new EasyMDE({
+        //   element: document.getElementById("content"),
+        //   spellChecker: false,
+        //   maxHeight: "500px",
+        //   renderingConfig: {
+        //     codeSyntaxHighlighting: true,
+        //   },
+        // });
+
+
+        // // Summernote
+        // $('#content').summernote({
+        //     height: 600,                 // set editor height
+        //     minHeight: null,             // set minimum height of editor
+        //     maxHeight: null,             // set maximum height of editor
+        //     focus: true,                 // set focus to editable area after initializing summernote
+        //     disableLinkTarget: true
+        // });
+
+
+
+        //Create product
+       /* let nameEl = document.getElementById("name")
+        let trailerEl = document.getElementById("trailer")
+        let descriptionEl = document.getElementById("description")
+        let statusEl = document.getElementById("status")
+        let releaseYearEl = document.getElementById("releaseYear")
+        let productTypeEl = document.getElementById("productType")
+        let countryEl = document.getElementById("country")
+        const btnCreateproduct = document.getElementById("btnCreateproduct")
+        btnCreateproduct.addEventListener("click", async (e)=>{
+            e.preventDefault()
+            console.log("Đã ấn nút")
+
+            if (!$('#form-product').valid()){
+                return;
+            }
+            const data = {
+                name: nameEl.value,
+                description: descriptionEl.value,
+                releaseYear: releaseYearEl.value,
+                productType: productTypeEl.value,
+                status : statusEl.value === "1",
+                trailer: trailerEl.value,
+                countryId: countryEl.value,
+                genreIds: $('#genre').val(),
+                actorIds: $('#actor').val(),
+                directorIds: $('#director').val(),
+            }
+            // Gọi API
+            try {
+                let res = await axios.post("/api/admin/products", data);
+                toastr.success("Tạo product thành công")
+                setTimeout(()=>{
+                    window.location.href='/admin/products'
+                },1000)
+            } catch (e) {
+                console.log(e)
+                toastr.error(e.response.data.message);
+            }
+        })
+
+        $('#form-product').validate({
+            rules: {
+                name: {
+                    required: true,
+                    pattern: /^\s*\S.*$/, // Kiểm tra xem có ký tự nào không là khoảng trắng ở đầu không
+                },
+                releaseYear: {
+                    required: true,
+                    min: 1900,
+                    max: 2100,
+                },
+                description:{
+                    required: true,
+                    pattern: /^\s*\S.*$/, // Kiểm tra xem có ký tự nào không là khoảng trắng ở đầu không
+                }
+            },
+            messages: {
+                name: {
+                    required: "Vui lòng nhập tiêu đề",
+                    pattern: "Tiêu đề không được chỉ chứa khoảng trắng"
+                },
+                releaseYear: {
+                    required: "Vui lòng nhập năm phát hành",
+                    min: "Không được dưới năm 1900",
+                    max: "Không được trên năm 2100"
+                },
+                description:{
+                    required: "Vui lòng nhập mô tả",
+                    pattern: "Mô tả không được chỉ chứa khoảng trắng"
+                }
+            },
+            errorPlacement: function (error, element) {
+                if (element.attr("name") === "content") { // Kiểm tra nếu là trường nội dung
+                    error.appendTo(element.siblings("span")); // Hiển thị thông báo lỗi bên cạnh trường nội dung
+                } else {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                }
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).removeClass('is-invalid');
+            }
+        });*/
+    </script>
+</th:block>
+</body>
+
+</html>

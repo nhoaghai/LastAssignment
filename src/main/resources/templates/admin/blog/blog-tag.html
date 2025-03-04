@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout/layout :: layout(~{:: title},~{:: #css},~{:: .content-wrapper},~{:: #js})}">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Danh sách thể loại</title>
+
+
+    <th:block id="css">
+        <!--Data table-->
+        <link rel="stylesheet" href="/admin-assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+        <link rel="stylesheet" href="/admin-assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+        <link rel="stylesheet" href="/admin-assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+    </th:block>
+
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-12">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a th:href="@{/admin/dashboard}">Dashboard</a>
+                            </li>
+                            <li class="breadcrumb-item active">
+                                Danh sách thể loại
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row py-2">
+                    <div class="col-12">
+                        <button type="button" class="btn btn-primary" id="open-create-tag-modal">
+                            <i class="fas fa-plus"></i> Tạo thể loại
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <table class="table table-bordered table-hover" id="table-tag">
+                                    <thead>
+                                    <tr>
+                                        <th>Tên thể loại</th>
+                                        <th>Số lượng sử dụng</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="tag-body">
+                                    <tr th:each="tag : ${tags}">
+                                        <td th:text="${tag.name}"></td>
+                                        <td>[[${blogsByTagName.get(tag.id).size()}]]
+                                            <span style="cursor: pointer"
+                                                  class="text-primary"
+                                                  th:data-tag-id="${tag.id}"
+                                                  th:onclick="'openModal('+${tag.id}+')'">
+                                                (Xem danh sách)</span>
+                                        </td>
+                                        <td>
+                                            <button type="button"
+                                                    class="btn btn-warning text-white btn-sm"
+                                                    th:onclick="'updateTag('+${tag.id}+')'">
+                                                <i class="fas fa-pencil-alt"></i>
+                                            </button>
+                                            <button type="button"
+                                                    class="btn btn-danger btn-sm"
+                                                    th:onclick="'deleteTag('+${tag.id}+')'">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!--Blog Modal -->
+        <div class="modal fade" id="blog-modal" tabindex="-1" role="dialog" aria-labelledby="blogModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="blogModalLabel">Danh sách bài viết</h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <table class="table table-bordered table-hover" id="table-blog">
+                                            <thead>
+                                            <tr>
+                                                <th>Tiêu đề</th>
+                                                <th>Tác giả</th>
+                                                <th>Trạng thái</th>
+                                                <th>Ngày tạo</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="blogList">
+                                            <!-- Nội dung sẽ được chèn vào đây bằng JavaScript -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Create Tag Modal-->
+        <div class="modal fade" id="create-tag-modal" tabindex="-1" role="dialog" aria-labelledby="createTagModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="createTagModalLabel">Tạo thể loại</h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <form id="form-create-tag">
+                                    <div class="form-group mb-3">
+                                        <input type="text" class="form-control" id="input-name" name="name" placeholder="Tên thể loại">
+                                    </div>
+                                    <div class="form-action-button">
+                                        <button id="btn-create-tag" type="submit" class="btn btn-primary d-flex align-items-center justify-content-center">
+                                            Tạo
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<th:block id="js">
+    <!--DataTable	-->
+    <script src="/admin-assets/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="/admin-assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="/admin-assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="/admin-assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="/admin-assets/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="/admin-assets/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <script th:inline="javascript">
+        let blogsByTagName = [[${blogsByTagName}]];
+        let tags = [[${tags}]];
+        // Khởi tạo DataTable cho bảng tag
+        $('#table-tag').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": true,
+            "responsive": true,
+        });
+
+
+        const modalBlogEl = document.getElementById("blog-modal");
+        const myModalBlogEl = new bootstrap.Modal(modalBlogEl, {
+            keyboard: false
+        });
+
+        const formatDate = dateStr => {
+            const date = new Date(dateStr);
+            const day = `0${date.getDate()}`.slice(-2);
+            const month = `0${date.getMonth() + 1}`.slice(-2);
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        };
+
+        const deleteDataTable = (selector) => {
+            if ($.fn.DataTable.isDataTable(selector)) {
+                $(selector).DataTable().clear().destroy();
+            }
+        };
+
+        const createDataTable = (selector) => {
+            $(selector).DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+            });
+        };
+
+        const openModal = (tagId) => {
+            const blogListEl = document.getElementById("blogList");
+
+            if (!blogListEl) {
+                console.error('Không tìm thấy phần tử với ID "blogList"');
+                return;
+            }
+
+            let blogs = blogsByTagName[tagId] || [];
+            let html = "";
+            blogs.forEach(blog => {
+                html += `
+                <tr>
+                    <td>
+                        <a href="/admin/blogs/${blog.id}" title="${blog.title}">
+                            ${blog.title}
+                        </a>
+                    </td>
+                    <td>
+                        <a href="#">${blog.user.name}</a>
+                    </td>
+                    <td>${blog.status ? 'Công khai' : 'Nháp'}</td>
+                    <td>${formatDate(blog.createdAt)}</td>
+                </tr>
+            `;
+            });
+            deleteDataTable('#table-blog');
+            blogListEl.innerHTML = html;
+            createDataTable('#table-blog');
+
+            // Hiển thị modal
+            myModalBlogEl.show();
+        }
+
+
+
+
+        // Gán hàm openModal cho các sự kiện onclick của các phần tử
+        $(document).on('click', 'span.text-primary', function() {
+            const tagId = $(this).data('tag-id'); // Lấy tagId từ dữ liệu
+            openModal(tagId);
+        });
+
+
+        // Tạo thể loại mới
+        $('#form-create-tag').validate({
+            rules: {
+                name: {
+                    required: true,
+                },
+            },
+            messages: {
+                name: {
+                    required: "Tên thể loại không được để trống",
+                },
+            },
+            errorElement: 'span',
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                element.closest('.form-group').append(error);
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).removeClass('is-invalid');
+            }
+        });
+              // Gán hàm openModal cho các sự kiện onclick của các phần tử
+        $(document).on('click', 'span.text-primary', function() {
+            const tagId = $(this).data('tag-id'); // Lấy tagId từ dữ liệu
+            openModal(tagId);
+        });
+
+        $('#open-create-tag-modal').on('click', function () {
+            $('#create-tag-modal').modal('show');
+            document.getElementById("createTagModalLabel").innerText = "Tạo thể loại";
+            document.getElementById("input-name").value = "";
+            document.getElementById("btn-create-tag").innerText = "Tạo";
+
+            // Gán sự kiện submit cho form tạo mới
+            $('#form-create-tag').off('submit').on('submit', async (e) => {
+                e.preventDefault();
+                console.log("Form submission attempted");
+                if (!$('#form-create-tag').valid()) {
+                    return;
+                }
+
+                const data = {
+                    name: $('#input-name').val(),
+                };
+
+                try {
+                    let res = await axios.post("/api/admin/tags/create", data);
+                    let newTag = res.data;
+                    tags.push(newTag);
+                    let newRow = `
+                <tr>
+                    <td>${newTag.name}</td>
+                    <td>0 <span style="cursor: pointer" class="text-primary" data-tag-id="${newTag.id}" onclick="openModal(${newTag.id})">(Xem danh sách)</span></td>
+                    <td>
+                        <button type="button" class="btn btn-warning text-white btn-sm" onclick="updateTag(${newTag.id})"><i class="fas fa-pencil-alt"></i></button>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="deleteTag(${newTag.id})"><i class="fas fa-trash-alt"></i></button>
+                    </td>
+                </tr>
+            `;
+
+                    $('#table-tag').DataTable().row.add($(newRow)).draw(); // Thêm hàng mới vào DataTable
+                    toastr.success("Tạo thể loại mới thành công");
+                    $('#create-tag-modal').modal('hide'); // Ẩn modal sau khi tạo xong
+
+                } catch (e) {
+                    console.error(e);
+                    toastr.error("Đã xảy ra lỗi khi tạo thể loại mới");
+                }
+            });
+        });
+
+        // Cập nhật thể loại
+        const updateTag = async (tagId) => {
+            const tagIndex = tags.findIndex(tag => tag.id === tagId);
+
+            if (tagIndex === -1) {
+                console.error('Tag không tìm thấy trong danh sách tags');
+                return;
+            }
+
+            document.getElementById("createTagModalLabel").innerText = "Sửa thể loại";
+            document.getElementById("input-name").value = tags[tagIndex].name;
+            document.getElementById("btn-create-tag").innerText = "Sửa";
+            $('#create-tag-modal').modal('show');
+
+            // Gán sự kiện submit cho form cập nhật
+            $('#form-create-tag').off('submit').on('submit', async (e) => {
+                e.preventDefault();
+                console.log("Form submission attempted");
+                if (!$('#form-create-tag').valid()) {
+                    return;
+                }
+
+                const data = {
+                    name: $('#input-name').val(),
+                };
+
+                try {
+                    let res = await axios.put(`/api/admin/tags/update/${tagId}`, data);
+                    let updatedTag = res.data;
+                    tags[tagIndex] = updatedTag;
+                    // Cập nhật hàng trong bảng
+                    let row = $(`#table-tag tbody tr`).filter((_, element) => $(element).find('span').data('tag-id') === tagId);
+                    row.find('td').eq(0).text(updatedTag.name);
+                    toastr.success("Cập nhật thể loại thành công");
+                    $('#create-tag-modal').modal('hide'); // Ẩn modal sau khi cập nhật xong
+
+                } catch (e) {
+                    console.error(e);
+                    toastr.error("Đã xảy ra lỗi khi cập nhật thể loại");
+                }
+            });
+        };
+
+        // Xoá thể loại
+        const deleteTag = async (tagId) => {
+            try {
+                await axios.delete(`/api/admin/tags/delete/${tagId}`);
+                $('#table-tag').DataTable().row($(`#table-tag tbody tr`).filter((_, element) => $(element).find('span').data('tag-id') === tagId)).remove().draw();
+                toastr.success("Xoá thể loại thành công");
+            } catch (e) {
+                console.error(e);
+                toastr.error("Có bài viết sử dụng thể loại này nên không thể xóa");
+            }
+        };
+    </script>
+
+</th:block>
+
+
+</body>
+
+</html>

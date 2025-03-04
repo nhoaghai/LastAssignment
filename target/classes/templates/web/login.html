@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zxx" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{web/layout/layout :: layout(~{::title},~{:: #css},~{:: #content},~{:: #js})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Male_Fashion Template">
+    <meta name="keywords" content="Male_Fashion, unica, creative, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Male-Fashion | Đăng Nhập</title>
+
+    <th:block id="css">
+        <style>
+
+            .breadcrumb-section {
+                position: relative;
+                height: 300px; /* Thay đổi chiều cao theo nhu cầu */
+                background-size: cover; /* Đảm bảo hình ảnh phủ toàn bộ khu vực */
+                background-position: center; /* Căn chỉnh hình ảnh vào giữa phần tử */
+                background-repeat: no-repeat; /* Không lặp lại hình ảnh nền */
+                overflow: hidden; /* Ẩn bất kỳ phần nào của hình ảnh bị tràn ra ngoài */
+                display: flex; /* Sử dụng Flexbox để căn giữa nội dung */
+                align-items: center; /* Căn giữa theo chiều dọc */
+                justify-content: center; /* Căn giữa theo chiều ngang */
+            }
+
+            .breadcrumb-section::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5); /* Màu nền tối với độ trong suốt */
+                z-index: 1; /* Đặt lớp phủ tối lên trên hình ảnh */
+            }
+
+            .breadcrumb__text {
+                position: relative; /* Để các lớp phủ không che nội dung */
+                color: #fff; /* Màu chữ sáng để tương phản với nền tối */
+                z-index: 2; /* Đảm bảo văn bản hiển thị trên lớp phủ tối */
+            }
+
+            .breadcrumb__option h1 {
+                font-size: 4rem; /* Kích thước chữ */
+                font-weight: bold; /* Định dạng chữ đậm */
+                margin: 0; /* Loại bỏ khoảng cách bên ngoài */
+                color: white;
+            }
+
+
+            .login-section {
+               margin: 50px;
+            }
+
+            .login-container {
+                background: #fff;
+                padding: 2rem;
+                border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                width: 100%;
+            }
+
+            .login-text {
+                text-align: center;
+                margin-bottom: 1.5rem;
+            }
+
+            .login-text h2 {
+                margin-bottom: 0.5rem;
+
+            }
+
+            .login-text p {
+                font-size: 17px;
+                color: #666;
+            }
+
+            .login-form-input {
+                position: relative;
+            }
+
+            .input-full {
+                width: 100%;
+                padding: 0.75rem;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                box-sizing: border-box;
+            }
+
+            .icon-toggle-password {
+                position: absolute;
+                top: 50%;
+                right: 10px;
+                transform: translateY(-50%);
+                cursor: pointer;
+                font-size: 1rem;
+                color: #888;
+            }
+
+            .login-form-input input {
+                padding-right: 2.5rem; /* Add padding to accommodate the eye icon */
+            }
+
+            .form-action-button {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn:hover {
+               background-color: black;
+            }
+
+            #recover-password,
+            #customer_register_link {
+                display: block;
+                margin-top: 0.5rem;
+                color: black;
+                text-decoration: none;
+                font-size: 0.875rem;
+                text-align: center;
+            }
+
+            .account-optional-action{
+                margin-top: 1rem;
+            }
+
+            #recover-password:hover,
+            #customer_register_link:hover {
+                text-decoration: underline;
+            }
+        </style>
+    </th:block>
+</head>
+
+<body>
+<th:block id="content">
+    <!--Thumbnail Begin-->
+    <section class="breadcrumb-section"  style="background-image: url(/web-assets/img/thumbnail/login-thumbnail.jpg)">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="breadcrumb__text">
+                        <div class="breadcrumb__option">
+                            <h1>Đăng nhập</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--Thumbnail End-->
+
+    <section class="login-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 offset-lg-3 col-md-8 offset-md-2">
+                    <div class="login-container">
+                        <div id="custom-login-form">
+                            <form id="form-login">
+                                <div class="login-form-container">
+                                    <div class="login-text">
+                                        <p><strong>Vui lòng điền thông tin vào form bên dưới.</strong></p>
+                                    </div>
+
+                                    <div class="form-group mb-3 input-group">
+                                        <input type="text" class="form-control" id="input-email" name="email" placeholder="Email">
+                                    </div>
+                                    <div class="login-form-input form-group mb-3 input-group">
+                                        <input type="password" class="form-control" id="input-password" name="password" placeholder="Mật khẩu">
+                                        <span class="icon-toggle-password" onclick="togglePassword('input-password',this)">
+                                            <i class="fa-regular fa-eye"></i>
+                                        </span>
+                                    </div>
+                                    <div class="login-toggle-btn">
+                                        <div class="form-action-button">
+                                            <button id="btn-login" type="submit" class="btn bg-dark d-flex align-items-center justify-content-center text-white">
+                                                Đăng nhập
+                                            </button>
+                                        </div>
+                                        <div class="d-flex justify-content-center account-optional-action">
+                                            <a id="recover-password" class="me-3" th:href="@{/forgetPassword}">Quên mật khẩu?</a>
+                                            <a id="customer_register_link" th:href="@{/register}">Tạo tài khoản</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</th:block>
+
+<th:block id="js">
+    <!-- JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/additional-methods.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script>
+        //Hàm tắt bật mật khẩu
+        function togglePassword(inputId, iconElement) {
+            // Lấy phần tử input theo ID
+            var passwordInput = document.getElementById(inputId);
+
+            // Lấy phần tử icon từ phần tử được nhấp
+            var eyeIcon = iconElement.querySelector('i');
+
+            // Kiểm tra kiểu của input và thay đổi giữa password và text
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            }
+        }
+
+        $(document).ready(function () {
+            $('#form-login').validate({
+                rules: {
+                    email: {
+                        required: true,
+                        email: true
+                    },
+                    password: {
+                        required: true
+                    }
+                },
+                messages: {
+                    email: {
+                        required: "Email không được để trống",
+                        email: "Email không đúng định dạng"
+                    },
+                    password: {
+                        required: "Mật khẩu không được để trống"
+                    }
+                },
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                }
+            });
+
+            $('#form-login').on('submit', async function (e) {
+                e.preventDefault();
+
+                if (!$(this).valid()) {
+                    return;
+                }
+
+                const data = {
+                    email: $('#input-email').val(),
+                    password: $('#input-password').val()
+                };
+
+                try {
+                    let res = await axios.post("/api/auth/login", data);
+                    toastr.success("Đăng nhập thành công");
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 1000);
+                } catch (e) {
+                    toastr.error(e.response.data.message);
+                }
+            });
+        });
+    </script>
+</th:block>
+
+</body>
+</html>

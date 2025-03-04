@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zxx" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{web/layout/layout :: layout(~{::title},~{:: #css},~{:: #content},~{:: #js})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Male_Fashion Template">
+    <meta name="keywords" content="Male_Fashion, unica, creative, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Male-Fashion | Thông tin cá nhân</title>
+
+    <th:block id="css">
+        <style>
+            #avatar{
+                width: 200px;
+                height: 200px;
+                object-fit: cover;
+                border-radius: 50%;
+            }
+            .changePassword-text {
+                text-align: center;
+                margin-bottom: 1.5rem;
+            }
+
+            .changePassword-text h3 {
+                margin-bottom: 0.5rem;
+            }
+
+            .changePassword-text p {
+                font-size: 17px;
+                color: #666;
+            }
+
+            .input-full {
+                width: 100%;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                box-sizing: border-box;
+            }
+            .changePassword-form-input {
+                position: relative;
+            }
+            .icon-toggle-password {
+                position: absolute;
+                top: 50%;
+                right: 10px;
+                transform: translateY(-50%);
+                cursor: pointer;
+                font-size: 1rem;
+                color: #888;
+            }
+
+            .register-form-input input {
+                padding-right: 2.5rem; /* Add padding to accommodate the eye icon */
+            }
+
+            .form-action-button {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn:hover {
+                background-color: black;
+            }
+
+            #recover-password,
+            #customer_changePassword_link {
+                display: block;
+                margin-top: 0.5rem;
+                color: black;
+                text-decoration: none;
+                font-size: 0.875rem;
+                text-align: center;
+            }
+
+            .account-optional-action {
+                margin-top: 1rem;
+            }
+
+            #recover-password:hover,
+            #customer_register_link:hover {
+                text-decoration: underline;
+            }
+
+            .customer-info h4 {
+                text-align: center;
+                margin-bottom: 1.5rem;
+            }
+
+            .customer-info p {
+                font-size: 17px;
+                color: #666;
+            }
+
+
+        </style>
+    </th:block>
+</head>
+
+<body>
+<th:block id="content">
+    <!-- Breadcrumb Section Begin -->
+    <section class="breadcrumb-option">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__text">
+                        <h4>Thông tin cá nhân</h4>
+                        <div class="breadcrumb__links">
+                            <a th:href="@{/}">Trang chủ</a>
+                            <span>Thông tin cá nhân</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Breadcrumb Section End -->
+
+
+    <section class="user-info-section ">
+        <div class="container">
+            <div class="product__details__content mb-5">
+                <div class="product__details__tab">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link user-info-nav-link active text-black" data-toggle="tab" href="#tabs-account" role="tab">Tài khoản</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link user-info-nav-link" data-toggle="tab" href="#tabs-password" role="tab">Mật khẩu</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link user-info-nav-link" data-toggle="tab" href="#tabs-address" role="tab">Sổ địa chỉ</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <!-- Tab Tài khoản -->
+                        <div class="tab-pane active" id="tabs-account" role="tabpanel">
+                            <div class="product__details__tab__content">
+                                <div class="text-center">
+                                    <h3 class="mb-3">Thông tin tài khoản</h3>
+                                </div>
+                                <!-- Nội dung của tab tài khoản -->
+                                <div class="text-center mb-3">
+                                    <img id="avatar" class="rounded-circle mb-2" th:src="${#authentication.principal.user.avatar}" alt="Avatar" ><br>
+                                    <label style="cursor: pointer" for="btnUpdateAvatar">Thay đổi ảnh đại diện</label>
+                                    <input type="file" id="btnUpdateAvatar" hidden="hidden">
+                                </div>
+                                <form id="form-updateInfo">
+                                    <div class="form-group mb-3">
+                                        <input type="text" class="form-control" id="input-name" name="name" placeholder="Tên tài khoản" th:value="${#authentication.principal.user.name}">
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <input type="text" class="form-control" id="input-email" name="email" placeholder="Email" th:value="${#authentication.principal.user.email}" disabled>
+                                    </div>
+                                    <div class="updateInfo-toggle-btn">
+                                        <div class="form-action-button">
+                                            <button id="btn-updateInfo" type="submit" class="btn bg-dark d-flex align-items-center justify-content-center text-white">
+                                                Cập nhật
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Tab Mật khẩu -->
+                        <div class="tab-pane" id="tabs-password" role="tabpanel">
+                            <div class="product__details__tab__content ">
+                                <form id="form-changePassword">
+                                    <div class="changePassword-form-container">
+                                        <div class="changePassword-text text-center">
+                                            <h3 class="mb-2">Đổi mật khẩu</h3>
+                                            <p>Vui lòng điền thông tin vào form bên dưới.</p>
+                                        </div>
+                                        <div id="form-changePassword-group">
+                                            <div class="changePassword-form-input form-group mb-3 input-group">
+                                                <input type="password" class="form-control" id="input-old-password" name="oldPassword" placeholder="Mật khẩu cũ">
+                                                <span class="icon-toggle-password" onclick="togglePassword('input-old-password', this)">
+                                                <i class="fa-regular fa-eye"></i>
+                                                </span>
+                                            </div>
+                                            <div class="changePassword-form-input form-group mb-3 input-group">
+                                                <input type="password" class="form-control" id="input-password" name="password" placeholder="Mật khẩu mới">
+                                                <span class="icon-toggle-password" onclick="togglePassword('input-password', this)">
+                                                <i class="fa-regular fa-eye"></i>
+                                                </span>
+                                            </div>
+                                            <div class="changePassword-form-input form-group mb-4 input-group">
+                                                <input type="password" class="form-control" id="input-confirm-password" name="confirmPassword" placeholder="Nhập lại mật khẩu mới">
+                                                <span class="icon-toggle-password" onclick="togglePassword('input-confirm-password', this)">
+                                                <i class="fa-regular fa-eye"></i>
+                                                </span>
+                                            </div>
+                                            <div class="changePassword-toggle-btn">
+                                                <div class="form-action-button">
+                                                    <button id="btn-changePassword" type="submit" class="btn bg-dark d-flex align-items-center justify-content-center text-white">
+                                                        Cập nhật
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
+
+                        <!-- Tab Sổ địa chỉ -->
+                        <div class="tab-pane" id="tabs-address" role="tabpanel">
+                            <div class="product__details__tab__content ">
+                                <div class="text-center mb-3">
+                                    <h3>Danh sách địa chỉ</h3>
+                                </div>
+                                <!-- Nội dung của tab sổ địa chỉ -->
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th>Thông tin địa chỉ</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="address-list">
+                                    <!-- Ví dụ địa chỉ -->
+                                    <tr th:each="address : ${addressesByUserId}">
+                                        <td class="align-middle">
+                                            <h5>[[${address.receiverName}]] | [[${address.phone}]]&nbsp;
+                                            <span th:if="${address.chosen}"><strong>(Mặc định)</strong></span><span style="cursor: pointer" class="text-warning text-decoration-underline" th:if="${!address.chosen}" th:onclick="'setAddressChosen('+${address.id}+')'">(Đặt địa chỉ làm mặc định)</span>
+                                            </h5>
+                                            <p class="m-0">[[${address.addressDetail}]]</p>
+                                            <p class="m=0 address-w-d-p">[[${address.ward}]] - [[${address.district}]] - [[${address.province}]]</p>
+                                        </td>
+                                        <td class="text-end">
+                                            <button type="button" class="btn btn-warning text-white btn-sm" th:onclick="'openEditModal('+${address.id}+')'"><i class="fas fa-pencil-alt"></i></button>
+                                            <button th:if="${!address.chosen}" type="button" class="btn btn-danger btn-sm" th:onclick="'deleteAddress('+${address.id}+')'"><i class="fas fa-trash-alt"></i></button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <div class="text-center">
+                                    <button class="btn bg-dark text-white mt-3" data-bs-toggle="modal" data-bs-target="#address-modal">Thêm địa chỉ</button>
+                                </div>
+
+
+                                <!-- Modal thêm địa chỉ -->
+                                <div class="modal fade" id="address-modal" tabindex="-1" aria-labelledby="addressModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h4 class="modal-title" id="addressModalLabel">Thêm địa chỉ mới</h4>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form id="form-add-address">
+                                                    <div class="form-group mb-3">
+                                                        <input type="text" class="form-control" id="input-nameCustomer" name="nameCustomer" placeholder="Tên khách hàng">
+                                                    </div>
+                                                    <div class="form-group mb-3">
+                                                        <input type="text" class="form-control" id="input-phone" name="phone" placeholder="Số điện thoại">
+                                                    </div>
+                                                    <div class="form-group mb-3">
+                                                        <select id="input-province" class="form-control" name="province">
+                                                            <option value="">Chọn Tỉnh/Thành Phố</option>
+                                                            <!-- Options sẽ được tải từ API -->
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group mb-3">
+                                                        <select id="input-district" class="form-control" name="district" disabled>
+                                                            <option value="">Chọn Quận/Huyện</option>
+                                                            <!-- Options sẽ được tải từ API -->
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group mb-3">
+                                                        <select id="input-ward" class="input-full form-control" name="ward" disabled>
+                                                            <option value="">Chọn Phường/Xã</option>
+                                                            <!-- Options sẽ được tải từ API -->
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group mb-3">
+                                                        <input type="text" class="form-control" id="input-addressDetail" name="addressDetail" placeholder="Địa chỉ cụ thể">
+                                                    </div>
+                                                    <div class="text-center">
+                                                        <button id="btn-create-address" type="submit" class="btn bg-dark text-white">Tạo</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</th:block>
+
+<th:block id="js">
+    <!-- JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/additional-methods.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <div sec:authorize="isAuthenticated()">
+        <script th:inline="javascript">
+            let user = [[${#authentication.principal.user}]];
+        </script>
+    </div>
+    <script th:inline="javascript">
+        let addresses = [[${addressesByUserId}]]
+
+        // Làm sáng tab được chọn
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.user-info-nav-link').forEach(function (tab) {
+                tab.addEventListener('click', function () {
+                    document.querySelectorAll('.user-info-nav-link').forEach(function (link) {
+                        link.classList.remove('text-black');
+                    });
+                    tab.classList.add('text-black');
+                });
+            });
+        });
+
+        // Hàm bật/tắt mật khẩu
+        function togglePassword(inputId, iconElement) {
+            var passwordInput = document.getElementById(inputId);
+            var eyeIcon = iconElement.querySelector('i');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            }
+        }
+    </script>
+    <script src="/web-assets/js/user-info/user-info-address.js"></script>
+    <script src="/web-assets/js/user-info/user-info-updateInfo.js"></script>
+    <script src="/web-assets/js/user-info/user-info-changePassword.js"></script>
+
+
+</th:block>
+
+</body>
+</html>

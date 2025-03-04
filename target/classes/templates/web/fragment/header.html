@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+
+    </style>
+</head>
+<body>
+<div class="content">
+    <!-- Offcanvas Menu Begin -->
+    <div class="offcanvas-menu-overlay"></div>
+    <div class="offcanvas-menu-wrapper">
+        <div class="offcanvas__option">
+            <div class="offcanvas__links" sec:authorize="!isAuthenticated()">
+                <a th:href="@{/login}">Đăng nhập</a>
+            </div>
+            <div class="offcanvas__links" sec:authorize="isAuthenticated()">
+                <div class="dropdown">
+                    <a class="btn bg-dark dropdown-toggle nav-link text-white " href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" th:text="${#authentication.principal.user.name}">
+                        Dropdown link
+                    </a>
+                    <ul class="dropdown-menu text-decoration-none">
+                        <li sec:authorize="hasRole('ADMIN')"><a class="dropdown-item text-black" th:href="@{/admin/dashboard}">Trang quản trị</a></li>
+                        <li><a class="dropdown-item text-black " th:href="@{/thong-tin-ca-nhan}">Thông tin cá nhân</a></li>
+                        <li><a class="dropdown-item text-black" th:href="@{/order-history}">Lịch sử mua hàng</a></li>
+                        <li><a class="dropdown-item text-black"  th:href="@{/logout}">Đăng xuất</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="offcanvas__nav__option">
+            <a th:href="@{/}" class="search-switch"><img src="/web-assets/img/icon/search.png" alt=""></a>
+            <th:block sec:authorize="isAuthenticated()">
+                <a th:href="@{/favorite}" class="text-decoration-none"><i class="fas fa-heart text-black link-favorite"></i> </a>
+                <a th:href="@{/cart}"><i class="fas fa-shopping-bag text-black link-cart"></i></a>
+            </th:block>
+        </div>
+        <div id="mobile-menu-wrap"></div>
+    </div>
+    <!-- Offcanvas Menu End -->
+
+    <!-- Header Section Begin -->
+    <header class="header">
+        <div class="header__top">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6 col-md-7">
+                        <div class="header__top__left">
+                            <p>Miễn phí vận chuyển, đảm bảo hoàn trả hoặc hoàn tiền trong 30 ngày.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-5">
+                        <div class="header__top__right">
+                            <div class="header__top__links" sec:authorize="!isAuthenticated()">
+                                <a th:href="@{/login}">Đăng nhập</a>
+                            </div>
+                            <div class="header__top__links" sec:authorize="isAuthenticated()">
+                                <div class="dropdown">
+                                    <a class="btn bg-success dropdown-toggle nav-link text-white " href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" th:text="${#authentication.principal.user.name}">
+                                        Dropdown link
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li sec:authorize="hasRole('ADMIN')"><a class="dropdown-item text-black text-decoration-none" th:href="@{/admin/dashboard}"  >Trang quản trị</a></li>
+                                        <li><a class="dropdown-item text-black text-decoration-none" th:href="@{/user-info}">Thông tin cá nhân</a></li>
+                                        <li><a class="dropdown-item text-black text-decoration-none" th:href="@{/order-history}">Lịch sử mua hàng</a></li>
+                                        <li><a class="dropdown-item text-black text-decoration-none"  th:href="@{/logout}">Đăng xuất</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-2 col-md-3">
+                    <div class="header__logo">
+                        <a th:href="@{/}"><img src="/web-assets/img/Dacsanxanh-02.png" alt=""></a>
+                    </div>
+                </div>
+                <div class="col-lg-7 col-md-7">
+                    <nav class="header__menu mobile-menu">
+                        <ul>
+                            <li id="home-menu">
+                                <a th:href="@{/}">Trang Chủ</a>
+                            </li>
+                            <li id="about-menu">
+                                <a th:href="@{/about}">Về Chúng Tôi</a>
+                            </li>
+                            <li id="product-menu">
+                                <a th:href="@{/product-shop}">Sản Phẩm</a>
+                            </li>
+                            <li id="blog-menu">
+                                <a th:href="@{/blog}">Bài Viết</a>
+                            </li>
+                            <li id="contact-menu">
+                                <a th:href="@{/contact}">Liên Hệ</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="col-lg-2 col-md-2">
+                    <div class="header__nav__option">
+                        <a href="#" class="search-switch"><img src="/web-assets/img/icon/search.png" alt=""></a>
+                        <th:block sec:authorize="isAuthenticated()">
+                            <a th:href="@{/favorite}" class="text-decoration-none"><i class="fas fa-heart text-black link-favorite"></i> </a>
+                            <a th:href="@{/cart}"><i id="cart-link" class="fas fa-shopping-bag text-black link-cart"></i></a>
+                        </th:block>
+                    </div>
+                </div>
+            </div>
+            <div class="canvas__open"><i class="fa fa-bars"></i></div>
+        </div>
+        <!-- Search Begin -->
+        <div class="search-model">
+            <div class="h-100 d-flex align-items-center justify-content-center">
+                <div class="search-close-switch">+</div>
+                <form class="search-model-form">
+                    <input type="text" id="search-input" placeholder="Tìm kiếm tại đây">
+                </form>
+            </div>
+        </div>
+        <!-- Search End -->
+    </header>
+    <!-- Header Section End -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+            integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script th:inline="javascript">
+        $(document).ready(function() {
+            $('#search-input').on('keydown', function(event) {
+                // Kiểm tra nếu phím nhấn là Enter (key code 13)
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    let searchValue = $(this).val();
+                    window.location.href = `/product-shop?nameKeyword=${searchValue}&page=1`
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var currentUrl = window.location.pathname;
+
+            // Kiểm tra nếu URL là trang chủ
+            if (currentUrl === '/' || currentUrl === '') {
+                document.getElementById('home-menu').classList.add('active');
+            } else if (currentUrl.includes('/product')) {
+                document.getElementById('product-menu').classList.add('active');
+            }else if (currentUrl.includes('/about')) {
+                    document.getElementById('about-menu').classList.add('active');
+            } else if (currentUrl.includes('/blog')) {
+                document.getElementById('blog-menu').classList.add('active');
+            }else if (currentUrl.includes('/favorite')){
+                document.querySelectorAll(".link-favorite").forEach(el=>{
+                    el.classList.remove('text-black')
+                    el.classList.add('text-danger');
+                })
+            }else if (currentUrl.includes('/cart')){
+                document.querySelectorAll(".link-cart").forEach(el=>{
+                    el.classList.remove('text-black')
+                    el.classList.add('text-warning');
+                })
+            }
+
+
+        });
+    </script>
+</div>
+</body>
+</html>

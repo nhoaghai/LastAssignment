@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout/layout :: layout(~{:: title},~{:: #css},~{:: .content-wrapper},~{:: #js})}">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dashboard</title>
+
+    <th:block id="css">
+        <!--Data table-->
+        <link rel="stylesheet" href="/admin-assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+        <link rel="stylesheet" href="/admin-assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+        <link rel="stylesheet" href="/admin-assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+    </th:block>
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-12">
+                        <ol class="breadcrumb">
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h2>Thống kê tháng [[${currentMonth}]]:</h2>
+                                <!--Doanh Thu-Chi Phi-Loi Nhuan-->
+                                <div class="row">
+                                    <div class="col-lg-4 col-6">
+                                        <div class="small-box bg-info">
+                                            <div class="inner">
+                                                <h3>Doanh thu</h3>
+                                                <h4 class="formatted-price" id="totalFinal">[[${totalFinal}]]</h4>
+                                            </div>
+                                            <div class="icon">
+                                                <i class="fas fa-dollar-sign"></i>
+                                            </div>
+                                            <a  class="small-box-footer">Xem thêm <i class="fas fa-arrow-circle-right"></i></a>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4 col-6">
+                                        <div class="small-box bg-warning">
+                                            <div class="inner">
+                                                <h3>Chi phí</h3>
+                                                <h4 class="formatted-price" id="costs">[[${costs}]]</h4>
+                                            </div>
+                                            <div class="icon">
+                                                <i class="fas fa-receipt"></i>
+                                            </div>
+                                            <a th:href="@{/admin/blogs}" class="small-box-footer">Xem thêm <i class="fas fa-arrow-circle-right"></i></a>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4 col-6">
+                                        <div class="small-box bg-success">
+                                            <div class="inner">
+                                                <h3>Lợi nhuận</h3>
+                                                <h4 class="formatted-price" id="profit">0</h4>
+                                            </div>
+                                            <div class="icon">
+                                                <i class="fas fa-hand-holding-usd"></i>
+                                            </div>
+                                            <a class="small-box-footer">Xem thêm <i class="fas fa-arrow-circle-right"></i></a>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <!--Don Hang Moi-User-Bai Viet-->
+                                <div class="row">
+                                    <div class="col-lg-4 col-6">
+                                        <div class="small-box bg-info">
+                                            <div class="inner">
+                                                <h3>Đơn hàng mới</h3>
+                                                <h4 th:text="${orders.size()}"></h4>
+                                            </div>
+                                            <div class="icon">
+                                                <i class="ion ion-bag"></i>
+                                            </div>
+                                            <a th:href="@{/admin/orders}" class="small-box-footer">Xem thêm <i class="fas fa-arrow-circle-right"></i></a>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4 col-6">
+                                        <div class="small-box bg-warning">
+                                            <div class="inner">
+                                                <h3>User mới</h3>
+                                                <h4 th:text="${users.size()}"></h4>
+                                            </div>
+                                            <div class="icon">
+                                                <i class="ion ion-person-add"></i>
+                                            </div>
+                                            <a th:href="@{/admin/users}" class="small-box-footer">Xem thêm <i class="fas fa-arrow-circle-right"></i></a>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4 col-6">
+                                        <div class="small-box bg-success">
+                                            <div class="inner">
+                                                <h3>Bài viết mới</h3>
+                                                <h4 th:text="${blogs.size()}"></h4>
+                                            </div>
+                                            <div class="icon">
+                                                <i class="fas fa-newspaper"></i>
+                                            </div>
+                                            <a th:href="@{/admin/blogs}" class="small-box-footer">Xem thêm <i class="fas fa-arrow-circle-right"></i></a>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <!--Chart-->
+                                <div class="row">
+                                    <div class="col-6">
+                                        <canvas  id="movie-chart"></canvas>
+                                    </div>
+                                    <div class="col-6">
+                                        <canvas  id="user-chart"></canvas>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="card">
+                                            <div class="card-header border-transparent">
+                                                <h3 class="card-title">Phim mới cập nhật</h3>
+                                                <div class="card-tools">
+                                                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                                        <i class="fas fa-minus"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <div class="card-body p-0">
+                                                <div class="table-responsive">
+                                                    <table class="table m-0" id="table-order">
+                                                        <thead>
+                                                        <tr>
+                                                            <th>Phim</th>
+                                                            <th>Thể loại phim</th>
+                                                            <th>Trạng thái</th>
+                                                            <th>Ngày tạo</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <tr>
+                                                            <td><a href="">Call of Duty IV</a></td>
+                                                            <td>Phim lẻ</td>
+                                                            <td><span class="badge badge-success" >Công khai</span></td>
+                                                            <td>
+                                                                <div class="sparkbar" data-color="#00a65a" data-height="20">22/12/2023</div>
+                                                            </td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                            </div>
+                                            <div class="card-footer clearfix">
+                                                <a href="" class="btn btn-sm btn-secondary float-right">Xem thêm</a>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="card">
+                                            <div class="card-header border-transparent">
+                                                <h3 class="card-title">User mới tạo</h3>
+                                                <div class="card-tools">
+                                                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                                        <i class="fas fa-minus"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <div class="card-body p-0">
+                                                <div class="table-responsive">
+                                                    <table class="table m-0">
+                                                        <thead>
+                                                        <tr>
+                                                            <th>Họ tên</th>
+                                                            <th>Email</th>
+                                                            <th>Ngày tạo</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <tr >
+                                                            <td >Lương Quỳnh Anh</td>
+                                                            <td >abc@gmail.com</td>
+                                                            <td>
+                                                                <div class="sparkbar" data-color="#00a65a" data-height="20" >30/06/2024</div>
+                                                            </td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="card-footer clearfix">
+                                                <a href="" class="btn btn-sm btn-secondary float-right">Xem thêm</a>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<th:block id="js">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script th:inline="javascript">
+        let totalFinalEl = document.getElementById('totalFinal');
+        let costsEl = document.getElementById('costs');
+        let profitEl = document.getElementById('profit');
+        let totalFinal = parseLong(totalFinalEl.innerText);
+        let costs = parseLong(costsEl.innerText);
+        let profit = totalFinal - costs;
+
+        profitEl.innerText = profit
+
+
+       /* //movie chart
+        const ctxMovie = document.getElementById('movie-chart');
+        let movieData = [[${moviesDataInFiveMonths}]]
+        console.log(movieData)
+        new Chart(ctxMovie, {
+            type: 'bar',
+            data: {
+                labels: movieData.map(mData => `Tháng ${mData.month}/${mData.year}`),
+                datasets: [{
+                    label: 'Phim cập nhật theo tháng',
+                    data: movieData.map(mData => mData.movieCount),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        //user chart
+        const ctxUser = document.getElementById('user-chart');
+        let userData = [[${userDataInFiveMonths}]]
+        new Chart(ctxUser, {
+            type: 'line',
+            data: {
+                labels: userData.map(uData => `Tháng ${uData.month}/${uData.year}`),
+                datasets: [{
+                    label: 'User đăng ký theo tháng',
+                    data: userData.map(uData => uData.userCount),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });*/
+    </script>
+    <!--DataTable	-->
+    <script src="/admin-assets/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="/admin-assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="/admin-assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="/admin-assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="/admin-assets/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="/admin-assets/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <script th:inline="javascript">
+        $('#table-order').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+        });
+    </script>
+</th:block>
+</body>
+
+</html>

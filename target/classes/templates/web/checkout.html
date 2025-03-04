@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="zxx" xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:replace="~{web/layout/layout :: layout(~{::title},~{:: #css},~{:: #content},~{:: #js})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Male_Fashion Template">
+    <meta name="keywords" content="Male_Fashion, unica, creative, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Male-Fashion | Thanh Toán</title>
+
+    <th:block id="css">
+        <style>
+            .checkout__order {
+                margin-top: 20px;
+            }
+
+            .checkout__order h4 {
+                margin-bottom: 15px;
+            }
+
+            .checkout__order__products, .checkout__total__products, .checkout__total__all {
+                list-style-type: none;
+                padding: 0;
+            }
+
+            .checkout__order__products {
+                font-weight: bold;
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .checkout__total__products li, .checkout__total__all li {
+                display: flex;
+                justify-content: space-between;
+                padding: 5px 0;
+            }
+
+            .checkout__total__all {
+                margin-top: 15px;
+                font-weight: bold;
+            }
+
+            .order-detail-price {
+                font-weight: normal;
+            }
+            /*css coupon input*/
+            .cart__discount h6 {
+                font-size: 16px;
+            }
+            #coupon-form {
+                display: flex;
+                align-items: center;
+            }
+            #coupon-code {
+                flex: 1;
+                padding: 10px;
+                border: 1px solid #ccc;
+            }
+            #apply-coupon-btn, #cancel-coupon-btn {
+                font-size: 14px;
+                color: #ffffff;
+                font-weight: 700;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                background: #111111;
+                border: none;
+                padding: 10px 20px;
+                cursor: pointer;
+            }
+            #cancel-coupon-btn {
+                background-color: #111111;
+                text-transform: uppercase;
+                display: none;
+            }
+
+            /*css phần ô tích*/
+            .checkout__input__radio {
+                position: relative;
+                display: block; /* Đảm bảo mỗi phần tử nằm trên một dòng riêng */
+                padding-left: 25px; /* Điều chỉnh khoảng cách giữa ô tích và văn bản */
+                cursor: pointer;
+                font-size: 14px; /* Giảm kích thước văn bản để đồng bộ với kích thước ô tích */
+                user-select: none;
+            }
+
+            .checkout__input__radio input[type="radio"] {
+                position: absolute;
+                opacity: 0;
+                cursor: pointer;
+            }
+
+            .checkout__input__radio .checkmark {
+                position: absolute;
+                top: 50%;
+                left: 0;
+                height: 16px; /* Kích thước của ô tích */
+                width: 16px; /* Kích thước của ô tích */
+                background-color: #f3f2ee; /* Màu nền của ô tích khi không được chọn */
+                border: 1px solid #111; /* Viền của ô tích */
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transform: translateY(-75%); /* Căn giữa ô tích theo chiều dọc */
+            }
+
+            .checkout__input__radio input[type="radio"]:checked ~ .checkmark {
+                background-color: #fff; /* Màu nền của ô tích khi được chọn */
+            }
+
+            .checkout__input__radio input[type="radio"]:checked ~ .checkmark:after {
+                content: "";
+                position: absolute;
+                display: block;
+                width: 8px; /* Kích thước của dấu tích bên trong ô */
+                height: 8px; /* Kích thước của dấu tích bên trong ô */
+                border-radius: 50%;
+                background: #111; /* Màu của dấu tích bên trong ô */
+            }
+
+            /*css phần điền thông tin*/
+            /* Định dạng chung cho tất cả các trường thông tin */
+
+            .checkout__input{
+                margin-bottom: 20px;
+            }
+            .checkout__input p {
+                font-weight: bold;
+            }
+
+            .checkout__input input[type="text"],
+            .checkout__input select,
+            .checkout__input textarea {
+                width: 100%;
+                padding: 12px; /* Padding để làm cho các trường có không gian bên trong */
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                box-sizing: border-box; /* Đảm bảo padding và border không ảnh hưởng đến chiều rộng */
+                font-size: 16px;
+            }
+
+            .checkout__input select:disabled {
+                background-color: #f9f9f9;
+                color: #999;
+            }
+
+            .checkout__input input[type="text"]::placeholder,
+            .checkout__input textarea::placeholder {
+                color: #aaa;
+            }
+
+            /* Định dạng cho textarea */
+            .checkout__input textarea {
+                height: 120px; /* Đặt chiều cao cho textarea */
+                resize: vertical; /* Cho phép thay đổi kích thước theo chiều dọc */
+                box-sizing: border-box; /* Đảm bảo padding không ảnh hưởng đến chiều rộng */
+            }
+
+            /* Định dạng tiêu đề */
+            .checkout__title {
+                font-size: 18px;
+
+                font-weight: bold;
+            }
+
+            /* Căn chỉnh các phần tử trong lưới */
+            .col-lg-7, .col-md-6 {
+                padding: 15px;
+            }
+
+
+        </style>
+    </th:block>
+</head>
+
+<body>
+    <th:block id="content">
+        <!-- Breadcrumb Section Begin -->
+        <section class="breadcrumb-option">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="breadcrumb__text">
+                            <h4>Thanh toán</h4>
+                            <div class="breadcrumb__links">
+                                <a th:href="@{/}">Trang chủ</a>
+                                <span>Thanh toán</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Breadcrumb Section End -->
+
+        <!-- Checkout Section Begin -->
+        <section class="checkout spad">
+            <div class="container">
+                <div class="cart__discount">
+                    <h6>Mã giảm giá</h6>
+                    <form id="coupon-form">
+                        <input type="text" id="coupon-code" placeholder="Nhập mã vào đây">
+                        <button type="submit" id="apply-coupon-btn">Áp dụng</button>
+                        <button type="button" id="cancel-coupon-btn" style="display: none;">Hủy</button>
+                    </form>
+                </div>
+                <div class="checkout__form">
+                    <form id="form-checkout">
+                        <div class="row">
+                            <div class="col-lg-7 col-md-6">
+                                <h6 class="checkout__title">Chi tiết đơn hàng</h6>
+                                <div class="checkout__input">
+                                    <p>Email<span>*</span></p>
+                                    <input type="text" id="input-email" name="email" placeholder="Email" th:value="${#authentication.principal.user.email}">
+                                </div>
+                                <button
+                                        type="button"
+                                        class="btn btn-dark text-white rounded mb-3"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#address-modal">
+                                    Chọn địa chỉ giao hàng
+                                </button>
+                                <div class="checkout__input">
+                                    <p>Tên người nhận<span>*</span></p>
+                                    <input type="text" id="input-nameCustomer" name="nameCustomer" placeholder="Tên người nhận" th:value="${addressChosen.receiverName}">
+                                </div>
+                                <div class="checkout__input">
+                                    <p>Số điện thoại<span>*</span></p>
+                                    <input type="text" id="input-phone" name="phone" placeholder="Số điện thoại" th:value="${addressChosen.phone}">
+                                </div>
+                                <div class="checkout__input">
+                                    <p>Tỉnh/Thành Phố<span>*</span></p>
+                                    <select id="input-province" name="province">
+                                        <option value="">Chọn Tỉnh/Thành Phố</option>
+                                        <!-- Options sẽ được tải từ API -->
+                                    </select>
+                                </div>
+                                <div class="checkout__input" style="margin-top: 20px">
+                                    <p>Quận/Huyện<span>*</span></p>
+                                    <select id="input-district" name="district" disabled>
+                                        <option value="">Chọn Quận/Huyện</option>
+                                        <!-- Options sẽ được tải từ API -->
+                                    </select>
+                                </div>
+                                <div class="checkout__input" style="margin-top: 20px">
+                                    <p>Phường/Xã<span>*</span></p>
+                                    <select id="input-ward" name="ward" disabled>
+                                        <option value="">Chọn Phường/Xã</option>
+                                        <!-- Options sẽ được tải từ API -->
+                                    </select>
+                                </div>
+                                <div class="checkout__input" style="margin-top: 20px">
+                                    <p>Địa chỉ cụ thể<span>*</span></p>
+                                    <input type="text" id="input-addressDetail" name="addressDetail" placeholder="Địa chỉ cụ thể" th:value="${addressChosen.addressDetail}">
+                                </div>
+                                <div class="checkout__input">
+                                    <p>Ghi chú đơn hàng</p>
+                                    <textarea id="input-orderNotes" name="orderNotes" placeholder="Nhập ghi chú đơn hàng ở đây..."></textarea>
+                                </div>
+                            </div>
+                            <div class="col-lg-5 col-md-6">
+                                <div class="checkout__order">
+                                    <h4 class="order__title">Đơn của bạn</h4>
+                                    <div class="checkout__order__products">Sản phẩm <span>Thành tiền</span></div>
+                                    <ul class="checkout__total__products">
+                                        <li th:each="cart : ${cartsByUserId}">
+
+                                            <span><span class="order-detail-price">[[${cart.quantity*cart.product.newPrice}]] VNĐ</span></span>
+                                        </li>
+                                    </ul>
+                                    <ul class="checkout__total__all">
+                                        <li>Thành tiền <span id="total-price">0 VNĐ</span></li>
+                                        <li>Giảm giá <span id="discount-amount">0 VNĐ</span></li>
+                                        <li>Tổng tiền <span id="final-total">0 VNĐ</span></li>
+                                    </ul>
+                                    <div id="chose-payment" class="mb-3">
+                                        <h5 class="mb-3 font-weight-bolder text-uppercase">Phương thức thanh toán</h5>
+                                        <div class="checkout__input__radio mb-2">
+                                            <label for="VNPAY">
+                                                VNPay
+                                                <input type="radio" name="payment-method" id="VNPAY" value="VNPAY">
+                                                <span class="checkmark"></span>
+                                            </label>
+                                        </div>
+                                        <div class="checkout__input__radio">
+                                            <label for="COD">
+                                                Thanh toán khi nhận hàng
+                                                <input type="radio" name="payment-method" id="COD" value="COD">
+                                                <span class="checkmark"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div id="chose-deli" class="mb-3">
+                                        <h5 class="mb-3 font-weight-bolder text-uppercase">Phương thức vận chuyển</h5>
+                                        <div class="checkout__input__radio mb-2">
+                                            <label for="STANDARD">
+                                                Giao hàng tiêu chuẩn
+                                                <input type="radio" name="delivery-method" id="STANDARD" value="STANDARD">
+                                                <span class="checkmark"></span>
+                                            </label>
+                                        </div>
+                                        <div class="checkout__input__radio">
+                                            <label for="EXPRESS">
+                                                Giao hàng nhanh
+                                                <input type="radio" name="delivery-method" id="EXPRESS" value="EXPRESS">
+                                                <span class="checkmark"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="site-btn">Xác nhận</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+        <!-- Checkout Section End -->
+
+        <!--Modal-->
+        <div class="modal fade" id="address-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Chọn địa chỉ giao hàng</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Thông tin địa chỉ</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody id="address-list">
+                            <!-- Ví dụ địa chỉ -->
+                            <tr th:each="address : ${addressesByUserId}">
+                                <td class="align-middle">
+                                    <h5>[[${address.receiverName}]] | [[${address.phone}]]&nbsp;
+                                        <span th:if="${address.chosen}"><strong>(Mặc định)</strong></span>
+                                    </h5>
+                                    <p class="m-0">[[${address.addressDetail}]]</p>
+                                    <p class="m=0 address-w-d-p">[[${address.ward}]] - [[${address.district}]] - [[${address.province}]]</p>
+                                </td>
+                                <td class="text-end">
+                                    <button  type="button" class="btn btn-success text-white btn-sm" th:onclick="'pickAddress('+${address.id}+')'"><i class="fas fa-check"></i></button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </th:block>
+
+    <th:block id="js">
+        <div sec:authorize="isAuthenticated()">
+            <script th:inline="javascript">
+                let userId = [[${#authentication.principal.user.id}]];
+                console.log("User ID:", userId); // Example usage
+                let cartsByUserId = [[${cartsByUserId}]]
+            </script>
+        </div>
+
+       <script th:inline="javascript">
+            //Xử lý phần giá tiền
+            let couponCode="";
+            document.addEventListener("DOMContentLoaded", function() {
+                // Hàm để định dạng số tiền với VNĐ
+                function formatCurrency(value) {
+                    if (typeof value !== 'number' || isNaN(value)) {
+                        console.error("Giá trị không phải là số:", value);
+                        return '0 VNĐ'; // Giá trị mặc định nếu không phải số
+                    }
+                    return value.toLocaleString('vi-VN') + ' VNĐ'; // Định dạng số nguyên với định dạng tiền tệ VNĐ
+                }
+
+                // Hàm chuyển đổi chuỗi thành Long
+                function parseLong(value) {
+                    return parseInt(value.replace(/[^0-9]/g, ''), 10) || 0;  // Loại bỏ ký tự không phải số và chuyển đổi thành số nguyên
+                }
+
+                // Cập nhật tổng giá và tổng tiền
+                function updateTotals() {
+                    let totalPrice = 0;
+                    let discountAmount = parseLong(document.getElementById('discount-amount').textContent);
+
+                    // Tính tổng giá từ các phần tử có class .order-detail-price
+                    document.querySelectorAll('.order-detail-price').forEach(function(element) {
+                        let price = parseLong(element.textContent);
+                        element.textContent = formatCurrency(price);
+                        totalPrice += price;
+                    });
+
+                    // Cập nhật giá trị tổng tiền
+                    document.getElementById('total-price').textContent = formatCurrency(totalPrice);
+
+                    // Tính discount-amount và final-total
+                    let finalTotal = totalPrice - discountAmount;
+                    finalTotal = finalTotal < 0 ? 0 : finalTotal; // Đảm bảo không có số âm
+
+                    document.getElementById('final-total').textContent = formatCurrency(finalTotal);
+                }
+
+                // Cập nhật giảm giá
+                function updateDiscountAmount(discountPercentage) {
+                    let totalPrice = parseLong(document.getElementById('total-price').textContent);
+                    let discountAmount = Math.floor((totalPrice * discountPercentage) / 100); // Chuyển đổi thành số nguyên
+
+                    document.getElementById('discount-amount').textContent = formatCurrency(discountAmount);
+                    updateTotals(); // Cập nhật các tổng sau khi thay đổi giảm giá
+                }
+
+                // Cập nhật lớp CSS cho discount-amount
+                function updateDiscountAmountClass() {
+                    const discountElement = document.getElementById('discount-amount');
+                    const discountAmount = parseLong(discountElement.textContent);
+
+                    if (isNaN(discountAmount) || discountAmount === 0) {
+                        discountElement.classList.add('text-black-50');
+                    } else {
+                        discountElement.classList.remove('text-black-50');
+                    }
+                }
+
+                // Thiết lập giá trị mặc định của discount-amount
+                document.getElementById('discount-amount').textContent = formatCurrency(0);
+                updateDiscountAmountClass(); // Áp dụng lớp CSS mặc định
+
+                // Gọi hàm cập nhật khi trang được tải
+                updateTotals();
+
+                // Xử lý sự kiện gửi mã coupon
+                document.getElementById('coupon-form').addEventListener('submit', function(event) {
+                    event.preventDefault(); // Ngăn chặn hành vi gửi form mặc định
+                    couponCode = document.getElementById('coupon-code').value;
+                    console.log('Mã khuyến mãi:', couponCode);
+                    getCouponCode(couponCode);
+                });
+
+                // Xử lý mã giảm giá
+                async function getCouponCode(couponCode) {
+                    if (couponCode === "") {
+                        toastr.error("Bạn chưa điền mã giảm giá");
+                        return;
+                    }
+                    try {
+                        let res = await axios.get(`/api/coupons/${userId}/${couponCode}`);
+                        let couponAmount = parseInt(res.data.amount, 10); // Chuyển đổi thành số nguyên
+
+                        if (isNaN(couponAmount)) {
+                            throw new Error("Số tiền giảm giá không hợp lệ");
+                        }
+
+                        console.log('Số tiền giảm giá:', couponAmount);
+                        toastr.success(`Sử dụng mã giảm giá thành công, đã giảm ${couponAmount}%`);
+
+                        // Cập nhật phần trăm giảm giá và các giá trị liên quan
+                        document.getElementById('discount-amount').dataset.discountPercentage = couponAmount;
+                        updateDiscountAmount(couponAmount);
+
+                        // Thay đổi trạng thái của form và nút
+                        document.getElementById('coupon-code').disabled = true;
+                        document.getElementById('apply-coupon-btn').style.display = 'none';
+                        document.getElementById('cancel-coupon-btn').style.display = 'block';
+                    } catch (e) {
+                        console.log(e);
+                        toastr.error(e.response.data.message);
+                        let couponAmount = 0;// Chuyển đổi thành số nguyên
+                        // Cập nhật phần trăm giảm giá và các giá trị liên quan
+                        document.getElementById('discount-amount').dataset.discountPercentage = couponAmount;
+                        updateDiscountAmount(couponAmount);
+                    }
+                }
+
+                // Xử lý sự kiện nhấn nút hủy coupon
+                document.getElementById('cancel-coupon-btn').addEventListener('click', function() {
+                    // Khôi phục trạng thái ban đầu
+                    document.getElementById('coupon-code').disabled = false;
+                    document.getElementById('apply-coupon-btn').style.display = 'block';
+                    document.getElementById('cancel-coupon-btn').style.display = 'none';
+                    document.getElementById('coupon-code').value = '';
+
+                    // Khôi phục phần trăm giảm giá
+                    document.getElementById('discount-amount').dataset.discountPercentage = 0;
+                    document.getElementById('discount-amount').textContent = formatCurrency(0);
+                    updateTotals(); // Cập nhật tổng giá và tổng tiền
+                });
+            });
+            //Xử lý lấy địa chỉ
+            let province = [[${addressChosen.province}]]
+            let district = [[${addressChosen.district}]]
+            let ward = [[${addressChosen.ward}]]
+       </script>
+        <script src="/web-assets/js/checkout/checkout-address.js"></script>
+        <script src="/web-assets/js/checkout/checkout-order.js"></script>
+    </th:block>
+</body>
+
+</html>

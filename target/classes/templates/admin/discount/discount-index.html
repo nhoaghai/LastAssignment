@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout/layout :: layout(~{:: title},~{:: #css},~{:: .content-wrapper},~{:: #js})}">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Danh sách khuyến mại</title>
+
+	<!--Data table-->
+	<th:block id="css">
+		<link rel="stylesheet" href="/admin-assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+		<link rel="stylesheet" href="/admin-assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+		<link rel="stylesheet" href="/admin-assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+	</th:block>
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+	<div class="wrapper">
+		<!-- Content Wrapper. Contains page content -->
+		<div class="content-wrapper">
+			<!-- Content Header (Page header) -->
+			<div class="content-header">
+				<div class="container-fluid">
+					<div class="row mb-2">
+						<div class="col-sm-12">
+							<ol class="breadcrumb">
+								<li class="breadcrumb-item">
+									<a th:href="@{/admin/dashboard}">Dashboard</a>
+								</li>
+								<li class="breadcrumb-item active">
+									Danh sách khuyến mại
+								</li>
+							</ol>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Main content -->
+			<section class="content">
+				<div class="container-fluid">
+					<div class="row py-2">
+						<div class="col-12">
+							<button type="button" class="btn btn-primary" onclick="window.location.href='/admin/discounts/create'">
+								<i class="fas fa-plus"></i> Tạo khuyến mại
+							</button>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-12">
+							<div class="card">
+								<div class="card-body">
+									<table class="table table-bordered table-hover" id="table-discount">
+										<thead >
+											<tr>
+												<th>Tên khuyến mại</th>
+												<th>Trạng thái</th>
+												<th>Hình thức giảm</th>
+												<th>Giá trị giảm</th>
+												<th>Thời gian</th>
+												<th>Số sản phẩm</th>
+												<th>Ngày tạo</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:each="discount : ${discounts}">
+												<td>
+													<a th:href="@{/admin/discounts/{id} (id=${discount.getId()})}" th:text="${discount.name}"></a>
+												</td>
+												<td th:text="${discount.active ? 'Kích hoạt' : 'Ẩn'}" >Công khai</td>
+												<td th:text="${discount.type.toString() == 'PERCENT' ? 'Phần trăm' :
+                                                                 discount.type.toString() == 'SAME_PRICE' ? 'Giá cố định' :
+                                                                 discount.type.toString() == 'AMOUNT' ? 'Số tiền' :
+                                                                 'Unknown Status'}" >
+												</td>
+												<td>
+													<span th:if="${discount.type.toString()=='PERCENT'}"
+														  th:text="${discount.amount}+'%'">
+													</span>
+													<span th:if="${discount.type.toString()!='PERCENT'}"
+														  class="formatted-price">[[${discount.amount}]]</span>
+												</td>
+												<td>[[${#temporals.format(discount.startDate, 'dd/MM/yyyy')}]]-[[${#temporals.format(discount.endDate, 'dd/MM/yyyy')}]]</td>
+												<td>[[${productsByDiscountId.get(discount.id).size}]]</td>
+												<td th:text="${#temporals.format(discount.createdAt, 'dd/MM/yyyy')}">06-07-2022</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+		</div>
+	</div>
+
+	<!--DataTable	-->
+	<th:block id="js">
+		<script src="/admin-assets/plugins/datatables/jquery.dataTables.min.js"></script>
+		<script src="/admin-assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+		<script src="/admin-assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+		<script src="/admin-assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+		<script src="/admin-assets/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+		<script src="/admin-assets/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+		<script th:inline="javascript">
+			$('#table-discount').DataTable({
+				"paging": true,
+				"lengthChange": false,
+				"searching": true,
+				"ordering": true,
+				"info": true,
+				"autoWidth": true,
+				"responsive": true,
+			});
+		</script>
+	</th:block>
+</body>
+
+</html>

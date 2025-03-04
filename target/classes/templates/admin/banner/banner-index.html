@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout/layout :: layout(~{:: title},~{:: #css},~{:: .content-wrapper},~{:: #js})}">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Danh sách banner</title>
+
+    <th:block id="css">
+        <!--Data table-->
+        <link rel="stylesheet" href="/admin-assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+        <link rel="stylesheet" href="/admin-assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+        <link rel="stylesheet" href="/admin-assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+        <!--Select2-->
+        <link rel="stylesheet" href="/admin-assets/plugins/select2/css/select2.min.css" />
+        <link rel="stylesheet" href="/admin-assets/dist/css/style.css">
+    </th:block>
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-12">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a th:href="@{/admin/dashboard}">Dashboard</a>
+                            </li>
+                            <li class="breadcrumb-item active">
+                                Danh sách banner
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+                <!--Button-->
+                <div class="row py-2">
+                    <div class="col-12">
+                        <button type="button" class="btn btn-primary" onclick="window.location.href='/admin/banners/create'">
+                            <i class="fas fa-plus"></i> Tạo banner
+                        </button>
+                        <button type="button" class="btn btn-info" id="btnModalBanner">
+                            <i class="fas fa-plus"></i> Chọn 2 banner kích hoạt
+                        </button>
+                    </div>
+                </div>
+
+                <!--Banner Table-->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <table class="table table-bordered table-hover" id="table-banner">
+                                    <thead >
+                                    <tr>
+                                        <th>Tên banner</th>
+                                        <th>Trạng thái</th>
+                                        <th>Link điều hướng</th>
+                                        <th>Ngày tạo</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="banner : ${banners}" th:data-banner-id="${banner.id}">
+                                        <td>
+                                            <a th:href="@{/admin/banners/{id} (id=${banner.id})}" th:text="${banner.name}"></a>
+                                        </td>
+                                        <td th:text="${banner.status ? 'Kích hoạt' : 'Vô hiệu hóa'}"></td>
+                                        <td><a th:href="${banner.url}" target="_blank">[[${banner.url}]]</a></td>
+                                        <td th:text="${#temporals.format(banner.createdAt,'dd/MM/yyyy')}"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Modal Banner-->
+                <div class="modal fade" id="modalBanner" tabindex="-1" role="dialog" aria-labelledby="modalBannerLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalBannerLabel">Chọn banner kích hoạt</h5>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <div class="select2-purple">
+                                        <select style="width: 100%" class="select2 form-control" multiple="multiple" id="bannerActive" name="bannerActive">
+                                            <option th:each="banner : ${banners}"
+                                                    th:value="${banner.id}"
+                                                    th:text="${banner.name}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" id="btnSelectBanner">Xác nhận</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<th:block id="js">
+    <!--DataTable	-->
+    <script src="/admin-assets/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="/admin-assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="/admin-assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="/admin-assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="/admin-assets/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="/admin-assets/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+
+    <!--Select2-->
+    <script src="/admin-assets/plugins/select2/js/select2.full.min.js"></script>
+
+    <script th:inline="javascript">
+        $('#table-banner').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+        });
+
+
+        $(document).ready(function() {
+            $('#bannerActive').select2({
+                placeholder: "Chọn banner kích hoạt",
+                maximumSelectionLength: 2
+            });
+        });
+
+        let selectedBannerId=[[${selectedBannerId}]];
+        document.getElementById('btnModalBanner').addEventListener('click', function () {
+            $('#bannerActive').val(selectedBannerId);
+            $('#bannerActive').trigger('change');
+            $('#modalBanner').modal('show');
+        });
+
+        function renderTableBanner() {
+            // Chuyển đổi selectedBannerId thành một mảng nếu nó là một chuỗi
+            let selectedIds = Array.isArray(selectedBannerId) ? selectedBannerId : [selectedBannerId];
+
+            // Duyệt qua tất cả các hàng trong bảng
+            $('#table-banner tbody tr').each(function() {
+                let bannerId = $(this).data('banner-id');
+
+                if (selectedIds.includes(bannerId.toString())) {
+                    let statusCell = $(this).find('td').eq(1);
+                    statusCell.text('Kích hoạt');
+                }else {
+                    let statusCell = $(this).find('td').eq(1);
+                    statusCell.text('Vô hiệu hóa');
+                }
+            });
+        }
+
+        document.getElementById('btnSelectBanner').addEventListener('click', async function () {
+            if ($('#bannerActive').val().length==2){
+                selectedBannerId = $('#bannerActive').val();
+                console.log(selectedBannerId)
+                try {
+                    let res = await axios.put(`/api/admin/banners/update-status`,selectedBannerId)
+                    renderTableBanner(selectedBannerId);
+                    $('#modalBanner').modal('hide');
+                } catch (e) {
+                    toastr.error(e.response.data.message)
+                }
+            }else {
+                console.log(selectedBannerId)
+                toastr.error("Bạn phải chọn đủ 2 banner")
+            }
+        });
+
+    </script>
+</th:block>
+</body>
+
+</html>

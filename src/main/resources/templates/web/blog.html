@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zxx" xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:replace="~{web/layout/layout :: layout(~{::title},~{:: #css},~{:: #content},~{:: #js})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Male_Fashion Template">
+    <meta name="keywords" content="Male_Fashion, unica, creative, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Male-Fashion | Danh Sách Bài Viết</title>
+
+    <th:block id="css">
+        <style>
+            .pagination .page-item .page-link {
+                color: black; /* Màu chữ */
+                background-color: white; /* Màu nền */
+                border: 1px solid #ddd; /* Đường viền */
+            }
+            .pagination .page-item.active .page-link {
+                color: white; /* Màu chữ khi được chọn */
+                background-color: black; /* Màu nền khi được chọn */
+                border: 1px solid black; /* Đường viền khi được chọn */
+            }
+            .pagination .page-item.disabled .page-link {
+                color: #6c757d; /* Màu chữ khi bị vô hiệu hóa */
+                background-color: white; /* Màu nền khi bị vô hiệu hóa */
+                border: 1px solid #ddd; /* Đường viền khi bị vô hiệu hóa */
+            }
+            .pagination .page-item .page-link:hover {
+                color: black; /* Màu chữ khi hover */
+                background-color: #f8f9fa; /* Màu nền khi hover */
+                border: 1px solid #ddd; /* Đường viền khi hover */
+            }
+        </style>
+    </th:block>
+
+</head>
+
+<body>
+    <th:block id="content">
+        <!-- Breadcrumb Section Begin -->
+        <section class="breadcrumb-blog set-bg" data-setbg="/web-assets/img/breadcrumb-bg.jpg">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h2>Danh Sách Bài Viết</h2>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Breadcrumb Section End -->
+
+        <!-- Blog Section Begin -->
+        <section class="blog spad">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-4 col-md-6 col-sm-6" th:each="blog : ${pageData.getContent()}">
+                        <div class="blog__item">
+                            <a th:href="@{/blog/{id}/{slug} (id=${blog.id}, slug=${blog.slug})}">
+                                <div class="blog__item__pic set-bg" th:data-setbg="${blog.thumbnail}"></div>
+                            </a>
+                            <div class="blog__item__text">
+                                <span><img src="/web-assets/img/icon/calendar.png" alt=""> [[${#temporals.format(blog.createdAt,'dd/MM/yyyy')}]]</span>
+                                <h5 th:text="${blog.title}">What Curling Irons Are The Best Ones</h5>
+                                <a th:href="@{/blog/{id}/{slug} (id=${blog.id}, slug=${blog.slug})}">Đọc Thêm</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Hiển thị số trang-->
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="d-flex justify-content-center text-dark">
+                            <nav aria-label="...">
+                                <ul class="pagination" th:if="${pageData.getTotalPages()!=1}">
+                                    <li class="page-item " th:classappend="${currentPage==1 ? 'disabled' : ''}">
+                                        <a class="page-link" th:onclick="'changePage('+${currentPage-1}+')'" style="cursor: pointer">Trang trước</a>
+                                    </li>
+                                    <li class="page-item" th:each="number: ${#numbers.sequence(1, pageData.getTotalPages())}" th:classappend="${currentPage==number ? 'active' :''}">
+                                        <a class="page-link" th:onclick="'changePage('+${number}+')'" th:text="${number}" style="cursor: pointer">1</a>
+                                    </li>
+
+                                    <li class="page-item" th:classappend="${currentPage==pageData.getTotalPages()? 'disabled':''}">
+                                        <a class="page-link"  th:onclick="'changePage('+${currentPage+1}+')'" style="cursor: pointer">Trang sau</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Blog Section End -->
+    </th:block>
+
+    <th:block id="js">
+        <script th:inline="javascript">
+            //Xử lý khi chuyển trang
+            function changePage(page){
+                console.log(page)
+                var url = new URL(window.location.href);
+                url.searchParams.set('page',page)
+                window.location.href = url.toString();
+            }
+        </script>
+    </th:block>
+
+</body>
+
+</html>

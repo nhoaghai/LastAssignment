@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:replace="~{admin/layout/layout :: layout(~{:: title},~{:: #css},~{:: .content-wrapper},~{:: #js})}">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tạo sản phẩm</title>
+
+    <th:block id="css">
+        <link rel="stylesheet" href="/admin-assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+        <link rel="stylesheet" href="/admin-assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+        <link rel="stylesheet" href="/admin-assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+        <!--Easymde-->
+        <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/highlight.js/latest/styles/github.min.css" />
+
+        <!--Summernote-->
+        <link rel="stylesheet" href="/admin-assets/plugins/summernote/summernote-bs4.min.css">
+
+        <!--Select2-->
+        <link rel="stylesheet" href="/admin-assets/plugins/select2/css/select2.min.css" />
+        <link rel="stylesheet" href="/admin-assets/dist/css/style.css">
+        <style>
+            #avatar-preview {
+                width: 200px; /* or any size you prefer */
+                height: 200px; /* or any size you prefer */
+                object-fit: cover; /* This ensures the image covers the area and is cropped if necessary */
+                border-radius: 50%; /* Optional: Makes the avatar round */
+            }
+        </style>
+
+
+    </th:block>
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-12">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="#">Dashboard</a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a th:href="@{/admin/users}">Danh sách user</a>
+                            </li>
+                            <li class="breadcrumb-item active">
+                                Tạo user
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="product__details__content mb-5">
+                    <div class="product__details__tab">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link user-info-nav-link active text-black" data-toggle="tab" href="#tabs-user-info" role="tab">Thông tin user</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link user-info-nav-link" data-toggle="tab" href="#tabs-user-order" role="tab">Lịch sử giao dịch</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link user-info-nav-link" data-toggle="tab" href="#tabs-user-address" role="tab">Sổ địa chỉ</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <!-- Tab Thông tin user-->
+                            <div class="tab-pane active" id="tabs-user-info" role="tabpanel">
+                                <div class="product__details__tab__content">
+                                    <div class="row py-2">
+                                        <div class="col-6">
+                                            <button type="button" class="btn btn-info px-4" id="btnCreateUser">
+                                                Lưu
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="text-center mb-3">
+                                                <img id="avatar-preview"
+                                                     class="rounded-circle mb-2"
+                                                     th:src="${user.getAvatar()}"
+                                                     alt="Avatar" ><br>
+                                                <label style="cursor: pointer" for="btnUpdateAvatar">Thay đổi ảnh đại diện</label>
+                                                <input type="file" id="btnUpdateAvatar" hidden="hidden">
+                                            </div>
+                                            <form id="form-user">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-md-9">
+                                                                <div class="form-group">
+                                                                    <label>Tên tài khoản</label>
+                                                                    <input type="text" class="form-control" id="input-name" name="name"
+                                                                           placeholder="Tên tài khoản" th:value="${user.name}"/>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Email</label>
+                                                                    <input type="text" id="input-email" class="form-control" name="email"
+                                                                           placeholder="Email" th:value="${user.email}" disabled/>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Quyền</label>
+                                                                    <select id="input-role" class="form-control" name="role">
+                                                                        <option value="">Chọn quyền</option>
+                                                                        <option value="ADMIN" th:selected="${user.role.toString() == 'ADMIN'}">ADMIN</option>
+                                                                        <option value="USER" th:selected="${user.role.toString() == 'USER'}">USER</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Trạng thái</label>
+                                                                    <select id="input-enabled" class="form-control" name="enabled">
+                                                                        <option value="">Chọn quyền</option>
+                                                                        <option value="1" th:selected="${user.enabled}">Kích hoạt</option>
+                                                                        <option value="0" th:selected="${!user.enabled}">Chưa kích hoạt</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tab Lịch sử giao dịch -->
+                            <div class="tab-pane" id="tabs-user-order" role="tabpanel">
+                                <div class="product__details__tab__content ">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <table class="table table-bordered table-hover" id="table-order">
+                                                        <thead >
+                                                        <tr>
+                                                            <th>Mã đơn hàng</th>
+                                                            <th>Số tiền</th>
+                                                            <th>Hình thức thanh toán</th>
+                                                            <th>Ngày giao dịch</th>
+                                                            <th>Trạng thái</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <tr th:each="order : ${ordersByUserId}">
+                                                            <td><a th:href="@{/admin/orders/{codeOrder} (codeOrder=${order.codeOrder})}">#[[${order.codeOrder}]]</a></td>
+                                                            <td><span class="formatted-price" th:text="${order.finalTotal}"></span></td>
+                                                            <td th:text="${order.payment.toString()}"></td>
+                                                            <td th:text="${#temporals.format(order.getCreatedAt(),'dd/MM/yyyy')}"></td>
+                                                            <td th:id="'order-status-table-'+${order.id}"
+                                                                th:text="${order.status.toString() == 'CHO_XAC_NHAN' ? 'Chờ xác nhận' :
+                                                                 order.status.toString() == 'CHO_GIAO_HANG' ? 'Chờ giao hàng' :
+                                                                 order.status.toString() == 'DANG_GIAO' ? 'Đang giao' :
+                                                                 order.status.toString() == 'DA_GIAO' ? 'Đã giao' :
+                                                                 order.status.toString() == 'DA_HUY' ? 'Đã hủy' :
+                                                                 order.status.toString() == 'TRA_HANG' ? 'Trả hàng' :
+                                                                 'Unknown Status'}" >
+                                                            </td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tab Sổ địa chỉ -->
+                            <div class="tab-pane" id="tabs-user-address" role="tabpanel">
+                                <div class="product__details__tab__content ">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div class="text-center mb-3">
+                                                        <h3>Danh sách địa chỉ</h3>
+                                                    </div>
+                                                    <!-- Nội dung của tab sổ địa chỉ -->
+                                                    <table class="table">
+                                                        <thead>
+                                                        <tr>
+                                                            <th>Thông tin địa chỉ</th>
+                                                            <th></th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody id="address-list">
+                                                        <!-- Ví dụ địa chỉ -->
+                                                        <tr>
+                                                            <td class="align-middle">
+                                                                <h5>&nbsp;
+                                                                    <span><strong>(Mặc định)</strong></span><span style="cursor: pointer" class="text-warning text-decoration-underline" >(Đặt địa chỉ làm mặc định)</span>
+                                                                </h5>
+                                                                <p class="m-0"></p>
+                                                                <p class="m=0 address-w-d-p"></p>
+                                                            </td>
+                                                            <td class="text-end">
+                                                                <button type="button" class="btn btn-warning text-white btn-sm" ><i class="fas fa-pencil-alt"></i></button>
+                                                                <button type="button" class="btn btn-danger btn-sm" ><i class="fas fa-trash-alt"></i></button>
+                                                            </td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <div class="text-center">
+                                                        <button class="btn bg-dark text-white mt-3" data-bs-toggle="modal" data-bs-target="#address-modal">Thêm địa chỉ</button>
+                                                    </div>
+
+
+                                                    <!-- Modal thêm địa chỉ -->
+                                                    <div class="modal fade" id="address-modal" tabindex="-1" aria-labelledby="addressModalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h4 class="modal-title" id="addressModalLabel">Thêm địa chỉ mới</h4>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <form id="form-add-address">
+                                                                        <div class="form-group mb-3">
+                                                                            <input type="text" class="form-control" id="input-nameCustomer" name="nameCustomer" placeholder="Tên khách hàng">
+                                                                        </div>
+                                                                        <div class="form-group mb-3">
+                                                                            <input type="text" class="form-control" id="input-phone" name="phone" placeholder="Số điện thoại">
+                                                                        </div>
+                                                                        <div class="form-group mb-3">
+                                                                            <select id="input-province" class="form-control" name="province">
+                                                                                <option value="">Chọn Tỉnh/Thành Phố</option>
+                                                                                <!-- Options sẽ được tải từ API -->
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="form-group mb-3">
+                                                                            <select id="input-district" class="form-control" name="district" disabled>
+                                                                                <option value="">Chọn Quận/Huyện</option>
+                                                                                <!-- Options sẽ được tải từ API -->
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="form-group mb-3">
+                                                                            <select id="input-ward" class="input-full form-control" name="ward" disabled>
+                                                                                <option value="">Chọn Phường/Xã</option>
+                                                                                <!-- Options sẽ được tải từ API -->
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="form-group mb-3">
+                                                                            <input type="text" class="form-control" id="input-addressDetail" name="addressDetail" placeholder="Địa chỉ cụ thể">
+                                                                        </div>
+                                                                        <div class="text-center">
+                                                                            <button id="btn-create-address" type="submit" class="btn bg-dark text-white">Tạo</button>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<th:block id="js">
+    //Summernote
+    <script src="/admin-assets/plugins/summernote/summernote-bs4.min.js"></script>
+
+    <script src="/admin-assets/plugins/select2/js/select2.full.min.js"></script>
+
+    <script src="/admin-assets/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="/admin-assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="/admin-assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="/admin-assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="/admin-assets/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="/admin-assets/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <div sec:authorize="isAuthenticated()">
+        <script th:inline="javascript">
+            let currentUser = [[${#authentication.principal.user}]];
+        </script>
+    </div>
+    <script th:inline="javascript">
+        let user = [[${user}]]
+
+        $('#table-order').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+            "order": [3, 'desc'],
+        });
+
+        $('#form-user').validate({
+            rules: {
+                name: {
+                    required: true,
+                },
+                role: {
+                    required: true
+                },
+                enabled: {
+                    required: true
+                }
+            },
+            messages: {
+                name: {
+                    required: "Tên tài khoản không được để trống",
+                },
+                role: {
+                    required: "Vui lòng chọn quyền"
+                },
+                enabled: {
+                    required: "Vui lòng chọn trạng thái"
+                }
+            },
+            errorElement: 'span',
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                element.closest('.form-group').append(error);
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).removeClass('is-invalid');
+            }
+        });
+
+        const btnCreateUserEl = document.getElementById("btnCreateUser");
+
+        btnCreateUserEl.addEventListener('click', async (e) => {
+            e.preventDefault();
+            console.log("Form submission attempted");
+
+            // Kiểm tra tính hợp lệ của form
+            if (!$('#form-user').valid()) {
+                return;
+            }
+
+            // Lấy dữ liệu từ form
+            const data = {
+                name: document.getElementById('input-name').value,
+                roleString: document.getElementById('input-role').value,
+                enabled: document.getElementById('input-enabled').value === '1'
+            };
+
+            try {
+                let res = await axios.put(`/api/admin/users/${user.id}/update`, data);
+                toastr.success("Cập nhật thông tin thành công");
+                // Tùy chọn: xử lý phản hồi từ máy chủ, ví dụ: cập nhật giao diện hoặc làm sạch form
+            } catch (e) {
+                // Xử lý lỗi
+                toastr.error(e.response?.data?.message || "Có lỗi xảy ra");
+            }
+        });
+
+        //Thêm ảnh
+        const avatar = document.getElementById("avatar")
+        const avatarPreview = document.getElementById("avatar-preview")
+        const btnUpdateAvatarEl = document.getElementById("btnUpdateAvatar");
+        btnUpdateAvatarEl.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+
+            // create form data with key file and value is file in input
+            const formData = new FormData();
+            formData.append('file', file);
+
+            axios.post(`/api/auth/${user.id}/update-avatar`, formData)
+                .then(res => {
+                    if (res.status === 200) {
+                        avatarPreview.src = res.data;
+                        if (user.id==currentUser.id){
+                            avatar.src=res.data;
+                        }
+                        toastr.success('Cập nhật avatar thành công');
+                    }
+                })
+                .catch(e => {
+                    console.log(e)
+                    toastr.error(e.response.data.message);
+                });
+        });
+
+    </script>
+    <script src="/admin-assets/js/user-detail/user-detail-address.js"></script>
+</th:block>
+</body>
+
+</html>

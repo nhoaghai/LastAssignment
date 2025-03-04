@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout/layout :: layout(~{:: title},~{:: #css},~{:: .content-wrapper},~{:: #js})}">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Chi tiết sản phẩm</title>
+
+    <th:block id="css">
+        <!--Summernote-->
+        <link rel="stylesheet" href="/admin-assets/plugins/summernote/summernote-bs4.min.css">
+        <!--Select2-->
+        <link rel="stylesheet" href="/admin-assets/plugins/select2/css/select2.min.css" />
+        <link rel="stylesheet" href="/admin-assets/dist/css/style.css">
+        <style>
+
+            .thumbnail-preview-container img {
+                max-width: 100%; /* Hoặc chiều rộng cụ thể, ví dụ 200px */
+                max-height: 200px; /* Hoặc chiều cao cụ thể */
+                object-fit: cover; /* Giúp hình ảnh không bị kéo dãn, giữ tỉ lệ và cắt nếu cần */
+            }
+            /* Tùy chỉnh kích thước và kiểu dáng của các label màu */
+            .color-label {
+                height: 15px;
+                width: 15px;
+                border-radius: 50%;
+                position: relative;
+                margin-right: 10px;
+                display: inline-block;
+                vertical-align: middle; /* Căn giữa label với văn bản */
+            }
+
+            /* Tùy chỉnh tên màu sắc */
+            .color-name,.size-name {
+                vertical-align: middle;
+            }
+
+            /* Tùy chỉnh padding và khoảng cách của các tùy chọn trong danh sách */
+            .select2-results__option {
+                padding: 5px 10px;
+                display: flex; /* Để label màu và văn bản nằm trên cùng một hàng */
+                align-items: center;
+            }
+
+            /* Tùy chỉnh hiệu ứng khi chọn một tùy chọn */
+            .select2-results__option--highlighted {
+                background-color: #f0f0f0;
+            }
+
+            /* Tùy chỉnh kiểu dáng của các tùy chọn đã chọn */
+            .select2-selection__rendered {
+                display: flex;
+                align-items: center;
+                flex-wrap: wrap; /* Cho phép văn bản và các label màu nằm trên nhiều dòng */
+            }
+
+            /* Tùy chỉnh các tùy chọn đã chọn */
+            .select2-selection__choice {
+                margin: 2px;
+                padding: 4px 8px;
+                border-radius: 16px;
+                background-color: #e9ecef;
+                border: 1px solid #ccc;
+                display: flex;
+                align-items: center;
+                position: relative; /* Để có thể căn chỉnh dấu x */
+                overflow: hidden; /* Đảm bảo không có phần tử nào vượt ra ngoài */
+            }
+
+            /* Tùy chỉnh dấu x bỏ chọn */
+            .select2-selection__choice__remove {
+                cursor: pointer;
+                position: absolute; /* Đặt dấu x ở vị trí tương đối với phần tử chứa */
+                right: 2px; /* Khoảng cách từ bên phải */
+                top: 50%;
+                transform: translateY(-50%);
+                font-size: 14px;
+            }
+        </style>
+    </th:block>
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-12">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a th:href="@{/admin/dashboard}">Dashboard</a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a th:href="@{/admin/products}">Danh sách sản phẩm</a>
+                            </li>
+                            <li class="breadcrumb-item active">
+                                Tạo sản phẩm
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="product__details__content mb-5">
+                    <div class="product__details__tab">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link user-info-nav-link active text-black" data-toggle="tab" href="#tabs-product-info" role="tab">Thông tin sản phẩm</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link user-info-nav-link" data-toggle="tab" href="#tabs-product-img" role="tab">Cập nhật hình ảnh</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link user-info-nav-link" data-toggle="tab" href="#tabs-product-rating" role="tab">Đánh giá</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <!-- Tab Thông tin sản phẩm -->
+                            <div class="tab-pane active" id="tabs-product-info" role="tabpanel">
+                                <div class="product__details__tab__content">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="col-6 mb-2 mt-2">
+                                                <button type="button" class="btn btn-info px-4" id="btnUpdateProduct">
+                                                    Cập nhật
+                                                </button>
+                                            </div>
+                                            <form id="form-product">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-md-8">
+                                                                <div class="form-group">
+                                                                    <label>Tên sản phẩm</label>
+                                                                    <input type="text" class="form-control" id="name" name="name"/>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Mô tả ngắn</label>
+                                                                    <textarea id="description" class="form-control" rows="3" name="description"></textarea>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Trạng thái</label>
+                                                                    <select id="status" class="form-control" th:value="${product.getStatus()? '1':'0'}" name="status">
+                                                                        <option value="" >Chọn trạng thái</option>
+                                                                        <option value="0" th:selected="${!product.getStatus()}">
+                                                                            Ẩn
+                                                                        </option>
+                                                                        <option value="1" th:selected="${product.getStatus()}">
+                                                                            Công khai
+                                                                        </option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Giá tiền</label>
+                                                                    <input type="number" class="form-control" id="price" name="price"/>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <div class="thumbnail-preview-container mb-3">
+                                                                        <img class="m-0" th:src="${product.poster}" alt="" id="poster">
+                                                                    </div>
+                                                                    <label for="input-poster" class="btn btn-info btn-flat" data-toggle="modal" data-target="#modal-xl">
+                                                                        Chọn hình ảnh
+                                                                    </label>
+                                                                    <input type="file" id="input-poster" class="d-none">
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label>Danh mục cha</label>
+                                                                    <select id="categoryParent" class="form-control" name="categoryParent">
+                                                                        <option value="">Chọn danh mục cha</option>
+                                                                        <option th:each="categoryParent : ${categoryParents}"
+                                                                                th:value="${categoryParent.id}"
+                                                                                th:text="${categoryParent.name}">
+                                                                        </option>
+                                                                    </select>
+                                                                </div>
+
+                                                                <div class="form-group">
+                                                                    <label>Danh mục con</label>
+                                                                    <select id="categoryChild" class="form-control" name="categoryChild" disabled>
+                                                                        <option value="">Chọn danh mục con</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Màu sắc</label>
+                                                                    <div class="select2-purple">
+                                                                        <select class="select2 form-control" multiple="multiple" id="color" name="color">
+                                                                            <!-- Ví dụ sử dụng Thymeleaf để lặp qua danh sách màu -->
+                                                                            <option th:each="color : ${colors}"
+                                                                                    th:text="${color.colorName}"
+                                                                                    th:value="${color.id}"
+                                                                                    th:data-color="${color.colorCode}">
+                                                                            </option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Kiểu kích thước</label>
+                                                                    <select id="sizeType" class="form-control" name="sizeType">
+                                                                        <option value="" >Chọn kiểu kích thước</option>
+                                                                        <option th:each="sizetype : ${sizeTypes}" th:value="${sizetype}" th:text="${sizetype.getName()}" >
+                                                                        </option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Kích thước</label>
+                                                                    <div class="select2-purple">
+                                                                        <select class="select2 form-control" multiple="multiple" id="size" name="size" disabled>
+                                                                            <option></option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div class="row quantity-table"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tab Cập nhật hình ảnh -->
+                            <div class="tab-pane" id="tabs-product-img" role="tabpanel">
+                                <div class="product__details__tab__content">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div class="row image-table"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tab Đánh giá -->
+                            <div class="tab-pane" id="tabs-product-rating" role="tabpanel">
+                                <div class="product__details__tab__content ">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <table class="table table-bordered table-hover" id="table-product">
+                                                        <thead >
+                                                        <tr>
+                                                            <th>Tài khoản</th>
+                                                            <th>Đánh giá</th>
+                                                            <th>Nội dung</th>
+                                                            <th>Ngày tạo</th>
+                                                            <th></th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <tr th:each="review : ${reviews}" th:data-id="${review.id}">
+                                                            <td th:text="${review.user.name}"></td>
+                                                            <td>[[${review.rating}]]/5</td>
+                                                            <td th:text="${review.content}"></td>
+                                                            <td th:text="${#temporals.format(review.createdAt,'dd/MM/yyyy MM:HH:ss')}"></td>
+                                                            <td>
+                                                                <button  type="button" class="btn btn-danger btn-sm" th:onclick="'deleteReview('+${review.id}+')'"><i class="fas fa-trash-alt"></i></button>
+                                                            </td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+
+<th:block id="js">
+    //Easymde
+    <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/highlight.js/latest/highlight.min.js"></script>
+
+    //Summernote
+    <script src="/admin-assets/plugins/summernote/summernote-bs4.min.js"></script>
+
+    <!--Select2-->
+    <script src="/admin-assets/plugins/select2/js/select2.full.min.js"></script>
+
+    <script th:inline="javascript">
+        //Sản phẩm hiện taại
+        let currentProduct = [[${product}]]
+        let stockMap = [[${stockMap}]]
+
+        // Chọn màu
+        $('#color').select2({
+            templateResult: formatStateColor,
+            templateSelection: formatStateColor,
+            placeholder: "Chọn màu sắc"
+        });
+
+        function formatStateColor(state) {
+            if (!state.id) {
+                return state.text;
+            }
+            var color = $(state.element).data('color');
+            var $state = $(
+                '<span class="color-name">' + state.text + '</span>'+
+                '&ensp;<span class="color-label" style="background-color:' + color + '"></span>;'
+            );
+            return $state;
+        }
+        //Chọn Size
+        let sizeEl = document.getElementById("size");
+
+        function formatStateSize(state) {
+            if (!state.id) {
+                return state.text;
+            }
+            var $state = $(
+                '<span class="size-name">' + state.text + '&ensp;' + '</span>'
+            );
+            return $state;
+        }
+
+        $(sizeEl).select2({
+            placeholder: "Chọn kích thước",
+            templateResult: formatStateSize,
+            templateSelection: formatStateSize,
+        });
+
+        $('#sizeType').change(async function() {
+            let selectedValue = $(this).val();
+            $(sizeEl).val(null).trigger('change');
+            if (selectedValue) {
+                try {
+                    updateQuantityTable()
+                    let res = await axios.get(`/api/admin/sizes/sizeType/${selectedValue}`);
+                    let sizes = res.data;
+                    $(sizeEl).val()
+                    $(sizeEl).empty().append(new Option('Chọn kích thước', ''));
+
+
+                    $(sizeEl).append(new Option('Chọn kích thước', ''));
+                    sizes.forEach(size => {
+                        $(sizeEl).append(new Option(size.sizeName, size.id)); // Adjust `size.name` and `size.id` based on your data structure
+                    });
+                    sizeEl.disabled = false;
+                    let sizeList = currentProduct.sizes;
+                    sizeList=sizeList.map(size => size.id.toString())
+                    $(sizeEl).val(sizeList);
+                    $(sizeEl).trigger('change');
+                    $(sizeEl).select2({
+                        placeholder: "Chọn kích thước",
+                        autoWidth: true,
+                        templateResult: formatStateSize,
+                        templateSelection: formatStateSize,
+                    });
+                    $(this).prop('disabled', true); // Vô hiệu hóa sizeType
+                } catch (error) {
+                    console.error('Error fetching sizes:', error);
+                }
+            } else {
+                updateQuantityTable()
+                $(sizeEl).empty().append(new Option('Chọn kích thước', '')).prop('disabled', true);
+            }
+        });
+
+
+        //Chọn category
+        let categoryChildEl = document.getElementById("categoryChild");
+        $('#categoryParent').on('change', async function() {
+            let categoryParentId = $(this).val();
+            if (categoryParentId) {
+                if (categoryParentId==3){
+                    $('#sizeType').val('SHOES_SIZE').trigger('change');
+                }else {
+                    $('#sizeType').val('CLOTHES_SIZE').trigger('change');
+                }
+                try {
+                    let res = await axios.get(`/api/admin/categories/categoryParent/${categoryParentId}`);
+                    let categoryChild = res.data;
+                    $(categoryChildEl).empty();
+                    $(categoryChildEl).append(new Option('Chọn danh mục con', ''));
+
+
+                    categoryChild.forEach(c => {
+                        $(categoryChildEl).append(new Option(c.name, c.id));
+                    });
+                    if (categoryParentId==currentProduct.category.parentId){
+                        $(categoryChildEl).prop('disabled', false);
+                        $(categoryChildEl).val(currentProduct.category.id)
+                        $(categoryChildEl).trigger('change');
+                    }
+
+                } catch (e) {
+                    console.error('Error fetching category children:', e);
+                }
+            } else {
+                $(categoryChildEl).empty().append(new Option('Chọn danh mục con', '')).prop('disabled', true);
+            }
+        });
+
+
+        let quantityData = stockMap;
+
+        // Cập nhật bảng số lượng
+        function updateQuantityTable() {
+            let selectedColors = $('#color').val() || [];
+            let selectedSizes = $('#size').val() || [];
+            console.log(selectedSizes);
+
+            // Xóa nội dung cũ
+            let tableHtml = '<table class="table table-bordered"><thead><tr><th>Màu sắc</th><th>Kích thước</th><th>Số lượng</th></tr></thead><tbody>';
+
+            selectedColors.forEach(color => {
+                let colorText = $('#color option:selected').filter(`[value="${color}"]`).text();
+
+                selectedSizes.forEach(size => {
+                    if (size !== "") {
+                        let sizeText = $('#size option:selected').filter(`[value="${size}"]`).text();
+                        let key = `${color}-${size}`;
+                        let quantityValue = stockMap[key] || '0'; // Lấy giá trị đã lưu hoặc để trống nếu không có
+
+                        tableHtml += `<tr><td>${colorText}</td><td>${sizeText}</td><td><input type="number" class="form-control" name="quantity" value="${quantityValue}" data-key="${key}" /></td></tr>`;
+                    }
+                });
+            });
+
+            tableHtml += '</tbody></table>';
+            $('.quantity-table').html(tableHtml);
+        }
+
+        // Lưu giá trị khi người dùng thay đổi số lượng
+        function saveQuantityValue() {
+            $('.quantity-table').on('input', 'input[name="quantity"]', function() {
+                let key = $(this).data('key');
+                quantityData[key] = $(this).val();
+            });
+        }
+
+        $('#color').on('change', function() {
+            updateQuantityTable();
+            saveQuantityValue();
+        });
+        $('#size').on('change', function() {
+            updateQuantityTable();
+            saveQuantityValue();
+        });
+
+        saveQuantityValue();
+
+        //Đền thông tin sẵn có của sản phẩm
+        let colorList = currentProduct.colors;
+        colorList=colorList.map(color => color.id.toString())
+        $('#color').val(colorList);
+        $('#color').trigger('change');
+
+        $('#categoryParent').val(currentProduct.category.parentId);
+        $('#categoryParent').trigger('change');
+
+        $('#name').val(currentProduct.name)
+        $('#description').val(currentProduct.description)
+        $('#price').val(currentProduct.price)
+
+
+
+
+
+        // Chuyển đổi dữ liệu từ server thành Map
+        let imageMapFromServer = [[${imageMap}]];
+        let imageMap = new Map();
+
+        Object.keys(imageMapFromServer).forEach(colorId => {
+            let images = imageMapFromServer[colorId];
+            imageMap.set(parseInt(colorId), images);
+        });
+
+
+        // Hàm để cập nhật bảng hình ảnh
+        function updateImageTable() {
+            let selectedColors = $('#color').val() || [];
+
+            // Xóa nội dung cũ
+            let tableHtml = `
+<table class="table table-bordered" style="width: 100%; border-collapse: collapse;">
+    <thead>
+        <tr>
+            <th>Màu sắc</th>
+            <th>Hình ảnh chính</th>
+            <th>Hình ảnh phụ</th>
+        </tr>
+    </thead>
+    <tbody>`;
+
+            selectedColors.forEach(colorId => {
+                let colorText = $('#color option:selected').filter(`[value="${colorId}"]`).text();
+
+                // Lấy danh sách hình ảnh từ imageMap với colorId
+                let images = imageMap.get(parseInt(colorId)) || [];
+
+                let mainImage = images.find(img => img.type === 'MAIN') || { id: '', imgUrl: '' };
+                let subImages = images.filter(img => img.type !== 'MAIN');
+
+                tableHtml += `
+    <tr data-color="${colorId}" style="text-align: center;">
+        <td>${colorText}</td>
+        <td>
+            <img src="${mainImage.imgUrl}" style="width: 100px; height: auto; border: 1px solid #ddd; padding: 5px; margin-bottom: 5px;">
+            <button type="button" class="btn btn-primary btn-sm btn-change-main-image mt-4" data-color="${colorId}">Thay đổi ảnh chính</button>
+        </td>
+        <td class="d-flex flex-column align-items-center">
+            <div class="d-flex flex-wrap justify-content-center mb-2">
+                ${subImages.map((img, index) => `
+                    <div class="position-relative mb-2" style="margin-right: 5px;">
+                        <img src="${img.imgUrl}" alt="${colorText} - Sub ${index + 1}" style="width: 100px; height: auto; border: 1px solid #ddd; padding: 5px;">
+                        <button type="button" class="btn btn-danger btn-sm position-absolute delete-sub-image" style="top: -5px; right: -5px; padding: 2px 5px;" data-id="${img.id}">&times;</button>
+                    </div>
+                `).join('')}
+            </div>
+            <button type="button" class="btn btn-success btn-sm btn-add-sub-image mt-2" data-color="${colorId}">Thêm ảnh phụ</button>
+        </td>
+    </tr>`;
+            });
+
+            tableHtml += '</tbody></table>';
+            $('.image-table').html(tableHtml);
+
+            // Xử lý sự kiện thay đổi ảnh chính
+           /* $('.btn-change-main-image').on('click', function() {
+                let colorId = $(this).data('color');
+                let images = imageMap.get(parseInt(colorId)) || [];
+                let mainImage = images.find(img => img.type === 'MAIN') || { id: '', imgUrl: '' };
+
+                // Tạo một input type=file để chọn ảnh
+                let fileInput = $('<input type="file" accept="image/!*" style="display: none;">');
+                fileInput.on('change', function(event) {
+                    let file = event.target.files[0];
+                    if (file) {
+                        let reader = new FileReader();
+                        reader.onload = function(e) {
+                            let newMainImageUrl = e.target.result;
+                            // Cập nhật ảnh chính
+                            mainImage.imgUrl = newMainImageUrl;
+
+                            // Cập nhật imageMap
+                            images = images.map(img => img.type === 'MAIN' ? mainImage : img);
+                            imageMap.set(parseInt(colorId), images);
+
+                            updateImageTable(); // Cập nhật lại bảng
+                        };
+                        reader.readAsDataURL(file); // Đọc ảnh dưới dạng URL dữ liệu
+                    }
+                });
+
+                fileInput.click(); // Mở hộp thoại chọn tệp
+            });
+
+            // Xử lý sự kiện thêm ảnh phụ
+            $('.btn-add-sub-image').on('click', function() {
+                let colorId = $(this).data('color');
+                let images = imageMap.get(parseInt(colorId)) || [];
+                let mainImage = images.find(img => img.type === 'MAIN');
+                let subImages = images.filter(img => img.type !== 'MAIN');
+
+                // Kiểm tra số lượng ảnh phụ có URL hợp lệ
+                let validSubImages = subImages.filter(img => img.imgUrl);
+
+                if (validSubImages.length < 2) {
+                    // Tạo một input type=file để chọn ảnh phụ
+                    let fileInput = $('<input type="file" accept="image/!*" style="display: none;">');
+                    fileInput.on('change', function(event) {
+                        let file = event.target.files[0];
+                        if (file) {
+                            let reader = new FileReader();
+                            reader.onload = function(e) {
+                                let newImageUrl = e.target.result;
+                                let emptyImage = subImages.find(img => !img.imgUrl); // Tìm ảnh có imgUrl rỗng để thay thế
+
+                                if (emptyImage) {
+                                    // Cập nhật URL của ảnh rỗng
+                                    emptyImage.imgUrl = newImageUrl;
+                                } else {
+                                    // Thêm ảnh mới nếu không có ảnh nào rỗng
+                                    let newImageId = Date.now(); // Hoặc một cơ chế khác để tạo id duy nhất cho ảnh mới
+                                    subImages.push({ id: newImageId, imgUrl: newImageUrl, type: 'SUB' });
+                                }
+
+                                // Cập nhật imageMap
+                                images = [mainImage, ...subImages];
+                                imageMap.set(parseInt(colorId), images);
+
+                                updateImageTable(); // Cập nhật lại bảng
+                            };
+                            reader.readAsDataURL(file); // Đọc ảnh dưới dạng URL dữ liệu
+                        }
+                    });
+
+                    fileInput.click(); // Mở hộp thoại chọn tệp
+                } else {
+                    alert("Bạn đã đạt đến giới hạn số lượng hình ảnh phụ.");
+                }
+            });
+
+            // Xử lý sự kiện xóa ảnh phụ
+            $('.image-table').on('click', '.delete-sub-image', function() {
+                let colorId = $(this).closest('tr').data('color');
+                let imageId = $(this).data('id');
+
+                // Cập nhật imageMap
+                let images = imageMap.get(parseInt(colorId)) || [];
+                let mainImage = images.find(img => img.type === 'MAIN') || { id: '', imgUrl: '' };
+                let subImages = images.filter(img => img.type !== 'MAIN');
+
+                // Xóa ảnh phụ dựa trên imageId, chỉ cần cập nhật imgUrl thành rỗng
+                subImages = subImages.map(img => img.id === imageId ? { ...img, imgUrl: '' } : img);
+
+                // Cập nhật lại images
+                images = [mainImage, ...subImages];
+                imageMap.set(parseInt(colorId), images);
+
+                // Cập nhật lại bảng hình ảnh
+                updateImageTable();
+            });*/
+            $('.btn-change-main-image').on('click', function() {
+                let colorId = $(this).data('color');
+                let images = imageMap.get(parseInt(colorId)) || [];
+                let mainImage = images.find(img => img.type === 'MAIN') || { id: '', imgUrl: '' };
+
+                // Tạo một input type=file để chọn ảnh
+                let fileInput = $('<input type="file" accept="image/*" style="display: none;">');
+                fileInput.on('change', function(event) {
+                    let file = event.target.files[0];
+                    if (file) {
+                        // Tạo FormData và thêm file vào nó
+                        const formData = new FormData();
+                        formData.append('file', file);
+
+                        // Gửi file đến server
+                        axios.post(`/api/admin/products/images/${mainImage.id}/upload-main`, formData)
+                            .then(response => {
+                                 // URL của ảnh mới từ server
+                                // Cập nhật ảnh chính
+                                mainImage.imgUrl = response.data.imgUrl;
+
+                                // Cập nhật imageMap
+                                images = images.map(img => img.type === 'MAIN' ? mainImage : img);
+                                imageMap.set(parseInt(colorId), images);
+
+                                updateImageTable(); // Cập nhật lại bảng
+                            })
+                            .catch(error => {
+                                console.error('Có lỗi xảy ra khi tải ảnh lên:', error);
+                            });
+                    }
+                });
+
+                fileInput.click(); // Mở hộp thoại chọn tệp
+            });
+            $('.btn-add-sub-image').on('click', function() {
+                let colorId = $(this).data('color');
+                let images = imageMap.get(parseInt(colorId)) || [];
+                let mainImage = images.find(img => img.type === 'MAIN');
+                let subImages = images.filter(img => img.type !== 'MAIN');
+
+                if (subImages.length < 4) {
+                    // Tạo một input type=file để chọn ảnh phụ
+                    let fileInput = $('<input type="file" accept="image/*" style="display: none;">');
+                    fileInput.on('change', async function (event) {
+                        let file = event.target.files[0];
+                        if (file) {
+                            // Tạo FormData và thêm file vào nó
+                            const formData = new FormData();
+                            formData.append('file', file);
+                            formData.append('productId', currentProduct.id); // Thêm productId vào FormData
+                            formData.append('colorId', colorId); // Thêm colorId vào FormData
+
+                            try {
+                                // Gửi file đến server
+                                const response = await axios.post('/api/admin/products/images/upload-sub', formData, {
+                                    headers: {
+                                        'Content-Type': 'multipart/form-data'
+                                    }
+                                });
+
+                                let newImageUrl = response.data.imgUrl; // URL của ảnh mới từ server
+                                let newImageId = response.data.id;
+
+                                // Cập nhật ảnh phụ
+                                subImages.push({id: newImageId, imgUrl: newImageUrl, type: 'SUB'});
+
+                                // Cập nhật imageMap
+                                images = [mainImage, ...subImages];
+                                imageMap.set(parseInt(colorId), images);
+
+                                updateImageTable(); // Cập nhật lại bảng
+
+                            } catch (error) {
+                                console.error('Có lỗi xảy ra khi tải ảnh lên:', error.response.data.message);
+                            }
+                        }
+                    });
+
+                    fileInput.click(); // Mở hộp thoại chọn tệp
+                } else {
+                    alert("Bạn đã đạt đến giới hạn số lượng hình ảnh phụ.");
+                }
+            });
+
+
+            $('.image-table').on('click', '.delete-sub-image', async function () {
+                let colorId = $(this).closest('tr').data('color');
+                let imageId = $(this).data('id');
+
+                // Gửi yêu cầu xóa ảnh phụ
+                try{
+                    await axios.delete(`/api/admin/products/images/${imageId}`)
+                    // Cập nhật imageMap sau khi xóa ảnh thành công
+                    let images = imageMap.get(parseInt(colorId)) || [];
+                    let mainImage = images.find(img => img.type === 'MAIN') || {id: '', imgUrl: ''};
+                    let subImages = images.filter(img => img.type !== 'MAIN');
+
+                    // Xóa ảnh phụ dựa trên imageId
+                    subImages = subImages.filter(img => img.id !== imageId);
+
+                    // Cập nhật lại images
+                    images = [mainImage, ...subImages];
+                    imageMap.set(parseInt(colorId), images);
+
+                    // Cập nhật lại bảng hình ảnh
+                    updateImageTable();
+                } catch(error){
+                }
+            });
+
+        }
+
+        // Gọi hàm để cập nhật bảng hình ảnh
+        updateImageTable();
+
+        //Validate
+        $('#form-product').validate({
+            rules: {
+                name: {
+                    required: true,
+                    pattern: /^\s*\S.*$/,
+                },
+                description: {
+                    required: true,
+                    pattern: /^\s*\S.*$/,
+                },
+                price: {
+                    required: true,
+                    number: true,
+                    min: 0,
+                },
+                status: {
+                    required: true,
+                    min: 0,
+                    max: 1
+                },
+                categoryParent: {
+                    required: true,
+                },
+                categoryChild: {
+                    required: true,
+                },
+                color: {
+                    required: true,
+                },
+                size: {
+                    required: true,
+                }
+            },
+            messages: {
+                name: {
+                    required: "Vui lòng nhập tên sản phẩm",
+                    pattern: "Tên sản phẩm không được chỉ chứa khoảng trắng"
+                },
+                description: {
+                    required: "Vui lòng nhập mô tả",
+                    pattern: "Mô tả không được chỉ chứa khoảng trắng"
+                },
+                price: {
+                    required: "Vui lòng nhập giá tiền",
+                    number: "Giá tiền phải là số",
+                    min: "Giá tiền không được dưới 0"
+                },
+                status: {
+                    required: "Vui lòng chọn trạng thái",
+                    min: "Trạng thái không hợp lệ",
+                    max: "Trạng thái không hợp lệ"
+                },
+                categoryParent: {
+                    required: "Vui lòng chọn danh mục cha",
+                },
+                categoryChild: {
+                    required: "Vui lòng chọn danh mục con",
+                },
+                color: {
+                    required: "Vui lòng chọn màu sắc",
+                },
+                sizeType: {
+                    required: "Vui lòng chọn kiểu kích thước",
+                },
+                size: {
+                    required: "Vui lòng chọn kích thước",
+                }
+            },
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                element.closest('.form-group').append(error);
+            },
+            highlight: function (element) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element) {
+                $(element).removeClass('is-invalid');
+            }
+        });
+        const btnUpdateProduct = document.getElementById("btnUpdateProduct")
+        btnUpdateProduct.addEventListener('click', async (e) => {
+            e.preventDefault(); // Ngăn chặn hành vi mặc định của việc gửi biểu mẫu
+            console.log("Đã ấn nút");
+            // Kiểm tra tính hợp lệ của biểu mẫu
+            if (!$('#form-product').valid()) {
+                return;
+            }
+            // Thu thập dữ liệu từ biểu mẫu
+            const data = {
+                name: document.getElementById('name').value,
+                description: document.getElementById('description').value,
+                price: document.getElementById('price').value,
+                categoryId: document.getElementById('categoryChild').value,
+                colorIds: $('#color').val(),
+                sizeIds: $('#size').val(),
+                status: document.getElementById('status').value === "1",
+                quantityData: quantityData
+            };
+            // Gọi API
+            try {
+                let res = await axios.put(`/api/admin/products/update/${currentProduct.id}`, data);
+                toastr.success("Cập nhật sản phẩm thành công");
+                imageMapFromServer=res.data;
+                Object.keys(imageMapFromServer).forEach(colorId => {
+                    let images = imageMapFromServer[colorId];
+                    imageMap.set(parseInt(colorId), images);
+                });
+                updateImageTable()
+            } catch (e) {
+                console.log(e);
+                toastr.error(e.response?.data?.message || "Có lỗi xảy ra!");
+            }
+        });
+
+        //Xóa review
+        const deleteReview =async (id)=>{
+            const confirm = window.confirm("Bạn có chắc chắn muốn xóa không")
+            if(confirm){
+                try {
+                    const deleteRv = await axios.delete(`/api/reviews/${currentProduct.id}/${id}`)
+                    console.log("Sự kiện xóa rv")
+                    const reviewRow = document.querySelector(`tr[data-id="${id}"]`);
+                    if (reviewRow) {
+                        reviewRow.remove();
+                    }
+                    toastr.success("Xóa thành công đánh giá")
+                } catch (e) {
+                    toastr.error(e.response.data.message)
+                }
+            }
+        }
+
+        //Cập nhật post
+        const posterPreview = document.getElementById("poster")
+        const btnUpdatePosterEl = document.getElementById("input-poster");
+        btnUpdatePosterEl.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+
+            // create form data with key file and value is file in input
+            const formData = new FormData();
+            formData.append('file', file);
+
+            axios.post(`/api/admin/products/${currentProduct.id}/update-poster`, formData)
+                .then(res => {
+                    if (res.status === 200) {
+                        posterPreview.src = res.data;
+                        toastr.success('Cập nhật poster thành công');
+                    }
+                })
+                .catch(e => {
+                    console.log(e)
+                    toastr.error(e.response.data.message);
+                });
+        });
+    </script>
+</th:block>
+
+</body>
+
+</html>

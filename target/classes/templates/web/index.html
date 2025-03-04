@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zxx" xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:replace="~{web/layout/layout :: layout(~{::title},~{:: #css},~{:: #content},~{:: #js})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Male_Fashion Template">
+    <meta name="keywords" content="Male_Fashion, unica, creative, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Male-Fashion | Trang Chủ</title>
+
+    <th:block id="css">
+        <style>
+            .hero {
+                position: relative;
+            }
+
+            .hero__slider .hero__items {
+                position: relative;
+                overflow: hidden;
+            }
+
+            .hero__slider .hero__items::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.1); /* Màu sắc và độ mờ của lớp phủ */
+                z-index: 1;
+            }
+
+            .hero__text {
+                position: relative;
+                z-index: 2;
+            }
+
+            .break-banner {
+                height: 400px;
+                overflow: hidden;
+                position: relative;
+            }
+
+            .break-banner img {
+                width: 100%;
+                height: auto;
+                position: absolute;
+                top: 50%; /* Đặt ảnh ở giữa theo chiều dọc */
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+            .banner__item__pic {
+                position: relative;
+                width: 100%;
+                max-width: 490px; /* Đặt chiều rộng tối đa cho các phần tử */
+                height: 440px;
+                overflow: hidden;
+            }
+
+            .banner__item__pic img {
+                position: absolute;
+                top: 50%; /* Đặt ảnh ở giữa theo chiều dọc */
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 100%;
+                height: 100%;
+                object-fit: cover; /* Giữ cho hình ảnh bao phủ toàn bộ khung mà không bị biến dạng */
+            }
+        </style>
+    </th:block>
+</head>
+
+<body>
+    <th:block id="content">
+        <!-- Hero Discount Section Begin -->
+        <section class="hero">
+            <div class="hero__slider owl-carousel">
+                <div th:each="discount : ${allDiscounts}" class="hero__items set-bg" th:data-setbg="${discount.imageUrl}">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xl-5 col-lg-7 col-md-8">
+                                <div class="hero__text text-white">
+                                    <h2 class="text-white" th:text="${discount.name}">Fall - Winter Collections 2030</h2>
+                                    <p th:text="${discount.description}">A specialist label creating luxury essentials. Ethically crafted with an unwavering
+                                        commitment to exceptional quality.</p>
+                                    <a th:href="@{/discount/{id}(id=${discount.id})}" class="primary-btn bg-white text-black">Xem chi tiết<span class="arrow_right text-black"></span></a>
+                                    <div class="hero__social ">
+                                        <a href="#"><i class="fa fa-facebook text-white"></i></a>
+                                        <a href="#"><i class="fa fa-twitter text-white"></i></a>
+                                        <a href="#"><i class="fa fa-pinterest text-white"></i></a>
+                                        <a href="#"><i class="fa fa-instagram text-white"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Hero Discount Section End -->
+
+        <!-- Banner Section Begin -->
+        <section class="banner spad">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-7 offset-lg-4">
+                        <div class="banner__item" >
+                            <div class="banner__item__pic" >
+                                <img src="/web-assets/img/dac-san-mien-bac-2.jpg" alt="">
+                            </div>
+                            <div class="banner__item__text">
+                                <h2>ĐẶC SẢN MIỀN BẮC</h2>
+                                <a th:href="@{/product-shop (categoryParentId=1)}">xem chi tiết</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="banner__item banner__item--middle">
+                            <div class="banner__item__pic" >
+                                <img src="/web-assets/img/dacsanmiennam.jpg" alt="">
+                            </div>
+                            <div class="banner__item__text">
+                                <h2>ĐẶC SẢN MIỀN NAM</h2>
+                                <a  th:href="@{/product-shop (categoryParentId=2)}">xem chi tiết</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-7">
+                        <div class="banner__item banner__item--last">
+                            <div class="banner__item__pic" >
+                                <img src="/web-assets/img/dacsanmientrung.jpg" alt="">
+                            </div>
+                            <div class="banner__item__text">
+                                <h2>ĐẶC SẢN MIỀN TRUNG</h2>
+                                <a  th:href="@{/product-shop (categoryParentId=3)}">xem chi tiết</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-7 offset-lg-1" style="margin-top: 40px">
+                        <div class="banner__item banner__item--middle">
+                            <div class="banner__item__pic" >
+                                <img src="/web-assets/img/dac-san-mien-tay-2_1679661280.jpg" alt="">
+                            </div>
+                            <div class="banner__item__text">
+                                <h2>ĐẶC SẢN MIỀN TÂY</h2>
+                                <a  th:href="@{/product-shop (categoryParentId=4)}">xem chi tiết</a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+        <!-- Banner Section End -->
+
+        <!-- Break Banner Begin-->
+        <section class="break-banner spad  mb-5">
+            <a th:href="${allBanners.get(0).url}">
+                <img class="img-fluid" id="banner-1" th:src="${allBanners.get(0).thumbnail}" alt="promo-banner-1">
+            </a>
+        </section>
+        <!-- Break Banner End-->
+
+        <!-- Product Section Begin -->
+        <section class="product spad ">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <ul class="filter__controls">
+                            <li class="active" data-filter="*">Lựa Chọn Hàng Đầu</li>
+                            <li data-filter=".new-arrivals">Sản Phẩm Mới</li>
+                            <li data-filter=".hot-sales">Giảm Giá Sốc</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row product__filter">
+                    <th:block th:each="i : ${#numbers.sequence(0, 3)}">
+                        <div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 mix new-arrivals">
+                            <div class="product__item">
+                                <a th:href="@{/product/{id}/{slug}(id=${newArrivals.get(i).id}, slug=${newArrivals.get(i).slug})}">
+                                    <div class="product__item__pic set-bg" th:data-setbg="${newArrivals.get(i).poster}">
+                                        <span th:if="${newArrivals.get(i).discount!=null}" class="label">Khuyến mại</span>
+                                        <ul class="product__hover">
+                                            <li class="btnFavorite" sec:authorize="isAuthenticated()">
+                                                <!-- Sử dụng div thay vì button và bắt sự kiện click -->
+                                                <button class="border-0 push-favorite bg-white text-center pt-2 pb-2 pl-3 pr-3" th:data-product-id="${newArrivals.get(i).id}">
+                                                    <i class="fas fa-heart text-danger" th:if="${#lists.contains(favoriteProductIds, newArrivals.get(i).id)}"></i>
+                                                    <i class="far fa-heart text-danger" th:unless="${#lists.contains(favoriteProductIds, newArrivals.get(i).id)}"></i>
+                                                </button>
+                                            </li>
+                                            <li sec:authorize="!isAuthenticated()">
+                                                <button class="border-0 push-favorite bg-white text-center pt-2 pb-2 pl-3 pr-3" >
+                                                    <i class="far fa-heart text-danger favoriteButtonAnnotation" ></i>
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </a>
+                                <div class="product__item__text">
+                                    <h6 th:text="${newArrivals.get(i).name}">Piqué Biker Jacket</h6>
+                                    <a th:href="@{/product/{id}/{slug}(id=${newArrivals.get(i).id}, slug=${newArrivals.get(i).slug})}" class="add-cart">Xem chi tiết</a>
+                                    <div class="rating d-flex">
+                                        <!-- Loop for full stars -->
+                                        <i class="fa fa-star mr-1 text-warning " th:each="star, iterStat : ${#numbers.sequence(1, T(java.lang.Math).floor(newArrivals.get(i).rating))}"></i>
+                                        <!-- Half star if rating has a decimal part -->
+                                        <i class="fa fa-star-half-o mr-1 text-warning" th:if="${newArrivals.get(i).rating % 1 != 0}"></i>
+                                        <!-- Loop for empty stars -->
+                                        <th:block th:if="${newArrivals.get(i).rating<=4}">
+                                            <i class="fa fa-star-o mr-1 text-warning" th:each="star, iterStat : ${#numbers.sequence(T(java.lang.Math).ceil(newArrivals.get(i).rating)+1 , 5)}"></i>
+                                        </th:block>
+                                    </div>
+                                    <h5 th:if="${newArrivals.get(i).discount!=null}"> <span class="formatted-price" th:text="${newArrivals.get(i).newPrice}"></span> </h5>
+                                    <h5 th:if="${newArrivals.get(i).discount==null}"><span class="formatted-price" th:text="${newArrivals.get(i).price}"></span> </h5>
+                                    <div class="product__color__select">
+                                        <label th:each="color : ${newArrivals.get(i).colors}" th:style="'background: ' + ${color.colorCode}+';border: 1px solid #e5e5e5; !important'" th:for="${'color_' + color.id}" >
+                                            <input type="radio" th:id="${'color_' + color.id}" th:value="${color.id}">
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 mix hot-sales">
+                            <div class="product__item">
+                                <a th:href="@{/product/{id}/{slug}(id=${hotSales.get(i).id}, slug=${hotSales.get(i).slug})}">
+                                    <div class="product__item__pic set-bg" th:data-setbg="${hotSales.get(i).poster}">
+                                        <span th:if="${hotSales.get(i).discount!=null}" class="label">Khuyến mại</span>
+                                        <ul class="product__hover">
+                                            <li class="btnFavorite" sec:authorize="isAuthenticated()">
+                                                <!-- Sử dụng div thay vì button và bắt sự kiện click -->
+                                                <button class="border-0 push-favorite bg-white text-center pt-2 pb-2 pl-3 pr-3" th:data-product-id="${hotSales.get(i).id}">
+                                                    <i class="fas fa-heart text-danger" th:if="${#lists.contains(favoriteProductIds, hotSales.get(i).id)}"></i>
+                                                    <i class="far fa-heart text-danger" th:unless="${#lists.contains(favoriteProductIds, hotSales.get(i).id)}"></i>
+                                                </button>
+                                            </li>
+                                            <li sec:authorize="!isAuthenticated()">
+                                                <button class="border-0 push-favorite bg-white text-center pt-2 pb-2 pl-3 pr-3" >
+                                                    <i class="far fa-heart text-danger favoriteButtonAnnotation" ></i>
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </a>
+                                <div class="product__item__text">
+                                    <h6 th:text="${hotSales.get(i).name}">Piqué Biker Jacket</h6>
+                                    <a th:href="@{/product/{id}/{slug}(id=${hotSales.get(i).id}, slug=${hotSales.get(i).slug})}" class="add-cart">Xem chi tiết</a>
+                                    <div class="rating d-flex">
+                                        <!-- Loop for full stars -->
+                                        <i class="fa fa-star mr-1 text-warning " th:each="star, iterStat : ${#numbers.sequence(1, T(java.lang.Math).floor(hotSales.get(i).rating))}"></i>
+                                        <!-- Half star if rating has a decimal part -->
+                                        <i class="fa fa-star-half-o mr-1 text-warning" th:if="${hotSales.get(i).rating % 1 != 0}"></i>
+                                        <!-- Loop for empty stars -->
+                                        <th:block th:if="${hotSales.get(i).rating<=4}">
+                                            <i class="fa fa-star-o mr-1 text-warning" th:each="star, iterStat : ${#numbers.sequence(T(java.lang.Math).ceil(hotSales.get(i).rating)+1 , 5)}"></i>
+                                        </th:block>
+                                    </div>
+                                    <h5 th:if="${hotSales.get(i).discount!=null}"> <span class="formatted-price" th:text="${hotSales.get(i).newPrice}"></span> </h5>
+                                    <h5 th:if="${hotSales.get(i).discount==null}"><span class="formatted-price" th:text="${hotSales.get(i).price}"></span> </h5>
+                                    <div class="product__color__select">
+                                        <label th:each="color : ${hotSales.get(i).colors}" th:style="'background: ' + ${color.colorCode}+';border: 1px solid #e5e5e5; !important'" th:for="${'color_' + color.id}" >
+                                            <input type="radio" th:id="${'color_' + color.id}" th:value="${color.id}">
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </th:block>
+                </div>
+            </div>
+        </section>
+        <!-- Product Section End -->
+
+        <!-- Break Banner Begin-->
+        <section class="break-banner spad ">
+            <a th:href="${allBanners.get(1).url}">
+                <img class="img-fluid" id="banner-2" th:src="${allBanners.get(1).thumbnail}" alt="promo-banner-1">
+            </a>
+        </section>
+        <!-- Break Banner End-->
+
+        <!-- Latest Blog Section Begin -->
+        <section class="latest spad">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="section-title">
+                            <span>Bài Viết Mới Nhất</span>
+                            <h2>Sự Kiện Thời Trang</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 col-md-6 col-sm-6" th:each="blog : ${latestBlog}">
+                        <div class="blog__item">
+                            <a th:href="@{/blog/{id}/{slug} (id=${blog.id}, slug=${blog.slug})}">
+                                <div class="blog__item__pic set-bg" th:data-setbg="${blog.thumbnail}"></div>
+                            </a>
+                            <div class="blog__item__text">
+                                <span><img src="/web-assets/img/icon/calendar.png" alt=""> [[${#temporals.format(blog.createdAt,'dd/MM/yyyy')}]]</span>
+                                <h5 th:text="${blog.title}">What Curling Irons Are The Best Ones</h5>
+                                <a th:href="@{/blog/{id}/{slug} (id=${blog.id}, slug=${blog.slug})}">Đọc Thêm</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Latest Blog Section End -->
+    </th:block>
+
+    <th:block id="js">
+        <div sec:authorize="isAuthenticated()">
+            <script>
+                let userId = [[${#authentication.principal.user.id}]];
+                console.log("User ID:", userId); // Example usage
+                let favoriteProductIds = [[${favoriteProductIds}]]
+            </script>
+        </div>
+        <script src="/web-assets/js/favorite.js"></script>
+        <script th:inline="javascript">
+            document.addEventListener('DOMContentLoaded', function() {
+                // Định dạng tất cả các giá
+                document.querySelectorAll('.formatted-price').forEach(function(element) {
+                    let rawValue = parseLong(element.textContent);
+                    element.textContent = formatCurrency(rawValue);
+                });
+            });
+        </script>
+    </th:block>
+</body>
+
+</html>

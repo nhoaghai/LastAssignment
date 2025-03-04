@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout/layout :: layout(~{:: title},~{:: #css},~{:: .content-wrapper},~{:: #js})}">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tạo đơn hàng</title>
+
+    <th:block id="css">
+        <!--Easymde-->
+        <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/highlight.js/latest/styles/github.min.css" />
+
+        <!--Summernote-->
+        <link rel="stylesheet" href="/admin-assets/plugins/summernote/summernote-bs4.min.css">
+
+        <!--Select2-->
+        <link rel="stylesheet" href="/admin-assets/plugins/select2/css/select2.min.css" />
+        <style>
+            /* CSS cho thẻ <li> trong danh sách sản phẩm */
+            .checkout__total__products li {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 5px 0;
+                border-bottom: 1px solid #ddd; /* Thêm đường viền dưới mỗi mục */
+            }
+
+            /* CSS cho nút xóa */
+            .remove-item {
+                background-color: #dc3545; /* Màu nền đỏ */
+                border: none;
+                color: white; /* Màu chữ trắng */
+                padding: 5px 10px;
+                border-radius: 3px;
+                cursor: pointer;
+                font-size: 12px; /* Kích thước chữ nhỏ */
+                line-height: 1; /* Đảm bảo nút không cao hơn các phần tử khác */
+            }
+
+            /* Đổi màu khi hover vào nút xóa */
+            .remove-item:hover {
+                background-color: #c82333;
+                color: white;
+            }
+
+            /* Đảm bảo nút xóa không bị cuộn */
+            .remove-item {
+                margin-left: 10px;
+            }
+
+            /* CSS cho tổng tiền */
+            .checkout__total__products li {
+                font-size: 16px;
+            }
+            .checkout__total__products li span{
+                margin-left: 5px;
+            }
+
+            /* CSS cho tổng tiền, giảm giá và số tiền */
+            .checkout__total__all {
+                margin-top: 15px;
+                font-weight: bold;
+            }
+
+            .checkout__total__all li {
+                display: flex;
+                justify-content: space-between;
+                padding: 5px 0;
+            }
+
+            /* Thêm khoảng cách giữa tiêu đề và danh sách sản phẩm */
+            .checkout__order {
+                margin-bottom: 20px;
+            }
+
+            /* Đảm bảo các thông tin khách hàng nổi bật */
+            .customer-info {
+                display: flex;
+                flex-direction: column;
+                margin-top: 20px;
+            }
+
+            .customer-info div {
+                display: flex;
+                margin-bottom: 10px;
+            }
+
+            .customer-info strong {
+                width: 150px;
+                flex-shrink: 0;
+            }
+
+            .customer-info span {
+                flex-grow: 1;
+            }
+
+        </style>
+    </th:block>
+
+
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-12">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a th:href="@{/admin/dashboard}">Dashboard</a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a th:href="@{/admin/orders}">order</a>
+                            </li>
+                            <li class="breadcrumb-item active">
+                                Tạo đơn hàng
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+
+                <div class="row py-2">
+                    <div class="col-6">
+                        <button type="button" class="btn btn-info px-4" id="btnCreateOrder">
+                            Tạo
+                        </button>
+                        <button type="button" class="btn bg-primary btn-info px-4" id="btnModalUser">
+                            Chọn user
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 id="userChosen"><strong>User đang được chọn là: </strong></h5>
+                                    <button
+                                            disabled
+                                            id="btnModalAddress"
+                                            type="button"
+                                            class="btn btn-dark text-white rounded mb-3"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#address-modal">
+                                        Chọn địa chỉ giao hàng
+                                    </button>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <form id="form-order">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <h4><strong>Thông tin khách hàng</strong></h4>
+                                            <div class="form-group">
+                                                <label>Email</label>
+                                                <input type="text" class="form-control" placeholder="Email" id="email" name="email"/>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Tên người nhận</label>
+                                                <input type="text" class="form-control" placeholder="Tên người nhận" id="nameCustomer" name="nameCustomer"/>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Số điện thoại</label>
+                                                <input type="text" class="form-control" placeholder="Số điện thoại" id="phone" name="phone"/>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Ghi chú đơn hàng</label>
+                                                <textarea id="orderNotes" class="form-control" rows="3" name="orderNotes" placeholder="Nhập ghi chú đơn hàng ở đây..."></textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <h4><strong>Thông tin địa chỉ</strong></h4>
+                                            <div class="form-group">
+                                                <label>Tỉnh/Thành Phố</label>
+                                                <select id="province" name="province" class="form-control">
+                                                    <option value="">Chọn Tỉnh/Thành Phố</option>
+                                                    <!-- Options sẽ được tải từ API -->
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Quận/Huyện</label>
+                                                <select id="district" name="district" class="form-control" disabled>
+                                                    <option value="">Chọn Quận/Huyện</option>
+                                                    <!-- Options sẽ được tải từ API -->
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Phường/Xã</label>
+                                                <select id="ward" name="ward" class="form-control" disabled>
+                                                    <option value="">Chọn Phường/Xã</option>
+                                                    <!-- Options sẽ được tải từ API -->
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Địa chỉ cụ thể</label>
+                                                <input type="text" class="form-control" placeholder="Địa chỉ cụ thể" id="addressDetail" name="addressDetail"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <h4><strong>Thanh toán / Vận chuyển</strong></h4>
+                                            <div class="form-group">
+                                                <label>Phương thức thanh toán</label>
+                                                <select id="payment" name="payment" class="form-control">
+                                                    <option value="">Chọn phương thức thanh toán</option>
+                                                    <option value="VNPAY">VNPAY</option>
+                                                    <option value="COD">Thanh toán khi nhận hàng</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Phương thức vận chuyển</label>
+                                                <select id="delivery" name="delivery" class="form-control">
+                                                    <option value="">Chọn phương thức vận chuyển</option>
+                                                    <option value="STANDARD">Giao hàng tiêu chuẩn</option>
+                                                    <option value="EXPRESS">Giao hàng nhanh</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="row d-flex justify-content-end">
+                    <div class="col-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="checkout__order" id="orderDetail-info">
+                                            <h4 class="order__title"><strong>Thông tin sản phẩm</strong></h4>
+                                            <ul class="checkout__total__products" id="orderDetail-group">
+                                                <!-- Các sản phẩm sẽ được thêm vào đây -->
+                                            </ul>
+                                            <ul class="checkout__total__all">
+                                                <li>Thành tiền <span id="total-price">0 VNĐ</span></li>
+                                                <li>Giảm giá <span id="discount-amount">0 VNĐ</span></li>
+                                                <li>Tổng tiền <span id="final-total">0 VNĐ</span></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 d-flex justify-content-end">
+                    <button type="button" class="btn btn-info px-4 m-2" id="btnModalProduct">
+                        Thêm sản phẩm
+                    </button>
+                    <button type="button" class="btn bg-primary btn-info px-4 m-2" id="btnModalCoupon">
+                        Chọn mã giảm giá
+                    </button>
+                    <button type="button" class="btn btn-danger px-4 m-2 d-none" id="btnRemoveCoupon">
+                        Hủy mã giảm giá
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!--Modal User-->
+        <div class="modal fade" id="modalUser" tabindex="-1" role="dialog" aria-labelledby="modalUserLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalUserLabel">Chọn người dùng</h5>
+                    </div>
+                    <div class="modal-body">
+                        <select id="user-select" class="form-control">
+                            <option value="">Chọn người dùng</option>
+                            <option th:each="user : ${users}"
+                                    th:value="${user.id}"
+                                    th:text="${user.name}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="btnSelectUser">Xác nhận</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Modal Product-->
+        <div class="modal fade" id="modalProduct" tabindex="-1" role="dialog" aria-labelledby="modalProductLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form id="form-product">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalProductLabel">Chọn sản phẩm</h5>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label>Sản phẩm</label>
+                                <select id="product" name="product" class="form-control">
+                                    <option value="">Chọn sản phẩm</option>
+                                    <option th:each="product : ${products}"
+                                            th:value="${product.id}"
+                                            th:text="${product.name}">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Màu sắc</label>
+                                <select id="color" name="color" class="form-control" disabled>
+                                    <option value="">Chọn màu sắc</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Kích thước</label>
+                                <select id="size" name="size" class="form-control" disabled>
+                                    <option value="">Chọn kích thước</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Số lượng</label>
+                                <input type="number" class="form-control" placeholder="Nhập số lượng" id="quantity" name="quantity"/>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" id="btnSelectProduct">Xác nhận</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!--Modal Coupon-->
+        <div class="modal fade" id="modalCoupon" tabindex="-1" role="dialog" aria-labelledby="modalCouponLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalCouponLabel">Chọn mã giảm giá</h5>
+                    </div>
+                    <div class="modal-body">
+                        <select id="coupon-select" class="form-control">
+                            <option value="">Chọn mã giảm giá</option>
+                            <option th:each="coupon : ${coupons}"
+                                    th:value="${coupon.id}"
+                                    th:text="${coupon.code} + ' - Giảm giá ' + ${coupon.amount} + '%'">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="btnSelectCoupon">Xác nhận</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Modal Address-->
+        <div class="modal fade" id="address-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Chọn địa chỉ giao hàng</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Thông tin địa chỉ</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody id="address-list">
+                            <!-- Ví dụ địa chỉ -->
+                            <tr>
+                                <td class="align-middle">
+                                    <h5>&nbsp;
+                                        <span><strong>(Mặc định)</strong></span>
+                                    </h5>
+                                    <p class="m-0"></p>
+                                    <p class="m=0 address-w-d-p"></p>
+                                </td>
+                                <td class="text-end">
+                                    <button  type="button" class="btn btn-success text-white btn-sm" ><i class="fas fa-check"></i></button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block id="js">
+    //Easymde
+    <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/highlight.js/latest/highlight.min.js"></script>
+
+    //Summernote
+    <script src="/admin-assets/plugins/summernote/summernote-bs4.min.js"></script>
+
+    //Select2
+    <script src="/admin-assets/plugins/select2/js/select2.full.min.js"></script>
+
+    <script th:inline="javascript">
+        let users = [[${users}]]
+        let products = [[${products}]]
+        let coupons = [[${coupons}]]
+    </script>
+    <script src="/admin-assets/js/order-create/order-create-user.js"></script>
+    <script src="/admin-assets/js/order-create/order-create-address.js"></script>
+    <script src="/admin-assets/js/order-create/order-create-product.js"></script>
+    <script src="/admin-assets/js/order-create/order-creat-coupon.js"></script>
+    <script src="/admin-assets/js/order-create/order-create-order.js"></script>
+</th:block>
+</body>
+
+</html>

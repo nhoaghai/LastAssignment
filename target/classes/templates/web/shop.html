@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zxx"  xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:replace="~{web/layout/layout :: layout(~{::title},~{:: #css},~{:: #content},~{:: #js})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Male_Fashion Template">
+    <meta name="keywords" content="Male_Fashion, unica, creative, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Male-Fashion | Sản Phẩm</title>
+
+    <th:block id="css">
+        <link rel="stylesheet" href="/web-assets/css/nice-select.css" type="text/css">
+        <style>
+            .selected {
+                border: 2px solid #F7941D; /* Ví dụ: làm nổi bật màu được chọn */
+            }
+            .shop__sidebar__accordion .card-heading1{
+                cursor: pointer;
+            }
+
+            .shop__sidebar__accordion .card-heading1 a {
+                color: #000000;
+                font-size: 15px;
+                font-weight: 600;
+                text-transform: uppercase;
+                display: block;
+            }
+            .shop__sidebar__accordion .card-heading1 a:after,
+            .shop__sidebar__accordion .card-heading1>a.active[aria-expanded=false]:after {
+                font-size: 15px;
+                font-weight: 600;
+                color: #000000;
+                position: absolute;
+                right: 0;
+                top: 2px;
+                line-height: 20px;
+            }
+
+            .shop__sidebar__accordion .card-heading1.active a:after {
+                font-size: 15px;
+                font-weight: 600;
+                color: #000000;
+                position: absolute;
+                right: 0;
+                top: 2px;
+                line-height: 20px;
+            }
+            .pagination .page-item .page-link {
+                color: black; /* Màu chữ */
+                background-color: white; /* Màu nền */
+                border: 1px solid #ddd; /* Đường viền */
+            }
+            .pagination .page-item.active .page-link {
+                color: white; /* Màu chữ khi được chọn */
+                background-color: black; /* Màu nền khi được chọn */
+                border: 1px solid black; /* Đường viền khi được chọn */
+            }
+            .pagination .page-item.disabled .page-link {
+                color: #6c757d; /* Màu chữ khi bị vô hiệu hóa */
+                background-color: white; /* Màu nền khi bị vô hiệu hóa */
+                border: 1px solid #ddd; /* Đường viền khi bị vô hiệu hóa */
+            }
+            .pagination .page-item .page-link:hover {
+                color: black; /* Màu chữ khi hover */
+                background-color: #f8f9fa; /* Màu nền khi hover */
+                border: 1px solid #ddd; /* Đường viền khi hover */
+            }
+            .shop__sidebar__categories label.black {
+                color: black !important;
+            }
+            .shop__sidebar__categories label {
+                color: #b7b7b7!important;
+                font-size: 15px!important;
+                line-height: 32px;
+                -webkit-transition: all, 0.3s!important;
+                -o-transition: all, 0.3s!important;
+                transition: all, 0.3s!important;
+            }
+            .shop__sidebar__categories label:hover {
+                color: #111111 !important;
+            }
+            .shop__sidebar__price a{
+                color: #b7b7b7 !important;
+                font-size: 15px !important;
+                line-height: 32px !important;
+                -webkit-transition: all, 0.3s!important;
+                -o-transition: all, 0.3s!important;
+                transition: all, 0.3s !important;
+                cursor: pointer;
+            }
+            .shop__sidebar__price a:hover{
+                color: #111111 !important;
+            }
+            .shop__sidebar__price .active{
+                color: #111111 !important;
+            }
+            .hidden {
+                display: none;
+            }
+        </style>
+    </th:block>
+</head>
+
+<body>
+    <th:block id="content">
+        <!-- Breadcrumb Section Begin -->
+        <section class="breadcrumb-option">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="breadcrumb__text">
+                            <h4>Sản Phẩm</h4>
+                            <div class="breadcrumb__links">
+                                <a th:href="@{/}">Trang Chủ</a>
+                                <span>Sản Phẩm</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Breadcrumb Section End -->
+
+        <!-- Shop Section Begin -->
+        <section class="shop spad">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <div class="shop__sidebar">
+                            <div class="shop__sidebar__search">
+                                <form id="searchForm" action="#">
+                                    <input id="searchInput" type="text" placeholder="Tìm kiếm...">
+                                    <button type="submit"><span class="icon_search"></span></button>
+                                </form>
+                            </div>
+                            <div class="shop__sidebar__accordion">
+                                <div class="accordion" id="accordionExample">
+                                    <div class="card">
+                                        <div class="card-heading">
+                                            <a data-toggle="collapse" href="#collapseOne">Danh mục</a>
+                                        </div>
+                                        <div id="collapseOne" class="collapse show" data-parent="#accordionExample">
+                                            <div class="card-body">
+                                                <div class="shop__sidebar__categories">
+                                                    <ul class="nice-scroll">
+                                                        <li th:each="category : ${categories}">
+                                                            <div class="card-heading1" th:if="${category.parentId == null}">
+                                                                <a data-toggle="collapse" th:href="'#collapse_cate_' + ${category.id}" th:text="${category.name}">Áo</a>
+                                                            </div>
+                                                            <div th:id="'collapse_cate_' + ${category.id}" class="collapse show">
+                                                                <div class="shop__sidebar__categories">
+                                                                    <ul style="height: auto">
+                                                                        <li th:if="${category.parentId == null}">
+                                                                            <label th:text="'Tất cả ' + ${category.name}"
+                                                                                   th:class="${param.categoryParentId != null && param.categoryParentId[0].equals(category.id.toString())} ? 'black' : ''"
+                                                                                   th:onclick="'UpdateCategoryParent('+${category.id}+')'"
+                                                                                   th:id="'categoryParent-'+${category.id}">
+                                                                            </label>
+                                                                        </li>
+                                                                        <li th:each="subCate : ${categories}" th:if="${subCate.parentId == category.id}">
+                                                                            <label th:text="${subCate.name}"
+                                                                                   th:class="${param.categoryChildId != null && param.categoryChildId[0].equals(subCate.id.toString())} ? 'black' : ''"
+                                                                                   th:onclick="'UpdateCategoryChild('+${subCate.id}+')'"
+                                                                                   th:id="'categoryChild-'+${subCate.id}">
+                                                                            </label>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <!--Price-->
+                                    <div class="card">
+                                        <div class="card-heading">
+                                            <a data-toggle="collapse" data-target="#collapseThree">Giá</a>
+                                        </div>
+                                        <div id="collapseThree" class="collapse show" data-parent="#accordionExample">
+                                            <div class="card-body">
+                                                <div class="shop__sidebar__price">
+                                                    <ul>
+                                                        <li><a id="price-1" onclick="changePrice(1)" data-start-price="0.0" data-end-price="300000.0">0.0 VNĐ - 300000.0 VNĐ</a></li>
+                                                        <li><a id="price-2" onclick="changePrice(2)" data-start-price="300000.0" data-end-price="500000.0">300000.0 VNĐ - 500000.0 VNĐ</a></li>
+                                                        <li><a id="price-3" onclick="changePrice(3)" data-start-price="500000.0" data-end-price="1000000.0">500000.0 VNĐ - 1000000.0 VNĐ</a></li>
+                                                        <li><a id="price-4" onclick="changePrice(4)" data-start-price="1000000.0" data-end-price="100000000.0">1000000.0 VNĐ trở lên</a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card">
+                                        <button class="p-2 text-white btn-danger border-0 rounded-2 hidden" id="btnClearSort">
+                                            Bỏ chọn <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-9">
+                        <div class="shop__product__option">
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <div class="shop__product__option__left">
+                                        <p>Hiển thị <th:block th:text="${pageData.getTotalElements()}"></th:block> kết quả</p>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <div class="shop__product__option__right">
+                                        <p>Sắp Xếp Theo Giá:</p>
+                                        <select id="sortSelect">
+                                            <option value="asc">Thấp Đến Cao</option>
+                                            <option value="desc">Cao Đến Thấp</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4 col-md-6 col-sm-6" th:each="product : ${pageData.getContent()}">
+                                <div class="product__item">
+                                    <a th:href="@{/product/{id}/{slug}(id=${product.id}, slug=${product.slug})}">
+                                        <div class="product__item__pic set-bg" th:data-setbg="${product.poster}">
+                                            <span th:if="${product.discount != null}" class="label">Khuyến mại</span>
+                                            <ul class="product__hover" >
+                                                <li class="btnFavorite" sec:authorize="isAuthenticated()">
+                                                    <!-- Sử dụng div thay vì button và bắt sự kiện click -->
+                                                    <button class="border-0 push-favorite bg-white text-center pt-2 pb-2 pl-3 pr-3" th:data-product-id="${product.id}">
+                                                        <i class="fas fa-heart text-danger" th:if="${#lists.contains(favoriteProductIds, product.id)}"></i>
+                                                        <i class="far fa-heart text-danger" th:unless="${#lists.contains(favoriteProductIds, product.id)}"></i>
+                                                    </button>
+                                                </li>
+                                                <li sec:authorize="!isAuthenticated()">
+                                                    <button class="border-0 push-favorite bg-white text-center pt-2 pb-2 pl-3 pr-3" >
+                                                        <i class="far fa-heart text-danger favoriteButtonAnnotation" ></i>
+                                                    </button>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </a>
+                                    <div class="product__item__text">
+                                        <h6 th:text="${product.name}">Piqué Biker Jacket</h6>
+                                        <a th:href="@{/product/{id}/{slug}(id=${product.id}, slug=${product.slug})}" class="add-cart">Xem chi tiết</a>
+                                        <div class="rating d-flex">
+                                            <!-- Loop for full stars -->
+                                            <i class="fa fa-star mr-1 text-warning" th:each="star, iterStat : ${#numbers.sequence(1, T(java.lang.Math).floor(product.rating))}"></i>
+                                            <!-- Half star if rating has a decimal part -->
+                                            <i class="fa fa-star-half-o mr-1 text-warning" th:if="${product.rating % 1 != 0}"></i>
+                                            <!-- Loop for empty stars -->
+                                            <th:block th:if="${product.rating <= 4}">
+                                                <i class="fa fa-star-o mr-1 text-warning" th:each="star, iterStat : ${#numbers.sequence(T(java.lang.Math).ceil(product.rating) + 1, 5)}"></i>
+                                            </th:block>
+                                        </div>
+                                        <h5 th:if="${product.discount!=null}"> <span class="formatted-price" th:text="${product.newPrice}"></span> </h5>
+                                        <h5 th:if="${product.discount==null}"><span class="formatted-price" th:text="${product.price}"></span> </h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="d-flex justify-content-end mt-4 text-dark">
+                            <nav aria-label="...">
+                                <ul class="pagination" th:if="${pageData.getTotalPages()!=1}">
+                                    <li class="page-item " th:classappend="${currentPage==1 ? 'disabled' : ''}">
+                                        <a class="page-link" th:onclick="'changePage('+${currentPage-1}+')'" style="cursor: pointer">Trang trước</a>
+                                    </li>
+                                    <li class="page-item" th:each="number: ${#numbers.sequence(1, pageData.getTotalPages())}" th:classappend="${currentPage==number ? 'active' :''}">
+                                        <a class="page-link" th:onclick="'changePage('+${number}+')'" th:text="${number}" style="cursor: pointer">1</a>
+                                    </li>
+
+                                    <li class="page-item" th:classappend="${currentPage==pageData.getTotalPages()? 'disabled':''}">
+                                        <a class="page-link"  th:onclick="'changePage('+${currentPage+1}+')'" style="cursor: pointer">Trang sau</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </section>
+        <!-- Shop Section End -->
+    </th:block>
+
+    <th:block id="js">
+        <script src="/web-assets/js/jquery.nice-select.min.js"></script>
+        <script src="/web-assets/js/main.js"></script>
+        <div sec:authorize="isAuthenticated()">
+            <script>
+                let userId = [[${#authentication.principal.user.id}]];
+                console.log("User ID:", userId); // Example usage
+                let favoriteProductIds =[[${favoriteProductIds}]]
+            </script>
+        </div>
+        <script src="/web-assets/js/favorite.js"></script>
+        <script src="/web-assets/js/shop/shop-sort.js"></script>
+        <script th:inline="javascript">
+            document.addEventListener('DOMContentLoaded', function() {
+                // Định dạng tất cả các giá
+                document.querySelectorAll('.formatted-price').forEach(function(element) {
+                    let rawValue = parseLong(element.textContent);
+                    element.textContent = formatCurrency(rawValue);
+                });
+            });
+        </script>
+    </th:block>
+</body>
+
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zxx" xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:replace="~{web/layout/layout :: layout(~{::title},~{:: #css},~{:: #content},~{:: #js})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Male_Fashion Template">
+    <meta name="keywords" content="Male_Fashion, unica, creative, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Male-Fashion | Chi Tiết Bài Viết</title>
+
+    <th:block id="css">
+        <style>
+            .avatar{
+                width: 50px;
+                height: 50px;
+                object-fit: cover;
+                border-radius: 50%;
+            }
+            .login-link:hover{
+                color: red!important;
+            }
+        </style>
+    </th:block>
+</head>
+
+<body>
+    <th:block id="content">
+        <!-- Blog Details Hero Begin -->
+        <section class="blog-hero spad">
+            <div class="container">
+                <div class="row d-flex justify-content-center">
+                    <div class="col-lg-9 text-center">
+                        <div class="blog__hero__text">
+                            <h2 th:text="${blog.title}"></h2>
+                            <ul>
+                                <li>By [[${blog.user.name}]]</li>
+                                <li>[[${#temporals.format(blog.createdAt,'dd/MM/yyyy')}]]</li>
+                                <li id="comments-size">[[${comments.size()}]] Comments</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Blog Details Hero End -->
+
+        <!-- Blog Details Section Begin -->
+        <section class="blog-details spad">
+            <div class="container">
+                <div class="row d-flex justify-content-center">
+                    <div class="col-lg-12">
+                        <div class="blog__details__pic">
+                            <img th:src="${blog.thumbnail}" alt="">
+                        </div>
+                    </div>
+                    <div class="col-lg-8">
+                        <div class="blog__details__content">
+                            <div class="blog__details__share">
+                                <span>share</span>
+                                <ul>
+                                    <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                                    <li><a href="#" class="twitter"><i class="fa fa-twitter"></i></a></li>
+                                    <li><a href="#" class="youtube"><i class="fa fa-youtube-play"></i></a></li>
+                                    <li><a href="#" class="linkedin"><i class="fa fa-linkedin"></i></a></li>
+                                </ul>
+                            </div>
+                            <div class="blog__details__text">
+                                <p th:utext="${blog.content}"></p>
+                            </div>
+                            <div class="blog__details__option">
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-6">
+                                        <div class="blog__details__author">
+                                            <div class="blog__details__author__pic">
+                                                <img class="avatar" th:src="${blog.user.avatar}" alt="">
+                                            </div>
+                                            <div class="blog__details__author__text">
+                                                <h5>[[${blog.user.name}]]</h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-6">
+                                        <div class="blog__details__tags">
+                                            <a th:each="tag : ${blog.tags}" th:href="@{/blog/tag/{id} (id=${tag.id})}">#[[${tag.name}]]</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="blog__details__comment">
+                    <div class="d-flex justify-content-center">
+                        <p sec:authorize="!isAuthenticated()">
+                            Để viết bình luận cần <span><a class="login-link" th:href="@{/login}">đăng nhập</a></span>
+                        </p>
+                        <button sec:authorize="isAuthenticated()"
+                                type="button"
+                                class="btn btn-dark text-white rounded"
+                                data-bs-toggle="modal"
+                                data-bs-target="#comment-modal">
+                            Bình luận
+                        </button>
+                    </div>
+                    <hr>
+                    <!--Modal comment-->
+                    <div class="modal fade" id="comment-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Tạo bình luận</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="form-comment">
+                                        <div class="form-group">
+                                            <input type="hidden"  id="rating-input" name="rating" />
+                                        </div>
+                                        <div class="mb-3 form-group">
+                                            <label for="comment-content" class="form-label">Nội dung bình luận</label>
+                                            <textarea class="form-control" id="comment-content" rows="3" name="content"></textarea>
+                                        </div>
+                                        <div class="mb-3">
+                                            <button type="submit" class="btn" style="background-color: #f3f2ee" id="btn-create-comment" >Tạo</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comment-list">
+                        <div class="comment-info rounded-5 p-3 mt-3" style="background-color: #f3f2ee" th:each="comment :${comments}">
+                            <div class="d-flex align-items-center">
+                                <img th:src="${comment.getUser().getAvatar()}" alt="Avatar" class="avatar rounded-circle ">
+                                <div class="mt-2 ml-2" >
+                                    <h5 class=" ml-1 mt-1" th:text="${comment.getUser().getName()}">Người Bình Luận</h5>
+                                </div>
+                                <div class="ml-auto">
+                                    <p class="pr-2 mt-2 text-body-tertiary" th:text="${#temporals.format(comment.createdAt,'dd/MM/yyyy')}"></p>
+                                </div>
+                            </div>
+                            <div class="comment-content ps-1 pt-2" th:text="${comment.getContent()}">
+                                <p>Phim diễn biến chậm. Được mấy tập cuối là cuốn. Mấy tập đầu tới giũa tua nhanh chút.</p>
+                            </div>
+                            <div class="mt-2" sec:authorize="isAuthenticated()" th:if="${#authentication.principal.user.id==comment.user.id}">
+                                <th:block ></th:block>
+                                <button th:onclick="'openEditModal('+${comment.getId()}+')'" style="border: none">Sửa</button>
+                                <button th:onclick="'deleteCmt('+${comment.getId()}+')'"  style="border: none">Xóa</button>
+                            </div>
+                            <hr>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Blog Details Section End -->
+    </th:block>
+
+    <th:block id="js">
+        <div sec:authorize="isAuthenticated()">
+            <script>
+                let userId = [[${#authentication.principal.user.id}]];
+                console.log("User ID:", userId); // Example usage
+            </script>
+        </div>
+        <script th:inline="javascript">
+            let comments = [[${comments}]]
+            let blogId = [[${blog.id}]]
+        </script>
+        <script src="/web-assets/js/blog/comment.js"></script>
+    </th:block>
+
+</body>
+
+</html>

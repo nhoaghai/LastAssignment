@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout/layout :: layout(~{:: title},~{:: #css},~{:: .content-wrapper},~{:: #js})}">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Chi tiết bài viết</title>
+
+
+   <th:block id="css">
+       <!--Easymde-->
+       <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css" />
+       <link rel="stylesheet" href="https://cdn.jsdelivr.net/highlight.js/latest/styles/github.min.css" />
+
+       <!--Summernote-->
+       <link rel="stylesheet" href="/admin-assets/plugins/summernote/summernote-bs4.min.css">
+
+       <!--Select2-->
+       <link rel="stylesheet" href="/admin-assets/plugins/select2/css/select2.min.css" >
+
+       <link rel="stylesheet" href="/admin-assets/dist/css/style.css">
+   </th:block>
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <div class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-12">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a th:href="@{/admin/dashboard}">Dashboard</a>
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a th:href="@{/admin/blogs}">Blog</a>
+                                </li>
+                                <li class="breadcrumb-item active" th:text="${blog.getTitle()}">
+                                    Thực hành làm ứng dụng Meal Finder API
+                                    với Javascript (Phần 2)
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main content -->
+            <section class="content">
+                <div class="container-fluid">
+                    <div class="row py-2">
+                        <div class="col-6">
+                            <button type="button" class="btn btn-default">
+                                <i class="fas fa-chevron-left"></i> Quay lại
+                            </button>
+                            <button type="button" class="btn btn-info px-4" id="btnUpdateBlog">
+                                Lưu
+                            </button>
+                        </div>
+
+                        <div class="col-6 d-flex justify-content-end">
+                            <button type="button" class="btn btn-danger px-4" id="btnDeleteBlog">
+                                Xóa
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <form id="form-blog">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                <div class="form-group">
+                                                    <label>Tiêu đề</label>
+                                                    <input type="text" class="form-control" id="title" name="title" th:value="${blog.getTitle()}"/>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>Nội dung</label>
+                                                    <textarea id="content" name="content" th:text="${blog.getContent()}"></textarea>
+                                                    <span class="invalid-feedback"></span>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>Mô tả ngắn</label>
+                                                    <textarea id="description" name="description" class="form-control" rows="3" th:text="${blog.getDescription()}"></textarea>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label>Trạng thái</label>
+                                                    <select id="status" class="form-control" th:value="${blog.getStatus()}? '1':'0'">
+                                                        <option value="0" th:selected="${!blog.getStatus()}">
+                                                            Nháp
+                                                        </option>
+                                                        <option value="1" th:selected="${blog.getStatus()}">
+                                                            Công khai
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Thể loại</label>
+                                                    <div class="select2-purple">
+                                                        <select class="select2 form-control" multiple="multiple"
+                                                                id="tag">
+                                                            <option th:each="tag :${tags}" th:text="${tag.name}" th:value="${tag.id}">
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="thumbnail-preview-container mb-3">
+                                                        <img th:src="${blog.thumbnail}" alt="" id="thumbnail">
+                                                    </div>
+                                                    <label for="input-thumbnail" class="btn btn-info btn-flat" data-toggle="modal" data-target="#modal-xl">
+                                                        Chọn hình ảnh
+                                                    </label>
+                                                    <input type="file" id="input-thumbnail" class="d-none">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <th:block id="js">
+        //Eassymde
+        <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/highlight.js/latest/highlight.min.js"></script>
+
+        //Summernote
+        <script src="/admin-assets/plugins/summernote/summernote-bs4.min.js"></script>
+
+        //Select2
+        <script src="/admin-assets/plugins/select2/js/select2.full.min.js"></script>
+
+        <script th:inline="javascript">
+
+          //Initialize Select2 Elements
+          $(".select2").select2();
+
+          let currentBlog = [[${blog}]]
+          console.log(currentBlog)
+
+          let tagList = currentBlog.tags;
+          tagList=tagList.map(tag => tag.id.toString())
+          $('#tag').val(tagList);
+          $('#tag').trigger('change');
+
+
+            // Summernote
+            $('#content').summernote({
+                height: 600,                 // set editor height
+                minHeight: null,             // set minimum height of editor
+                maxHeight: null,             // set maximum height of editor
+                focus: true,                 // set focus to editable area after initializing summernote
+                disableLinkTarget: true
+            });
+            let blog = [[${blog}]]
+            console.log(blog)
+            let titleEl = document.getElementById("title")
+            let descriptionEl = document.getElementById("description")
+            let statusEl = document.getElementById("status")
+            const btnUpdateBlog = document.getElementById("btnUpdateBlog")
+            const btnDeleteBlog = document.getElementById("btnDeleteBlog")
+
+            btnUpdateBlog.addEventListener("click", async (e)=>{
+                e.preventDefault()
+                if (!$('#form-blog').valid()){
+                    return;
+                }
+                let content = $('#content').summernote('code');
+                const data = {
+                    title: titleEl.value,
+                    content: content,
+                    description: descriptionEl.value,
+                    status : statusEl.value === "1",
+                    tagIds: $('#tag').val()
+                }
+                // Gọi API
+                try {
+                    let res = await axios.put(`/api/admin/blogs/${blog.id}`, data);
+                    toastr.success("Cập nhật blog thành công")
+                } catch (e) {
+                    console.log(e)
+                    toastr.error(e.response.data.message);
+                }
+            })
+
+            btnDeleteBlog.addEventListener("click", async (e)=>{
+                const confirm = window.confirm("Bạn có chắc chắn muốn xóa không")
+                if(confirm){
+                    try {
+                        const deleteRv = await axios.delete(`/api/admin/blogs/${currentBlog.id}`)
+                        console.log("Sự kiện xóa blog")
+                        toastr.success("Xóa thành công đánh giá")
+                        setTimeout(()=>{
+                            window.location.href='/admin/blogs'
+                        },1000)
+                    } catch (e) {
+                        console.log(e)
+                        toastr.error(e.response.data.message);
+                    }
+                }
+            })
+
+            $('#form-blog').validate({
+                rules: {
+                    title: {
+                        required: true,
+                        pattern: /^\s*\S.*$/, // Kiểm tra xem có ký tự nào không là khoảng trắng ở đầu không
+                    },
+                    content: {
+                        required: true,
+                        pattern: /^\s*\S.*$/, // Kiểm tra xem có ký tự nào không là khoảng trắng ở đầu không
+                    },
+                    description:{
+                        required: true,
+                        pattern: /^\s*\S.*$/, // Kiểm tra xem có ký tự nào không là khoảng trắng ở đầu không
+                    },
+                    tagIds: {
+                        required: true
+                    }
+                },
+                messages: {
+                    title: {
+                        required: "Vui lòng nhập tiêu đề",
+                        pattern: "Tiêu đề không được chỉ chứa khoảng trắng"
+                    },
+                    content: {
+                        required: "Vui lòng nhập nội dung",
+                        pattern: "Nội dung không được chỉ chứa khoảng trắng"
+                    },
+                    description:{
+                        required: "Vui lòng nhập mô tả",
+                        pattern: "Mô tả không được chỉ chứa khoảng trắng"
+                    },
+                    tagIds:{
+                        required: "Vui lòng chọn tag",
+                    }
+                },
+                errorPlacement: function (error, element) {
+                    if (element.attr("name") === "content") { // Kiểm tra nếu là trường nội dung
+                        error.appendTo(element.siblings("span")); // Hiển thị thông báo lỗi bên cạnh trường nội dung
+                    } else {
+                        error.addClass('invalid-feedback');
+                        element.closest('.form-group').append(error);
+                    }
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                }
+            });
+
+
+
+            //Upload Image
+            const inputThumbnailEl = document.getElementById("input-thumbnail")
+            const thumbnailEl = document.getElementById("thumbnail")
+            inputThumbnailEl.addEventListener("change",async (event) =>{
+                //lấy file upload
+                const files = event.target.files;
+
+                //Tạo đối tượng form data
+                const formData = new FormData();
+                formData.append("file",files[0])
+
+                //Gọi API
+                try {
+                    let res = await axios.post(`/api/admin/blogs/${blog.id}/upload-thumbnail`,formData)
+                    console.log(res)
+                    thumbnailEl.src = res.data;
+                }catch (e){
+                    console.log(e)
+                    toastr.error(e.response.data.message);
+                }
+            })
+        </script>
+    </th:block>
+
+</body>
+
+</html>

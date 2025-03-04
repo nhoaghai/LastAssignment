@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zxx" xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:replace="~{web/layout/layout :: layout(~{::title},~{:: #css},~{:: #content},~{:: #js})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Male_Fashion Template">
+    <meta name="keywords" content="Male_Fashion, unica, creative, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Male-Fashion | Xác nhận đơn hàng</title>
+
+    <th:block id="css">
+        <style>
+            .breadcrumb-section {
+                position: relative;
+                height: 300px; /* Thay đổi chiều cao theo nhu cầu */
+                background-size: cover; /* Đảm bảo hình ảnh phủ toàn bộ khu vực */
+                background-position: center; /* Căn chỉnh hình ảnh vào giữa phần tử */
+                background-repeat: no-repeat; /* Không lặp lại hình ảnh nền */
+                overflow: hidden; /* Ẩn bất kỳ phần nào của hình ảnh bị tràn ra ngoài */
+                display: flex; /* Sử dụng Flexbox để căn giữa nội dung */
+                align-items: center; /* Căn giữa theo chiều dọc */
+                justify-content: center; /* Căn giữa theo chiều ngang */
+            }
+
+            .breadcrumb-section::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5); /* Màu nền tối với độ trong suốt */
+                z-index: 1; /* Đặt lớp phủ tối lên trên hình ảnh */
+            }
+
+            .breadcrumb__text {
+                position: relative; /* Để các lớp phủ không che nội dung */
+                color: #fff; /* Màu chữ sáng để tương phản với nền tối */
+                z-index: 2; /* Đảm bảo văn bản hiển thị trên lớp phủ tối */
+            }
+
+            .breadcrumb__option h1 {
+                font-size: 4rem; /* Kích thước chữ */
+                font-weight: bold; /* Định dạng chữ đậm */
+                margin: 0; /* Loại bỏ khoảng cách bên ngoài */
+                color: white;
+            }
+            .verify-container {
+                background: #fff;
+                padding: 2rem;
+                border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                width: 100%;
+            }
+
+            .verify-text h2 {
+                margin-bottom: 0.5rem;
+
+            }
+
+            .verify-text p {
+                font-size: 17px;
+                color: #666;
+            }
+
+
+            .verify-form-input input {
+                padding-right: 2.5rem; /* Add padding to accommodate the eye icon */
+            }
+
+            .status-icon i{
+                font-size: 4rem;
+                margin-bottom: 1.5rem;
+            }
+            .status-container {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                margin-bottom: 40px;
+                margin-top: 40px;
+            }
+
+            .status-icon i{
+                font-size: 4rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .status-text {
+                text-align: center;
+            }
+
+            .status-text h4 {
+                font-weight: bold;
+                margin-bottom: 10px;
+            }
+        </style>
+    </th:block>
+</head>
+
+<body>
+<th:block id="content">
+    <section class="breadcrumb-section"  style="background-image: url(/web-assets/img/thumbnail/favoriteThumbnail.jpg)">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="breadcrumb__text">
+                        <div class="breadcrumb__option">
+                            <h1>Xác thực tài khoản</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="transaction-info mt-5 mb-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 offset-lg-3 col-md-8 offset-md-2">
+                    <div class="verify-container">
+                        <div id="custom-verify-form">
+                            <form id="form-verify">
+                                <div class="verify-form-container">
+                                    <div class="status-container">
+                                        <th:block th:if="${verifyResponse.success}">
+                                            <div class="status-icon">
+                                                <i class="fas fa-check-circle fa-lg text-success"></i>
+                                            </div>
+                                        </th:block>
+                                        <th:block th:if="${!verifyResponse.success}">
+                                            <div class="status-icon">
+                                                <i class="fas fa-times-circle fa-lg text-danger"></i>
+                                            </div>
+                                        </th:block>
+                                        <div class="status-text">
+                                            <th:block th:if="${verifyResponse.success}">
+                                                <h4 class="mb-2">[[${verifyResponse.message}]]</h4>
+                                                <p class="mt-2">Cảm ơn bạn đã xác thực tài khoản. Tài khoản của bạn hiện đã được liên kết với email!</p>
+                                            </th:block>
+                                            <th:block th:if="${!verifyResponse.success}">
+                                                <h4 class="mb-2">Xác thực tài khoản thất bại!</h4>
+                                                <p class="mt-2">[[${verifyResponse.message}]]</p>
+                                            </th:block>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+</th:block>
+
+<th:block id="js">
+    <script th:inline="javascript">
+
+    </script>
+</th:block>
+</body>
+
+</html>

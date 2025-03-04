@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zxx" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{web/layout/layout :: layout(~{::title},~{:: #css},~{:: #content},~{:: #js})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Male_Fashion Template">
+    <meta name="keywords" content="Male_Fashion, unica, creative, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Male-Fashion | Đăng Ký</title>
+
+    <th:block id="css">
+        <style>
+            .breadcrumb-section {
+                position: relative;
+                height: 300px; /* Thay đổi chiều cao theo nhu cầu */
+                background-size: cover; /* Đảm bảo hình ảnh phủ toàn bộ khu vực */
+                background-position: center; /* Căn chỉnh hình ảnh vào giữa phần tử */
+                background-repeat: no-repeat; /* Không lặp lại hình ảnh nền */
+                overflow: hidden; /* Ẩn bất kỳ phần nào của hình ảnh bị tràn ra ngoài */
+                display: flex; /* Sử dụng Flexbox để căn giữa nội dung */
+                align-items: center; /* Căn giữa theo chiều dọc */
+                justify-content: center; /* Căn giữa theo chiều ngang */
+            }
+
+            .breadcrumb-section::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5); /* Màu nền tối với độ trong suốt */
+                z-index: 1; /* Đặt lớp phủ tối lên trên hình ảnh */
+            }
+
+            .breadcrumb__text {
+                position: relative; /* Để các lớp phủ không che nội dung */
+                color: #fff; /* Màu chữ sáng để tương phản với nền tối */
+                z-index: 2; /* Đảm bảo văn bản hiển thị trên lớp phủ tối */
+            }
+
+            .breadcrumb__option h1 {
+                font-size: 4rem; /* Kích thước chữ */
+                font-weight: bold; /* Định dạng chữ đậm */
+                margin: 0; /* Loại bỏ khoảng cách bên ngoài */
+                color: white;
+            }
+
+
+            .register-section {
+                margin: 50px;
+            }
+
+            .register-container {
+                background: #fff;
+                padding: 2rem;
+                border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                width: 100%;
+            }
+
+            .register-text {
+                text-align: center;
+                margin-bottom: 1.5rem;
+            }
+
+            .register-text h2 {
+                margin-bottom: 0.5rem;
+            }
+
+            .register-text p {
+                font-size: 17px;
+                color: #666;
+            }
+
+            .input-full {
+                width: 100%;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                box-sizing: border-box;
+            }
+            .register-form-input {
+                position: relative;
+            }
+            .icon-toggle-password {
+                position: absolute;
+                top: 50%;
+                right: 10px;
+                transform: translateY(-50%);
+                cursor: pointer;
+                font-size: 1rem;
+                color: #888;
+            }
+
+            .register-form-input input {
+                padding-right: 2.5rem; /* Add padding to accommodate the eye icon */
+            }
+
+            .form-action-button {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn:hover {
+                background-color: black;
+            }
+
+            #recover-password,
+            #customer_register_link {
+                display: block;
+                margin-top: 0.5rem;
+                color: black;
+                text-decoration: none;
+                font-size: 0.875rem;
+                text-align: center;
+            }
+
+            .account-optional-action {
+                margin-top: 1rem;
+            }
+
+            #recover-password:hover,
+            #customer_register_link:hover {
+                text-decoration: underline;
+            }
+
+            /* HTML: <div class="loader"></div> */
+            .btn {
+                position: relative; /* Để đặt loader vào vị trí tuyệt đối bên trong nút */
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 10px 20px; /* Kích thước của nút */
+                font-size: 16px; /* Kích thước chữ của nút */
+            }
+
+            /* Đặt loader vào vị trí tuyệt đối và không làm thay đổi kích thước của nút */
+            .loader {
+                width: 20px;
+                height: 20px;
+                border: 3px solid transparent;
+                border-top: 3px solid white;
+                border-radius: 50%;
+                position: absolute;
+                display: none; /* Ẩn loader khi không cần thiết */
+                animation: spin 1s linear infinite;
+            }
+
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+
+            /* Đặt loader vào bên phải của nút và không làm thay đổi kích thước của nút */
+            .btn .btn-text {
+                display: inline-block;
+            }
+
+            .btn .loader {
+                right: 10px; /* Đặt loader ở bên phải của nút */
+                top: 50%;
+                transform: translateY(-50%); /* Đặt loader ở giữa nút theo chiều dọc */
+            }
+
+        </style>
+    </th:block>
+</head>
+
+<body>
+<th:block id="content">
+    <!--Thumbnail Begin-->
+    <section class="breadcrumb-section"  style="background-image: url(/web-assets/img/thumbnail/register-thumbnail.webp)">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="breadcrumb__text">
+                        <div class="breadcrumb__option">
+                            <h1>Đăng ký</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--Thumbnail End-->
+
+    <section class="register-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 offset-lg-3 col-md-8 offset-md-2">
+                    <div class="register-container">
+                        <div id="custom-register-form">
+                            <form id="form-register">
+                                <div class="register-form-container">
+                                    <div class="register-text">
+                                        <p><strong>Vui lòng điền thông tin vào form bên dưới.</strong></p>
+                                    </div>
+                                    <div id="form-register-group">
+                                        <div class="form-group mb-3">
+                                            <input type="text" class="form-control" id="input-name" name="name" placeholder="Tên tài khoản">
+                                        </div>
+                                        <div class="form-group mb-3">
+                                            <input type="text" class="form-control" id="input-email" name="email" placeholder="Email">
+                                        </div>
+                                        <div class="form-group mb-3">
+                                            <input type="text" class="form-control" id="input-nameCustomer" name="nameCustomer" placeholder="Tên khách hàng">
+                                        </div>
+                                        <div class="form-group mb-3">
+                                            <input type="text" class="form-control" id="input-phone" name="phone" placeholder="Số điện thoại">
+                                        </div>
+                                        <div class="form-group mb-3">
+                                            <select id="input-province" class="form-control" name="province">
+                                                <option value="">Chọn Tỉnh/Thành Phố</option>
+                                                <!-- Options sẽ được tải từ API -->
+                                            </select>
+                                        </div>
+                                        <div class="form-group mb-3">
+                                            <select id="input-district" class="form-control" name="district" disabled>
+                                                <option value="">Chọn Quận/Huyện</option>
+                                                <!-- Options sẽ được tải từ API -->
+                                            </select>
+                                        </div>
+                                        <div class="form-group mb-3">
+                                            <select id="input-ward" class="input-full form-control" name="ward" disabled>
+                                                <option value="">Chọn Phường/Xã</option>
+                                                <!-- Options sẽ được tải từ API -->
+                                            </select>
+                                        </div>
+                                        <div class="form-group mb-3">
+                                            <input type="text" class="form-control" id="input-addressDetail" name="addressDetail" placeholder="Địa chỉ cụ thể">
+                                        </div>
+                                        <div class="register-form-input form-group mb-3 input-group">
+                                            <input type="password" class="form-control" id="input-password" name="password" placeholder="Mật khẩu">
+                                            <span class="icon-toggle-password" onclick="togglePassword('input-password', this)">
+                                                <i class="fa-regular fa-eye"></i>
+                                            </span>
+                                        </div>
+                                        <div class="register-form-input form-group mb-3 input-group">
+                                            <input type="password" class="form-control" id="input-confirm-password" name="confirmPassword" placeholder="Nhập lại mật khẩu">
+                                            <span class="icon-toggle-password" onclick="togglePassword('input-confirm-password', this)">
+                                                <i class="fa-regular fa-eye"></i>
+                                            </span>
+                                        </div>
+                                        <div class="register-toggle-btn">
+                                            <div class="form-action-button">
+                                                <button id="btn-register" type="submit" class="btn bg-dark d-flex align-items-center justify-content-center text-white">
+                                                    <span class="btn-text">Đăng ký</span>
+                                                    <div class="loader" id="btn-loader"></div>
+                                                </button>
+                                            </div>
+                                            <div class="d-flex justify-content-center account-optional-action">
+                                                <a id="recover-password" class="me-3" th:href="@{/forgetPassword}">Quên mật khẩu?</a>
+                                                <a id="customer_register_link" th:href="@{/login}">Quay lại đăng nhập</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</th:block>
+
+<th:block id="js">
+    <!-- JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/additional-methods.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script th:inline="javascript">
+        // Hàm bật/tắt mật khẩu
+        function togglePassword(inputId, iconElement) {
+            var passwordInput = document.getElementById(inputId);
+            var eyeIcon = iconElement.querySelector('i');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            }
+        }
+
+        //Lấy thông tin về địa chỉ
+        $(document).ready(function() {
+            const apiCities = 'https://esgoo.net/api-tinhthanh/1/0.htm';
+            const apiDistricts = idProvince => `https://esgoo.net/api-tinhthanh/2/${idProvince}.htm`;
+            const apiWards = idDistrict => `https://esgoo.net/api-tinhthanh/3/${idDistrict}.htm`;
+
+            axios.get(apiCities)
+                .then(response => {
+                    const provinceSelect = document.getElementById('input-province');
+                    response.data.data.forEach(province => {
+                        const option = document.createElement('option');
+                        option.value = province.id;
+                        option.setAttribute("data-name", province.name);
+                        option.textContent = province.name;
+                        provinceSelect.appendChild(option);
+                    });
+                })
+                .catch(() => {});
+
+            $('#input-province').on('change', function() {
+                const provinceCode = this.value;
+                if (provinceCode) {
+                    axios.get(apiDistricts(provinceCode))
+                        .then(response => {
+                            const districtSelect = document.getElementById('input-district');
+                            districtSelect.innerHTML = '<option value="">Chọn Quận/Huyện</option>';
+                            response.data.data.forEach(district => {
+                                const option = document.createElement('option');
+                                option.value = district.id;
+                                option.setAttribute("data-name", district.name);
+                                option.textContent = district.name;
+                                districtSelect.appendChild(option);
+                            });
+                            districtSelect.disabled = false;
+                        })
+                        .catch(() => {});
+                } else {
+                    const districtSelect = document.getElementById('input-district');
+                    districtSelect.innerHTML = '<option value="">Chọn Quận/Huyện</option>';
+                    districtSelect.disabled = true;
+                    document.getElementById('input-ward').innerHTML = '<option value="">Chọn Phường/Xã</option>';
+                    document.getElementById('input-ward').disabled = true;
+                }
+            });
+
+            $('#input-district').on('change', function() {
+                const districtCode = this.value;
+                if (districtCode) {
+                    axios.get(apiWards(districtCode))
+                        .then(response => {
+                            const wardSelect = document.getElementById('input-ward');
+                            wardSelect.innerHTML = '<option value="">Chọn Phường/Xã</option>';
+                            response.data.data.forEach(ward => {
+                                const option = document.createElement('option');
+                                option.value = ward.id;
+                                option.setAttribute("data-name", ward.name);
+                                option.textContent = ward.name;
+                                wardSelect.appendChild(option);
+                            });
+                            wardSelect.disabled = false;
+                        })
+                        .catch(() => {});
+                } else {
+                    document.getElementById('input-ward').innerHTML = '<option value="">Chọn Phường/Xã</option>';
+                    document.getElementById('input-ward').disabled = true;
+                }
+            });
+        });
+
+        // Validate và gọi api
+        $('#form-register').validate({
+            rules: {
+                name: {
+                    required:true,
+                },
+                email: {
+                    required: true,
+                    email: true,
+                },
+                nameCustomer: {
+                    required:true,
+                },
+                phone:{
+                    required: true,
+                },
+                province:{
+                    required: true,
+                },
+                district:{
+                    required: true,
+                },
+                ward:{
+                    required: true,
+                },
+                addressDetail:{
+                    required: true,
+                },
+                password: {
+                    required: true,
+                },
+                confirmPassword:{
+                    required:true,
+                    equalTo: "#input-password",
+                }
+            },
+            messages: {
+                name:{
+                    required: "Tên tài khoản không được để trống",
+                },
+                email: {
+                    required: "Email không được để trống",
+                    email: "Email không đúng định dạng"
+                },
+                nameCustomer: {
+                    required:"Tên khách hàng không được để trống",
+                },
+                phone:{
+                    required: "Số điện thoại không được để trống",
+                },
+                province:{
+                    required: "Không được để trống",
+                },
+                district:{
+                    required: "Không được để trống",
+                },
+                ward:{
+                    required: "Không được để trống",
+                },
+                addressDetail:{
+                    required: "Không được để trống",
+                },
+                password: {
+                    required: "Mật khẩu không được để trống",
+                },
+                confirmPassword:{
+                    required:"Mật khẩu không được để trống",
+                    equalTo: "Mật khẩu xác nhận không giống với mật khẩu",
+                }
+            },
+            errorElement: 'span',
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                element.closest('.form-group').append(error);
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).removeClass('is-invalid');
+            }
+        });
+
+        function loadBtn() {
+            const button = document.getElementById('btn-register');
+            const loader = document.getElementById('btn-loader');
+
+            if (button && loader) {
+                button.disabled = true; // Vô hiệu hóa nút khi đang tải
+                loader.style.display = 'block'; // Hiển thị loader
+                document.querySelector('.btn-text').style.opacity = '0'; // Ẩn văn bản nút một cách mềm mại
+            }
+        }
+
+        $('#form-register').on('submit', async (e) => {
+            e.preventDefault();
+            console.log("Form submission attempted");
+
+            if (!$('#form-register').valid()) {
+                return;
+            }
+
+            const data = {
+                name: $('#input-name').val(),
+                email: $('#input-email').val(),
+                receiverName: $('#input-nameCustomer').val(),
+                phone: $('#input-phone').val(),
+                province: document.getElementById('input-province').value,
+                district: document.getElementById('input-district').value,
+                ward: document.getElementById('input-ward').value,
+                addressDetail: $('#input-addressDetail').val(),
+                password: $('#input-password').val(),
+                confirmPassword: $('#input-confirm-password').val()
+            };
+            console.log(data.province);
+
+            try {
+                loadBtn();
+                let res = await axios.post("/api/auth/register", data);
+                toastr.success("Đăng ký thành công. Vui lòng để ý email để xác thực tài khoản trong vòng 30 phút tới!");
+
+
+                // Xóa loader và khôi phục văn bản nút
+                const button = document.getElementById('btn-register');
+                const loader = document.getElementById('btn-loader');
+
+                if (button && loader) {
+                    button.disabled = false;
+                    loader.style.display = 'none'; // Ẩn loader
+                    document.querySelector('.btn-text').style.opacity = '1'; // Khôi phục văn bản nút
+                }
+
+                // Reset form sau khi thành công
+                document.getElementById('form-register').reset();
+                document.getElementById('input-district').disabled=true;
+                    document.getElementById('input-ward').disabled=true;
+
+            } catch (e) {
+                console.log(e);
+                toastr.error(e.response.data.message);
+
+                // Xóa loader và khôi phục văn bản nút trong trường hợp có lỗi
+                const button = document.getElementById('btn-register');
+                const loader = document.getElementById('btn-loader');
+
+                if (button && loader) {
+                    button.disabled = false;
+                    loader.style.display = 'none'; // Ẩn loader
+                    document.querySelector('.btn-text').style.opacity = '1'; // Khôi phục văn bản nút
+                }
+            }
+        });
+
+        // Hàm kiểm tra và ẩn hiện biểu tượng mắt
+        function togglePasswordVisibility() {
+            const passwordInputs = document.querySelectorAll('.register-form-input');
+            passwordInputs.forEach(input => {
+                const icon = input.querySelector('.icon-toggle-password');
+                if (icon) {
+                    const hasError = $(input).find('.invalid-feedback').length > 0;
+                    icon.classList.toggle('hidden', hasError);
+                }
+            });
+        }
+
+    </script>
+</th:block>
+
+</body>
+</html>

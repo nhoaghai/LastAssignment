@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>=
+<body>
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a th:href="@{/admin/dashboard}" class="brand-link">
+        <img src="/admin-assets/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+             style="opacity: 0.8" />
+        <span class="brand-text font-weight-light">Admin</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <li class="nav-item"><a th:href="@{/admin/dashboard}" class="nav-link">
+                    <i class="nav-icon fas fa-chart-pie"></i>
+                    <p>
+                        Dashboard
+                    </p>
+                </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-receipt"></i>
+                        <p>
+                            Quản lý phiếu chi
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a th:href="@{/admin/costs}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Danh sách phiếu chi</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/admin/costs/create}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Tạo phiếu chi</p>
+                            </a>
+                        </li>
+                    </ul>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-tshirt"></i>
+                        <p>
+                            Quản lý sản phẩm
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a th:href="@{/admin/products}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Tất cả sản phẩm</p>
+                            </a>
+                        </li>
+                    <!--    <li class="nav-item">
+                            <a th:href="@{/admin/blogs/own-blogs}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Phim của tôi</p>
+                            </a>
+                        </li>-->
+                        <li class="nav-item">
+                            <a th:href="@{/admin/products/create}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Tạo sản phẩm</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon far fa-newspaper"></i>
+                        <p>
+                            Quản lý bài viết
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a th:href="@{/admin/blogs}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Tất cả bài viết</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/admin/blogs/own-blogs}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Bài viết của tôi</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/admin/blogs/create}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Tạo bài viết</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/admin/blogs/tags}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Quản lý thể loại</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-user"></i>
+                        <p>
+                            Quản lý user
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a th:href="@{/admin/users}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Danh sách user</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/admin/users/create}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Tạo user</p>
+                            </a>
+                        </li>
+                    </ul>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-shopping-bag"></i>
+                        <p>
+                            Quản lý đơn hàng
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a th:href="@{/admin/orders}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Danh sách đơn hàng</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/admin/orders/create}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Tạo đơn hàng</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-wallet"></i>
+                        <p>
+                            Quản lý khuyến mại
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a th:href="@{/admin/discounts}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Danh sách khuyến mại</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/admin/discounts/create}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Tạo khuyến mại</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/admin/coupons}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Danh sách coupon</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-user"></i>
+                        <p>
+                            Quản lý banner
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a th:href="@{/admin/banners}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Danh sách banner</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/admin/banners/create}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Tạo banner</p>
+                            </a>
+                        </li>
+                    </ul>
+            </ul>
+        </nav>
+    </div>
+</aside>
+</body>
+</html>

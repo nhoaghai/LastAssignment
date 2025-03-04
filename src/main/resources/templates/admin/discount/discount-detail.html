@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout/layout :: layout(~{:: title},~{:: #css},~{:: .content-wrapper},~{:: #js})}">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title> Tạo khuyến mại</title>
+
+    <th:block id="css">
+        <!--Easymde-->
+        <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/highlight.js/latest/styles/github.min.css" />
+
+        <!--Summernote-->
+        <link rel="stylesheet" href="/admin-assets/plugins/summernote/summernote-bs4.min.css">
+
+        <!--Select2-->
+        <link rel="stylesheet" href="/admin-assets/plugins/select2/css/select2.min.css" />
+
+        <!--Dateranger-->
+        <link rel="stylesheet" href="/admin-assets/plugins/daterangepicker/daterangepicker.css">
+
+        <style>
+            .thumbnail-preview-container img {
+                max-width: 100%; /* Hoặc chiều rộng cụ thể, ví dụ 200px */
+                max-height: 200px; /* Hoặc chiều cao cụ thể */
+                object-fit: cover; /* Giúp hình ảnh không bị kéo dãn, giữ tỉ lệ và cắt nếu cần */
+            }
+        </style>
+    </th:block>
+
+
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-12">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a th:href="@{/admin/dashboard}">Dashboard</a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a th:href="@{/admin/discounts}">Danh sách khuyến mại</a>
+                            </li>
+                            <li class="breadcrumb-item active">
+                                Tạo khuyến mại
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+
+                <div class="row py-2">
+                    <div class="col-6">
+                        <button type="button" class="btn btn-info px-4" id="btnUpdateDiscount">
+                            Cập nhật
+                        </button>
+                    </div>
+
+
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <form id="form-discount">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <div class="form-group">
+                                                <label for="name">Tên khuyến mại</label>
+                                                <input type="text" class="form-control" id="name" name="name" placeholder="Nhập tên khuyến mại"/>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="description">Mô tả</label>
+                                                <textarea id="description" class="form-control" rows="3" name="description" placeholder="Nhập mô tả"></textarea>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="type">Hình thức giảm</label>
+                                                <select id="type" class="form-control" name="type">
+                                                    <option value="">Chọn hình thức giảm</option>
+                                                    <option value="PERCENT">Phần trăm</option>
+                                                    <option value="SAME_PRICE">Giá cố định</option>
+                                                    <option value="AMOUNT">Số tiền</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="amount">Giá trị giảm</label>
+                                                <input type="number" class="form-control" id="amount" name="amount" placeholder="Nhập giá trị giảm"/>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="active">Trạng thái</label>
+                                                <select id="active" class="form-control" name="active">
+                                                    <option value="">Chọn trạng thái</option>
+                                                    <option value="0">Ẩn</option>
+                                                    <option value="1">Kích hoạt</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="reservation">Thời gian áp dụng:</label>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                                    </div>
+                                                    <input type="text" class="form-control float-right" id="reservation">
+                                                </div>
+                                            </div>
+
+                                            <!-- Các trường ẩn để lưu giá trị startDate và endDate -->
+                                            <input type="hidden" id="startDate" name="startDate"/>
+                                            <input type="hidden" id="endDate" name="endDate"/>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="product">Chọn sản phẩm</label>
+                                                    <div class="select2-purple">
+                                                        <select class="select2 form-control" multiple="multiple" id="product" name="product" >
+                                                            <option th:each="product : ${products}"
+                                                                    th:text="${product.name}"
+                                                                    th:value="${product.id}">
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                <button type="button" id="clear-all" class="btn btn-danger mt-2">Xóa tất cả</button>
+                                                <button type="button" id="select-by-category" class="btn btn-primary mt-2">Chọn theo danh mục con</button>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="thumbnail-preview-container mb-3">
+                                                    <img class="m-0" th:src="${discount.imageUrl}" alt="" id="poster">
+                                                </div>
+                                                <label for="input-poster" class="btn btn-info btn-flat" data-toggle="modal" data-target="#modal-xl">
+                                                    Chọn hình ảnh
+                                                </label>
+                                                <input type="file" id="input-poster" class="d-none">
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+
+                <!-- Modal chọn theo danh mục con -->
+                <div class="modal fade" id="category-modal" tabindex="-1" role="dialog" aria-labelledby="categoryModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="categoryModalLabel">Chọn theo danh mục con</h5>
+                            </div>
+                            <div class="modal-body">
+                                <label for="product">Chọn theo danh mục</label>
+                                <div class="select2-purple">
+                                    <select class="select2 form-control" multiple="multiple" id="category-select" name="category-select" style="width: 100%">
+                                        <option th:each="categoty : ${categories}"
+                                                th:text="${categoty.name}"
+                                                th:value="${categoty.id}">
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" id="confirm-selection">Xác nhận</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<th:block id="js">
+    <!--Easymde-->
+    <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/highlight.js/latest/highlight.min.js"></script>
+    <!-- Moment.js -->
+    <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <!-- Daterangepicker -->
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
+    <!--Date ranger-->
+    <script src="/admin-assets/plugins/moment/moment.min.js"></script>
+    <script src="/admin-assets/plugins/daterangepicker/daterangepicker.js"></script>
+
+    <!-- Summernote-->
+    <script src="/admin-assets/plugins/summernote/summernote-bs4.min.js"></script>
+
+    <!-- Select2-->
+    <script src="/admin-assets/plugins/select2/js/select2.full.min.js"></script>
+
+
+
+    <script th:inline="javascript">
+        let discount = [[${discount}]]
+
+        let productsByCategory = [[${productsByCategory}]]
+        let productsByCategoryMap = new Map(Object.entries(productsByCategory).map(([key, value]) => [Number(key), value]));
+        console.log(productsByCategoryMap)
+        console.log(productsByCategory)
+
+        $('#product').select2({
+            placeholder: 'Chọn sản phẩm',
+            width: 'resolve',
+        });
+
+        // Khởi tạo Select2 cho select trong modal
+        $('#category-select').select2({
+            placeholder: 'Chọn danh mục con'
+        });
+
+        // Đặt giá trị cho select2
+        let productsByDiscount = [[${productsByDiscount}]];
+        productsByDiscount = productsByDiscount.map(product => product.id.toString());
+        $('#product').val(productsByDiscount).trigger('change');
+
+
+
+
+        // Xóa tất cả lựa chọn
+        $('#clear-all').on('click', function() {
+            $('#product').val(null).trigger('change');
+            $('#category-select').val(null).trigger('change');
+        });
+
+        // Mở modal để chọn theo danh mục con
+        $('#select-by-category').on('click', function() {
+            // Giả sử bạn sẽ thêm các tùy chọn cho danh mục con động từ máy chủ
+            $('#category-modal').modal('show');
+        });
+
+        // Xác nhận lựa chọn trong modal
+        $('#confirm-selection').on('click', function() {
+            let selectedCategories = $('#category-select').val();
+            let newProductIds = [];
+
+            selectedCategories.forEach(cId => {
+                let productIdsByCategory = productsByCategoryMap.get(Number(cId)) || [];
+                let categoryProductIds = productIdsByCategory.map(p => p.id.toString());
+                newProductIds.push(...categoryProductIds);
+            });
+
+            $('#product').val(newProductIds).trigger('change');
+
+            $('#category-modal').modal('hide');
+        });
+
+        $('#reservation').daterangepicker({
+            opens: 'left',
+            locale: {
+                format: "DD/MM/YYYY"
+            },
+            startDate: moment().startOf('day'),
+            endDate: moment().endOf('day')
+        }, function(start, end) {
+            // Update hidden fields with the selected date range
+            $('#startDate').val(start.format('DD/MM/YYYY'));
+            $('#endDate').val(end.format('DD/MM/YYYY'));
+        });
+
+        // Event listener for the icon click
+        $('#reservation').on('click', function() {
+            $(this).daterangepicker({
+                opens: 'left',
+                locale: {
+                    format: "DD/MM/YYYY"
+                },
+                startDate: moment().startOf('day'),
+                endDate: moment().endOf('day')
+            });
+        });
+
+
+        document.addEventListener("DOMContentLoaded",()=>{
+            document.getElementById("name").value=discount.name
+            document.getElementById("description").value=discount.description
+            $('#active').val(discount.active ? "1" : "0");
+            document.getElementById("amount").value=discount.amount
+            document.getElementById("type").value=discount.type
+            $('#startDate').val(moment(discount.startDate).format('DD/MM/YYYY'));
+            $('#endDate').val(moment(discount.endDate).format('DD/MM/YYYY'));
+            $('#reservation').data('daterangepicker').setStartDate($('#startDate').val());
+            $('#reservation').data('daterangepicker').setEndDate($('#endDate').val());
+        })
+
+
+        $('#form-discount').validate({
+            rules: {
+                name: {
+                    required: true
+                },
+                description: {
+                    required: true
+                },
+                type: {
+                    required: true
+                },
+                amount: {
+                    required: true,
+                    number: true
+                },
+                active: {
+                    required: true
+                },
+                startDate: {
+                    required: true
+                },
+                endDate: {
+                    required: true
+                }
+            },
+            messages: {
+                name: {
+                    required: "Tên khuyến mại không được để trống"
+                },
+                description: {
+                    required: "Mô tả không được để trống"
+                },
+                type: {
+                    required: "Vui lòng chọn hình thức giảm"
+                },
+                amount: {
+                    required: "Giá trị giảm không được để trống",
+                    number: "Giá trị giảm phải là số"
+                },
+                active: {
+                    required: "Vui lòng chọn trạng thái"
+                },
+                startDate: {
+                    required: "Vui lòng chọn ngày bắt đầu"
+                },
+                endDate: {
+                    required: "Vui lòng chọn ngày kết thúc"
+                }
+            },
+            errorElement: 'span',
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                element.closest('.form-group').append(error);
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).removeClass('is-invalid');
+            }
+        });
+
+        document.getElementById("btnUpdateDiscount").addEventListener("click",async (e)=>{
+            e.preventDefault();
+
+            if (!$('#form-discount').valid()) {
+                return;
+            }
+
+            let name = $('#name').val().trim();
+            let description = $('#description').val().trim();
+            let type = $('#type').val();
+            let amount = $('#amount').val().trim();
+            let active = $('#active').val()==="1"
+            let startDate = $('#startDate').val();
+            let endDate = $('#endDate').val();
+            let productIds = $('#product').val()
+
+            const data = {
+                name: name,
+                description: description,
+                type: type,
+                amount: parseFloat(amount),
+                active: active,
+                startDate: startDate,
+                endDate: endDate,
+                productIds: productIds
+            };
+
+            // In ra dữ liệu hoặc gửi đến server
+            console.log('Dữ liệu khuyến mại:', data);
+            try{
+                let res = await axios.put(`/api/admin/discounts/${discount.id}/update`,data)
+                toastr.success("Cập nhật khuyến mại thành công!")
+            }catch (e){
+                toastr.error(e.response.data.message)
+            }
+
+        })
+
+        //Cập nhật post
+        const posterPreview = document.getElementById("poster")
+        const btnUpdatePosterEl = document.getElementById("input-poster");
+        btnUpdatePosterEl.addEventListener('change', (e) => {
+            const file = e.target.files;
+
+            // create form data with key file and value is file in input
+            const formData = new FormData();
+            formData.append('file', file[0]);
+
+            //goi API
+            axios.post(`/api/admin/discounts/${discount.id}/update-thumbnail`, formData)
+                .then(res => {
+                    if (res.status === 200) {
+                        posterPreview.src = res.data;
+                        toastr.success('Cập nhật thumbnail thành công');
+                    }
+                })
+                .catch(e => {
+                    console.log(e)
+                    toastr.error(e.response.data.message);
+                });
+        });
+
+    </script>
+</th:block>
+</body>
+
+</html>
