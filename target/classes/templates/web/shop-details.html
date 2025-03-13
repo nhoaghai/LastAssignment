@@ -158,7 +158,7 @@
                                     </div>
                                     <div class="product__details__option__color">
                                         <span>Đóng gói:</span>
-                                        <label th:each="color : ${colors}" th:style="'background: ' + ${color.colorCode}"
+                                        <label th:each="color : ${colors}" th:text="${color.colorName}"
                                                th:for="${'color_' + color.id}" th:data-color-id="${color.id}" class="color-label">
                                             <input type="radio" name="color" th:id="${'color_' + color.id}" th:value="${color.id}">
                                         </label>
@@ -211,9 +211,9 @@
                                 <ul class="nav nav-tabs" role="tablist">
                                     <li class="nav-item" th:if="${sizes.size()>0}">
                                         <a th:if="${hasSizeType1}" class="nav-link active" data-toggle="tab" href="#tabs-5"
-                                           role="tab">Hướng dẫn chọn size</a>
+                                           role="tab">Mô tả sản phẩm</a>
                                         <a th:if="${hasSizeType2}" class="nav-link active" data-toggle="tab" href="#tabs-7"
-                                           role="tab">Hướng dẫn chọn size</a>
+                                           role="tab"> </a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link" data-toggle="tab" href="#tabs-6" role="tab">Bình luận (<th:block th:text="${reviews.size()}"></th:block>)</a>
@@ -223,12 +223,12 @@
                                     <th:block th:if="${sizes.size()>0}">
                                         <div th:if="${hasSizeType1}" class="tab-pane active" id="tabs-5" role="tabpanel">
                                             <div class="product__details__tab__content text-center">
-                                                <img src="/web-assets/img/shop-details/size-chart.png">
+                                                <img src="#">
                                             </div>
                                         </div>
                                         <div th:if="${hasSizeType2}" class="tab-pane active" id="tabs-7" role="tabpanel">
                                             <div class="product__details__tab__content text-center">
-                                                <img src="/web-assets/img/shop-details/bang-size-giay-chuan.png">
+                                                <img src="#">
                                             </div>
                                         </div>
                                     </th:block>
