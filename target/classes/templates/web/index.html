@@ -213,11 +213,7 @@
                                     </div>
                                     <h5 th:if="${newArrivals.get(i).discount!=null}"> <span class="formatted-price" th:text="${newArrivals.get(i).newPrice}"></span> </h5>
                                     <h5 th:if="${newArrivals.get(i).discount==null}"><span class="formatted-price" th:text="${newArrivals.get(i).price}"></span> </h5>
-                                    <div class="product__color__select">
-                                        <label th:each="color : ${newArrivals.get(i).colors}" th:style="'background: ' + ${color.colorCode}+';border: 1px solid #e5e5e5; !important'" th:for="${'color_' + color.id}" >
-                                            <input type="radio" th:id="${'color_' + color.id}" th:value="${color.id}">
-                                        </label>
-                                    </div>
+
                                 </div>
                             </div>
                         </div>
@@ -257,11 +253,7 @@
                                     </div>
                                     <h5 th:if="${hotSales.get(i).discount!=null}"> <span class="formatted-price" th:text="${hotSales.get(i).newPrice}"></span> </h5>
                                     <h5 th:if="${hotSales.get(i).discount==null}"><span class="formatted-price" th:text="${hotSales.get(i).price}"></span> </h5>
-                                    <div class="product__color__select">
-                                        <label th:each="color : ${hotSales.get(i).colors}" th:style="'background: ' + ${color.colorCode}+';border: 1px solid #e5e5e5; !important'" th:for="${'color_' + color.id}" >
-                                            <input type="radio" th:id="${'color_' + color.id}" th:value="${color.id}">
-                                        </label>
-                                    </div>
+
                                 </div>
                             </div>
                         </div>
@@ -286,7 +278,7 @@
                     <div class="col-lg-12">
                         <div class="section-title">
                             <span>Bài Viết Mới Nhất</span>
-                            <h2>Sự Kiện Ẩm Thực</h2>
+                            <h2>Sự Kiện Ẩm Thực</h2>
                         </div>
                     </div>
                 </div>

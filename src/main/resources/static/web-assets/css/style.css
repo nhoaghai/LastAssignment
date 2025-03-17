@@ -1504,7 +1504,7 @@ ol {
 
 .product__details__pic {
 	text-align: center;
-	background: #f3f2ee;
+	background: rgba(109, 209, 129, 0.22);
 	padding: 40px 0 60px;
 	margin-bottom: 100px;
 }
@@ -1581,7 +1581,7 @@ ol {
 
 .product__details__breadcrumb span {
 	font-size: 15px;
-	color: #b7b7b7;
+	color: #ff0404;
 	display: inline-block;
 }
 
@@ -1653,8 +1653,9 @@ ol {
 
 
 .product__details__option__size {
-	display: inline-block;
-	margin-right: 50px;
+	display: flex;
+	flex-wrap: wrap;
+	margin: 0 30px;
 }
 
 .product__details__option__size span {
@@ -1671,7 +1672,7 @@ ol {
 	display: inline-block;
 	border: 1px solid #e5e5e5;
 	padding: 6px 15px;
-	margin-bottom: 0;
+	margin-bottom: 10px;
 	margin-right: 5px;
 	cursor: pointer;
 }
@@ -1688,9 +1689,11 @@ ol {
 }
 
 .product__details__option__color {
-	display: inline-block;
+	display: flex;
+	flex-wrap: wrap;
 	position: relative;
-	top: 10px;
+	margin-left: 30px;
+	margin-bottom: 20px;
 }
 
 .product__details__option__color span {
@@ -1698,18 +1701,18 @@ ol {
 	display: inline-block;
 	margin-right: 10px;
 	position: relative;
-	top: -9px;
+	top: 9px;
 }
 
 .product__details__option__color label {
 	height: 30px;
-	width: 30px;
-	border-radius: 50%;
+	width: 96px;
 	position: relative;
 	margin-right: 10px;
 	margin-bottom: 0;
 	display: inline-block;
 	cursor: pointer;
+	margin-top: 10px;
 }
 
 .product__details__option__color label.c-1 {
@@ -1736,11 +1739,11 @@ ol {
 	position: absolute;
 	left: -3px;
 	top: -3px;
-	height: 36px;
-	width: 36px;
+	height: 30px;
+	width: 96px;
 	border: 1px solid #e5e5e5;
 	content: "";
-	border-radius: 50%;
+
 }
 
 .product__details__option__color label input {
@@ -2054,7 +2057,7 @@ ol {
 -----------------------*/
 
 .breadcrumb-option {
-	background: #f3f2ee;
+	background: rgba(60, 221, 105, 0.2);
 	padding: 40px 0;
 }
 
@@ -2082,7 +2085,7 @@ ol {
 
 .breadcrumb__links span {
 	font-size: 15px;
-	color: #b7b7b7;
+	color: #ff0404;
 	display: inline-block;
 }
 
@@ -3733,7 +3736,7 @@ ol {
 	.product__details__option__size {
 		display: block;
 		margin-right: 0;
-		margin-bottom: 25px;
+		margin-top: 45px;
 	}
 	.product__details__last__option h5:before {
 		width: 440px;

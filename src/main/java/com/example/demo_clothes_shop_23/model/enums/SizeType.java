@@ -6,7 +6,7 @@ public enum SizeType {
     public String getName() {
         return switch (this) {
             case CLOTHES_SIZE -> "Khối lượng tịnh";
-            case SHOES_SIZE -> "Kích thước giày";
+            case SHOES_SIZE -> "Khối lượng";
             default -> throw new IllegalArgumentException("Unknown SizeType: " + this);
         };
     }

@@ -324,11 +324,11 @@
         $('#categoryParent').on('change', async function() {
             let categoryParentId = $(this).val();
             if (categoryParentId) {
-                // if (categoryParentId==3){
-                //     $('#sizeType').val('SHOES_SIZE').trigger('change');
-                // }else {
-                //     $('#sizeType').val('CLOTHES_SIZE').trigger('change');
-                // }
+                if (categoryParentId==3){
+                    $('#sizeType').val('SHOES_SIZE').trigger('change');
+                }else {
+                    $('#sizeType').val('CLOTHES_SIZE').trigger('change');
+                }
                 try {
                     let res = await axios.get(`/api/admin/categories/categoryParent/${categoryParentId}`);
                     let categoryChild = res.data;
