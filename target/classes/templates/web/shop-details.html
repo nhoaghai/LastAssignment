@@ -208,29 +208,6 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="product__details__tab">
-                                <ul class="nav nav-tabs" role="tablist">
-                                    <li class="nav-item" th:if="${sizes.size()>0}">
-                                        <a th:if="${hasSizeType1}" class="nav-link active" data-toggle="tab" href="#tabs-5"
-                                           role="tab">Mô Tả Sản Phẩm</a>
-                                        
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" data-toggle="tab" href="#tabs-6" role="tab">Bình luận (<th:block th:text="${reviews.size()}"></th:block>)</a>
-                                    </li>
-                                </ul>
-                                <div class="tab-content">
-                                    <th:block th:if="${sizes.size()>0}">
-                                        <div th:if="${hasSizeType1}" class="tab-pane active" id="tabs-5" role="tabpanel">
-                                            <div class="product__details__tab__content text-center">
-                                                <img src="/web-assets/img/shop-details/size-chart.png">
-                                            </div>
-                                        </div>
-                                        <div th:if="${hasSizeType2}" class="tab-pane active" id="tabs-7" role="tabpanel">
-                                            <div class="product__details__tab__content text-center">
-                                                <img src="/web-assets/img/shop-details/bang-size-giay-chuan.png">
-                                            </div>
-                                        </div>
-                                    </th:block>
                                     <div class="tab-pane" id="tabs-6" role="tabpanel">
                                         <div class="product__details__tab__content">
                                             <div class="product__details__tab__content__item">
@@ -382,19 +359,17 @@
                                 </div>
                                 <h5 th:if="${product.discount!=null}"> <span class="formatted-price" th:text="${product.newPrice}"></span> </h5>
                                 <h5 th:if="${product.discount==null}"><span class="formatted-price" th:text="${product.price}"></span> </h5>
-                                <div class="product__color__select">
-                                    <label th:each="color : ${product.colors}" th:style="'background: ' + ${color.colorCode}+';border: 1px solid #e5e5e5; !important'" th:for="${'color_' + color.id}" >
-                                        <input type="radio" th:id="${'color_' + color.id}" th:value="${color.id}">
-                                    </label>
-                                </div>
+
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
+
         <!-- Related Section End -->
     </th:block>
+
 
     <th:block id="js">
         <div sec:authorize="isAuthenticated()">

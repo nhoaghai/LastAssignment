@@ -1504,7 +1504,7 @@ ol {
 
 .product__details__pic {
 	text-align: center;
-	background: #f3f2ee;
+	background: rgba(109, 209, 129, 0.22);
 	padding: 40px 0 60px;
 	margin-bottom: 100px;
 }
@@ -1581,7 +1581,7 @@ ol {
 
 .product__details__breadcrumb span {
 	font-size: 15px;
-	color: #b7b7b7;
+	color: #ff0404;
 	display: inline-block;
 }
 
@@ -2057,7 +2057,7 @@ ol {
 -----------------------*/
 
 .breadcrumb-option {
-	background: #f3f2ee;
+	background: rgba(60, 221, 105, 0.2);
 	padding: 40px 0;
 }
 
@@ -2085,7 +2085,7 @@ ol {
 
 .breadcrumb__links span {
 	font-size: 15px;
-	color: #b7b7b7;
+	color: #ff0404;
 	display: inline-block;
 }
 
