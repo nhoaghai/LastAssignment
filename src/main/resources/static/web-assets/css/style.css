@@ -2054,7 +2054,7 @@ ol {
 -----------------------*/
 
 .breadcrumb-option {
-	background: #f3f2ee;
+	background: rgba(130, 238, 104, 0.75);
 	padding: 40px 0;
 }
 
@@ -2082,7 +2082,7 @@ ol {
 
 .breadcrumb__links span {
 	font-size: 15px;
-	color: #b7b7b7;
+	color: #ee1919;
 	display: inline-block;
 }
 
