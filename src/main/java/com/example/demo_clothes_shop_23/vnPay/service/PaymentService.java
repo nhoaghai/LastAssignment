@@ -24,7 +24,7 @@ public class PaymentService {
             () -> new RuntimeException("Order not found")
         );
 
-        long amountInCents = order.getFinalTotal()*100; // Ví dụ số tiền: 10,000 VND = 1000000 cents
+        long amountInCents = order.getFinalTotal()*100L; // Ví dụ số tiền: 10,000 VND = 1000000 cents
         String vnp_TxnRef = PaymentConfig.getRandomNumber(8);
         String vnp_IpAddr = PaymentConfig.getIpAddress(request);
 

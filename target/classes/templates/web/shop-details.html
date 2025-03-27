@@ -383,11 +383,7 @@
                                 </div>
                                 <h5 th:if="${product.discount!=null}"> <span class="formatted-price" th:text="${product.newPrice}"></span> </h5>
                                 <h5 th:if="${product.discount==null}"><span class="formatted-price" th:text="${product.price}"></span> </h5>
-                                <div class="product__color__select">
-                                    <label th:each="color : ${product.colors}" th:style="'background: ' + ${color.colorCode}+';border: 1px solid #e5e5e5; !important'" th:for="${'color_' + color.id}" >
-                                        <input type="radio" th:id="${'color_' + color.id}" th:value="${color.id}">
-                                    </label>
-                                </div>
+
                             </div>
                         </div>
                     </div>

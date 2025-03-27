@@ -65,7 +65,7 @@ public class WebController {
     }
 
     /*Trang đăng ký*/
-    @PostMapping("/register")
+    @GetMapping("/register")
     public String register(Model model) {
         return "web/register";
     }
