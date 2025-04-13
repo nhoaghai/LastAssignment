@@ -7,7 +7,6 @@ com\example\demo_clothes_shop_23\repository\CouponRepository.class
 com\example\demo_clothes_shop_23\service\QuantityService.class
 com\example\demo_clothes_shop_23\request\UpsertTagRequest$UpsertTagRequestBuilder.class
 com\example\demo_clothes_shop_23\model\enums\OrdersStatus.class
-com\example\demo_clothes_shop_23\model\enums\SizeType$1.class
 com\example\demo_clothes_shop_23\rest\adminApi\AdminQuantityApi.class
 com\example\demo_clothes_shop_23\entities\Product.class
 com\example\demo_clothes_shop_23\model\response\VerifyResponse$VerifyResponseBuilder.class

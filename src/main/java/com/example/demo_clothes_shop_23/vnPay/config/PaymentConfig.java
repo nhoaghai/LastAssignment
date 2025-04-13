@@ -15,9 +15,9 @@ public class PaymentConfig {
     public static String vnp_Command = "pay";
     public static String orderType = "other";
     public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    public static String vnp_ReturnUrl = "http://localhost:8080/payment_return";
-    public static String vnp_TmnCode = "TH7VBMVZ";
-    public static String secretKey = "HURUJRLCTZ144J1DVUOQ39TSUBUFS88K";
+    public static String vnp_ReturnUrl = "https://dacsanxanh.shop/payment_return";
+    public static String vnp_TmnCode = "JQOZP6KG";
+    public static String secretKey = "RMM43JIX4A9DN4IFCJSXW1LC81U508QI";
     public static String vnp_ApiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
 
 

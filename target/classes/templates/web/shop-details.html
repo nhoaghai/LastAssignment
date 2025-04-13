@@ -7,7 +7,7 @@
     <meta name="keywords" content="Male_Fashion, unica, creative, html">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Đặc sản xanh | Chi Tiết Sản Phẩm</title>
+    <title>Đặc sản xanh | Chi Tiết Sản Phẩm</title>
 
     <th:block id="css">
         <style>
@@ -90,338 +90,316 @@
 </head>
 
 <body>
-    <th:block id="content">
-        <!-- Shop Details Section Begin -->
-        <section class="shop-details">
-            <div class="product__details__pic">
-                <div class="container">
-                    <div class="row">
-                        <div class="product__details__breadcrumb d-flex justify-content-start">
-                            <a th:href="@{/}">Trang Chủ</a>
-                            <a th:href="@{/product-shop}">Sản Phẩm</a>
-                            <span th:text="${product.name}"></span>
-                        </div>
+<th:block id="content">
+    <!-- Shop Details Section Begin -->
+    <section class="shop-details">
+        <div class="product__details__pic">
+            <div class="container">
+                <div class="row">
+                    <div class="product__details__breadcrumb d-flex justify-content-start">
+                        <a th:href="@{/}">Trang Chủ</a>
+                        <a th:href="@{/product-shop}">Sản Phẩm</a>
+                        <span th:text="${product.name}"></span>
                     </div>
-                    <div class="row">
-                        <div class="col-lg-2 col-md-2">
-                            <ul class="nav nav-tabs img-list" role="tablist">
-                                <li th:each="image, iterStat : ${images}" class="nav-item">
-                                    <a class="nav-link" data-toggle="tab" th:href="'#tabs-' + ${iterStat.index}" role="tab" th:classappend="${iterStat.index == 0} ? 'active' : ''">
-                                        <div class="product__thumb__pic set-bg rounded-4" th:data-setbg="${image.imgUrl}">
-                                        </div>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="col-lg-5 col-md-7">
-                            <div class="tab-content img-list-tab">
-                                <div th:each="image, iterStat : ${images}" class="tab-pane" th:id="'tabs-' + ${iterStat.index}" role="tabpanel" th:classappend="${iterStat.index == 0} ? 'active' : ''">
-                                    <div class="product__details__pic__item ">
-                                        <img class="rounded-4" th:src="${image.imgUrl}" alt="">
+                </div>
+                <div class="row">
+                    <div class="col-lg-2 col-md-2">
+                        <ul class="nav nav-tabs img-list" role="tablist">
+                            <li th:each="image, iterStat : ${images}" class="nav-item">
+                                <a class="nav-link" data-toggle="tab" th:href="'#tabs-' + ${iterStat.index}" role="tab" th:classappend="${iterStat.index == 0} ? 'active' : ''">
+                                    <div class="product__thumb__pic set-bg rounded-4" th:data-setbg="${image.imgUrl}">
                                     </div>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-5 col-md-7">
+                        <div class="tab-content img-list-tab">
+                            <div th:each="image, iterStat : ${images}" class="tab-pane" th:id="'tabs-' + ${iterStat.index}" role="tabpanel" th:classappend="${iterStat.index == 0} ? 'active' : ''">
+                                <div class="product__details__pic__item ">
+                                    <img class="rounded-4" th:src="${image.imgUrl}" alt="">
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-5 col-md-3 rounded-5 bg-light">
-                            <div class="product__details__text mt-5">
-                                <h4 th:text="${product.name}"></h4>
-                                <div class="rating d-flex align-items-center justify-content-center rating-product-detail">
-                                    <div class="d-flex">
-                                        <!-- Loop for full stars -->
-                                        <i class="fa fa-star mr-1" th:each="star, iterStat : ${#numbers.sequence(1, T(java.lang.Math).floor(product.rating))}"></i>
-                                        <!-- Half star if rating has a decimal part -->
-                                        <i class="fa fa-star-half-o mr-1" th:if="${product.rating % 1 != 0}"></i>
-                                        <!-- Empty stars for ratings less than or equal to 4 -->
-                                        <th:block th:if="${product.rating <= 4}">
-                                            <th:block th:each="star, iterStat : ${#numbers.sequence(T(java.lang.Math).ceil(product.rating)+1, 5)}">
-                                                <i class="fa fa-star-o mr-1"></i>
-                                            </th:block>
+                    </div>
+                    <div class="col-lg-5 col-md-3 rounded-5 bg-light">
+                        <div class="product__details__text mt-5">
+                            <h4 th:text="${product.name}"></h4>
+                            <div class="rating d-flex align-items-center justify-content-center rating-product-detail">
+                                <div class="d-flex">
+                                    <!-- Loop for full stars -->
+                                    <i class="fa fa-star mr-1" th:each="star, iterStat : ${#numbers.sequence(1, T(java.lang.Math).floor(product.rating))}"></i>
+                                    <!-- Half star if rating has a decimal part -->
+                                    <i class="fa fa-star-half-o mr-1" th:if="${product.rating % 1 != 0}"></i>
+                                    <!-- Empty stars for ratings less than or equal to 4 -->
+                                    <th:block th:if="${product.rating <= 4}">
+                                        <th:block th:each="star, iterStat : ${#numbers.sequence(T(java.lang.Math).ceil(product.rating)+1, 5)}">
+                                            <i class="fa fa-star-o mr-1"></i>
                                         </th:block>
-                                    </div>
-                                    <span class="m-1" th:text="${reviews.size()} + ' Đánh giá'"></span>
-                                </div>
-                                <h3 th:if="${product.discount!=null}"> <div class="formatted-price" th:text="${product.newPrice +' VNĐ'}"></div>
-                                    <span class="formatted-price" th:text="${product.price+ ' VNĐ'}"></span>
-                                </h3>
-                                <h3 th:if="${product.discount==null}"><div class="formatted-price" th:text="${product.price +' VNĐ'}"></div> </h3>
-
-                                <p th:text="${product.description}">Coat with quilted lining and an adjustable hood. Featuring long sleeves with adjustable
-                                    cuff tabs, adjustable asymmetric hem with elastic side tabs and a front zip fastening
-                                    with placket.</p>
-                                <div class="product__details__option mb-2">
-                                    <div class="product__details__option__size">
-                                        <span>Hũ:</span>
-                                        <label th:each="size : ${sizes}" th:for="${'size_'+size.id}" th:text="${size.sizeName}"
-                                               th:data-size-id="${size.id}" class="size-label">
-                                            <input type="radio" name="size" th:id="${'size_'+size.id}" th:value="${size.id}">
-                                        </label>
-                                    </div>
-                                    <div class="product__details__option__color">
-                                        <span>Đóng gói:</span>
-                                        <label th:each="color : ${colors}" th:text="${color.colorName}"
-                                               th:for="${'color_' + color.id}" th:data-color-id="${color.id}" class="color-label">
-                                            <input type="radio" name="color" th:id="${'color_' + color.id}" th:value="${color.id}">
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="stock-status mb-2">
-                                    <span id="stock-status"></span><br>
-                                    <span id="stock-quantity"></span>
-                                </div>
-
-                                <div class="product__details__cart__option">
-                                    <div class="quantity">
-                                        <div class="pro-qty">
-                                            <span class="fa fa-angle-up inc qtybtn"></span>
-                                            <input type="text" value="1">
-                                            <span class="fa fa-angle-down dec qtybtn"></span>
-                                        </div>
-                                    </div>
-                                    <a sec:authorize="isAuthenticated()" href="#" class="primary-btn" onclick="createCart()">Thêm vào giỏ </a>
-                                    <a sec:authorize="!isAuthenticated()" href="#" class="primary-btn" onclick="annotationCart()">Thêm vào giỏ </a>
-                                </div>
-                                <div class="product__details__btns__option btnFavoriteGroup">
-                                    <a sec:authorize="isAuthenticated()"
-                                       id="favoriteButton"
-                                       class="favorite-btn"
-                                       th:onclick="${favorite != null} ? 'toggleFavorite(' + ${product.getId()} + ')' : 'toggleFavorite()'"
-                                       th:style="${favorite != null} ? 'cursor: pointer; color: red' : 'cursor: pointer;'">
-                                        <i class="fa fa-heart"></i>
-                                        <th:block th:if="${favorite != null}">Bỏ yêu thích</th:block>
-                                        <th:block th:unless="${favorite != null}">Yêu thích</th:block>
-                                    </a>
-                                    <a sec:authorize="!isAuthenticated()"
-                                       id="favoriteButtonAnnotation"
-                                       class="favorite-btn"
-                                       style="cursor: pointer">
-                                        <i class="fa fa-heart"></i>  Yêu thích
-                                    </a>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="product__details__content mt-n5">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="product__details__tab">
-                                <ul class="nav nav-tabs" role="tablist">
-                                    <li class="nav-item" th:if="${sizes.size()>0}">
-                                        <a th:if="${hasSizeType1}" class="nav-link active" data-toggle="tab" href="#tabs-5"
-                                           role="tab">Mô tả sản phẩm</a>
-                                        <a th:if="${hasSizeType2}" class="nav-link active" data-toggle="tab" href="#tabs-7"
-                                           role="tab"> </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" data-toggle="tab" href="#tabs-6" role="tab">Bình luận (<th:block th:text="${reviews.size()}"></th:block>)</a>
-                                    </li>
-                                </ul>
-                                <div class="tab-content">
-                                    <th:block th:if="${sizes.size()>0}">
-                                        <div th:if="${hasSizeType1}" class="tab-pane active" id="tabs-5" role="tabpanel">
-                                            <div class="product__details__tab__content text-center">
-                                                <img src="#">
-                                            </div>
-                                        </div>
-                                        <div th:if="${hasSizeType2}" class="tab-pane active" id="tabs-7" role="tabpanel">
-                                            <div class="product__details__tab__content text-center">
-                                                <img src="#">
-                                            </div>
-                                        </div>
                                     </th:block>
-                                    <div class="tab-pane" id="tabs-6" role="tabpanel">
-                                        <div class="product__details__tab__content">
-                                            <div class="product__details__tab__content__item">
-                                                <div class="d-flex justify-content-center">
-                                                    <p sec:authorize="!isAuthenticated()">
-                                                        Để viết bình luận cần <span><a class="login-link" th:href="@{/login}">đăng nhập</a></span>
-                                                    </p>
-                                                    <button sec:authorize="isAuthenticated()"
-                                                            type="button"
-                                                            class="btn btn-dark text-white rounded"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#review-modal">
-                                                        Bình luận
-                                                    </button>
-                                                </div>
-                                                <hr>
-                                                <!--Modal review-->
-                                                <div class="modal fade" id="review-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                                    <div class="modal-dialog modal-lg">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h1 class="modal-title fs-5" id="staticBackdropLabel">Tạo bình luận</h1>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <form id="form-review">
-                                                                    <div class="d-flex flex-column justify-content-center align-items-center ">
-                                                                        <div class="rating form-group">
-                                                                            <span class="star" data-rating="1">
-                                                                               <i class="fa-solid fa-star"></i>
-                                                                            </span>
-                                                                            <span class="star" data-rating="2">
-                                                                               <i class="fa-solid fa-star"></i>
-                                                                            </span>
-                                                                            <span class="star" data-rating="3">
-                                                                               <i class="fa-solid fa-star"></i>
-                                                                            </span>
-                                                                            <span class="star" data-rating="4">
-                                                                               <i class="fa-solid fa-star"></i>
-                                                                            </span>
-                                                                            <span class="star" data-rating="5">
-                                                                               <i class="fa-solid fa-star"></i>
-                                                                            </span>
-                                                                        </div>
-                                                                        <div id="rating-value" ></div>
-                                                                    </div>
-                                                                    <div class="form-group">
-                                                                        <input type="hidden"  id="rating-input" name="rating" />
-                                                                    </div>
-                                                                    <div class="mb-3 form-group">
-                                                                        <label for="review-content" class="form-label">Nội dung đánh giá</label>
-                                                                        <textarea class="form-control" id="review-content" rows="3" name="content"></textarea>
-                                                                    </div>
-                                                                    <div class="mb-3">
-                                                                        <button type="submit" class="btn btn-primary" id="btn-create-review">Tạo</button>
-                                                                    </div>
-                                                                </form>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="review-list">
-                                                    <div class="comment-info bg-light-subtle rounded-5 p-3 mt-3" th:each="review :${reviews}">
-                                                        <div class="d-flex align-items-center">
-                                                            <img th:src="${review.getUser().getAvatar()}" alt="Avatar" class="rounded-circle " style="width: 50px; height: 50px;">
-                                                            <div class="mt-2 ml-2" >
-                                                                <h5 class=" ml-1 mt-1" th:text="${review.getUser().getName()}">Người Bình Luận</h5>
-                                                                <div class="rating ml-1 mt-n2">
-                                                                    <div class="d-flex">
-                                                                        <i class="fa fa-star mr-1 text-warning" th:each="star, iterStat : ${#numbers.sequence(1, T(java.lang.Math).floor(review.rating))}"></i>
-                                                                        <th:block th:if="${review.rating <= 4}">
-                                                                            <th:block th:each="star, iterStat : ${#numbers.sequence(T(java.lang.Math).ceil(review.rating)+1, 5)}">
-                                                                                <i class="fa fa-star-o mr-1 text-warning"></i>
-                                                                            </th:block>
-                                                                        </th:block>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="ml-auto">
-                                                                <p class="pr-2 mt-2 text-body-tertiary" th:text="${#temporals.format(review.createdAt,'dd/MM/yyyy')}"></p>
-                                                            </div>
-                                                        </div>
-                                                        <div class="comment-content ps-1 pt-2" >
-                                                            <p th:text="${review.getContent()}"></p>
-                                                        </div>
-                                                        <div class="mt-2" sec:authorize="isAuthenticated()" th:if="${#authentication.principal.user.id==review.user.id}">
-                                                            <button  th:onclick="'openEditModal('+${review.getId()}+')'" style="border: none">Sửa</button>
-                                                            <button  th:onclick="'deleteRv('+${review.getId()}+')'"  style="border: none">Xóa</button>
-                                                        </div>
-                                                        <hr>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                </div>
+                                <span class="m-1" th:text="${reviews.size()} + ' Đánh giá'"></span>
+                            </div>
+                            <h3 th:if="${product.discount!=null}"> <div class="formatted-price" th:text="${product.newPrice +' VNĐ'}"></div>
+                                <span class="formatted-price" th:text="${product.price+ ' VNĐ'}"></span>
+                            </h3>
+                            <h3 th:if="${product.discount==null}"><div class="formatted-price" th:text="${product.price +' VNĐ'}"></div> </h3>
+
+                            <p th:text="${product.description}">Coat with quilted lining and an adjustable hood. Featuring long sleeves with adjustable
+                                cuff tabs, adjustable asymmetric hem with elastic side tabs and a front zip fastening
+                                with placket.</p>
+                            <div class="product__details__option mb-2">
+                                <div class="product__details__option__color">
+                                    <span>Đóng gói:</span>
+                                    <label th:each="color : ${colors}" th:text="${color.colorName}"
+                                           th:for="${'color_' + color.id}" th:data-color-id="${color.id}" class="color-label">
+                                        <input type="radio" name="color" th:id="${'color_' + color.id}" th:value="${color.id}">
+                                    </label>
+                                </div>
+                                <div class="product__details__option__size">
+                                    <span>Hũ:</span>
+                                    <label th:each="size : ${sizes}" th:for="${'size_'+size.id}" th:text="${size.sizeName}"
+                                           th:data-size-id="${size.id}" class="size-label">
+                                        <input type="radio" name="size" th:id="${'size_'+size.id}" th:value="${size.id}">
+                                    </label>
                                 </div>
                             </div>
+                            <div class="stock-status mb-2 mt-2">
+                                <span id="stock-status"></span><br>
+                                <span id="stock-quantity"></span>
+                            </div>
+
+                            <div class="product__details__cart__option">
+                                <div class="quantity">
+                                    <div class="pro-qty">
+                                        <span class="fa fa-angle-up inc qtybtn"></span>
+                                        <input type="text" value="1">
+                                        <span class="fa fa-angle-down dec qtybtn"></span>
+                                    </div>
+                                </div>
+                                <a sec:authorize="isAuthenticated()" href="#" class="primary-btn" onclick="createCart()">Thêm vào giỏ </a>
+                                <a sec:authorize="!isAuthenticated()" href="#" class="primary-btn" onclick="annotationCart()">Thêm vào giỏ </a>
+                            </div>
+                            <div class="product__details__btns__option btnFavoriteGroup">
+                                <a sec:authorize="isAuthenticated()"
+                                   id="favoriteButton"
+                                   class="favorite-btn"
+                                   th:onclick="${favorite != null} ? 'toggleFavorite(' + ${product.getId()} + ')' : 'toggleFavorite()'"
+                                   th:style="${favorite != null} ? 'cursor: pointer; color: red' : 'cursor: pointer;'">
+                                    <i class="fa fa-heart"></i>
+                                    <th:block th:if="${favorite != null}">Bỏ yêu thích</th:block>
+                                    <th:block th:unless="${favorite != null}">Yêu thích</th:block>
+                                </a>
+                                <a sec:authorize="!isAuthenticated()"
+                                   id="favoriteButtonAnnotation"
+                                   class="favorite-btn"
+                                   style="cursor: pointer">
+                                    <i class="fa fa-heart"></i>  Yêu thích
+                                </a>
+                            </div>
                         </div>
+
                     </div>
                 </div>
             </div>
-            </div>
-        </section>
-        <!-- Shop Details Section End -->
-
-        <!-- Related Section Begin -->
-        <section class="related spad">
+        </div>
+        <div class="product__details__content mt-n5">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
-                        <h3 class="related-title">Các Sản Phẩm Tương Tự</h3>
-                    </div>
-                </div>
-                <div class="row">
-                    <div th:each="product : ${ListProductDeCu}" class="col-lg-3 col-md-6 col-sm-6 col-sm-6">
-                        <div class="product__item">
-                            <a th:href="@{/product/{id}/{slug}(id=${product.id}, slug=${product.slug})}">
-                                <div class="product__item__pic set-bg" th:data-setbg="${product.poster}">
-                                    <span th:if="${product.discount!=null}" class="label">Khuyến mại</span>
-                                    <ul class="product__hover">
-                                        <li class="btnFavorite" sec:authorize="isAuthenticated()">
-                                            <!-- Sử dụng div thay vì button và bắt sự kiện click -->
-                                            <button class="border-0 push-favorite bg-white text-center pt-2 pb-2 pl-3 pr-3" th:data-product-id="${product.id}">
-                                                <i class="fas fa-heart text-danger" th:if="${#lists.contains(favoriteProductIds, product.id)}"></i>
-                                                <i class="far fa-heart text-danger" th:unless="${#lists.contains(favoriteProductIds, product.id)}"></i>
+                        <div class="product__details__tab">
+                            <div class="tab-pane" id="tabs-6" role="tabpanel">
+                                <div class="product__details__tab__content">
+                                    <div class="product__details__tab__content__item">
+                                        <div class="d-flex justify-content-center">
+                                            <p sec:authorize="!isAuthenticated()">
+                                                Để viết bình luận cần <span><a class="login-link" th:href="@{/login}">đăng nhập</a></span>
+                                            </p>
+                                            <button sec:authorize="isAuthenticated()"
+                                                    type="button"
+                                                    class="btn btn-dark text-white rounded"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#review-modal">
+                                                Bình luận
                                             </button>
-                                        </li>
-                                        <li sec:authorize="!isAuthenticated()">
-                                            <button class="border-0 push-favorite bg-white text-center pt-2 pb-2 pl-3 pr-3" >
-                                                <i class="far fa-heart text-danger favoriteButtonAnnotation" ></i>
-                                            </button>
-                                        </li>
-                                    </ul>
+                                        </div>
+                                        <hr>
+                                        <!--Modal review-->
+                                        <div class="modal fade" id="review-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Tạo bình luận</h1>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form id="form-review">
+                                                            <div class="d-flex flex-column justify-content-center align-items-center ">
+                                                                <div class="rating form-group">
+                                                                            <span class="star" data-rating="1">
+                                                                               <i class="fa-solid fa-star"></i>
+                                                                            </span>
+                                                                    <span class="star" data-rating="2">
+                                                                               <i class="fa-solid fa-star"></i>
+                                                                            </span>
+                                                                    <span class="star" data-rating="3">
+                                                                               <i class="fa-solid fa-star"></i>
+                                                                            </span>
+                                                                    <span class="star" data-rating="4">
+                                                                               <i class="fa-solid fa-star"></i>
+                                                                            </span>
+                                                                    <span class="star" data-rating="5">
+                                                                               <i class="fa-solid fa-star"></i>
+                                                                            </span>
+                                                                </div>
+                                                                <div id="rating-value" ></div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <input type="hidden"  id="rating-input" name="rating" />
+                                                            </div>
+                                                            <div class="mb-3 form-group">
+                                                                <label for="review-content" class="form-label">Nội dung đánh giá</label>
+                                                                <textarea class="form-control" id="review-content" rows="3" name="content"></textarea>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <button type="submit" class="btn btn-primary" id="btn-create-review">Tạo</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="review-list">
+                                            <div class="comment-info bg-light-subtle rounded-5 p-3 mt-3" th:each="review :${reviews}">
+                                                <div class="d-flex align-items-center">
+                                                    <img th:src="${review.getUser().getAvatar()}" alt="Avatar" class="rounded-circle " style="width: 50px; height: 50px;">
+                                                    <div class="mt-2 ml-2" >
+                                                        <h5 class=" ml-1 mt-1" th:text="${review.getUser().getName()}">Người Bình Luận</h5>
+                                                        <div class="rating ml-1 mt-n2">
+                                                            <div class="d-flex">
+                                                                <i class="fa fa-star mr-1 text-warning" th:each="star, iterStat : ${#numbers.sequence(1, T(java.lang.Math).floor(review.rating))}"></i>
+                                                                <th:block th:if="${review.rating <= 4}">
+                                                                    <th:block th:each="star, iterStat : ${#numbers.sequence(T(java.lang.Math).ceil(review.rating)+1, 5)}">
+                                                                        <i class="fa fa-star-o mr-1 text-warning"></i>
+                                                                    </th:block>
+                                                                </th:block>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="ml-auto">
+                                                        <p class="pr-2 mt-2 text-body-tertiary" th:text="${#temporals.format(review.createdAt,'dd/MM/yyyy')}"></p>
+                                                    </div>
+                                                </div>
+                                                <div class="comment-content ps-1 pt-2" >
+                                                    <p th:text="${review.getContent()}"></p>
+                                                </div>
+                                                <div class="mt-2" sec:authorize="isAuthenticated()" th:if="${#authentication.principal.user.id==review.user.id}">
+                                                    <button  th:onclick="'openEditModal('+${review.getId()}+')'" style="border: none">Sửa</button>
+                                                    <button  th:onclick="'deleteRv('+${review.getId()}+')'"  style="border: none">Xóa</button>
+                                                </div>
+                                                <hr>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </a>
-
-                            <div class="product__item__text">
-                                <h6 th:text="${product.name}">Piqué Biker Jacket</h6>
-                                <a th:href="@{/product/{id}/{slug}(id=${product.id}, slug=${product.slug})}" class="add-cart">Xem chi tiết</a>
-                                <div class="rating d-flex">
-                                    <!-- Loop for full stars -->
-                                    <i class="fa fa-star mr-1 text-warning " th:each="star, iterStat : ${#numbers.sequence(1, T(java.lang.Math).floor(product.rating))}"></i>
-                                    <!-- Half star if rating has a decimal part -->
-                                    <i class="fa fa-star-half-o mr-1 text-warning" th:if="${product.rating % 1 != 0}"></i>
-                                    <!-- Loop for empty stars -->
-                                    <th:block th:if="${product.rating<=4}">
-                                        <i class="fa fa-star-o mr-1 text-warning" th:each="star, iterStat : ${#numbers.sequence(T(java.lang.Math).ceil(product.rating)+1 , 5)}"></i>
-                                    </th:block>
-                                </div>
-                                <h5 th:if="${product.discount!=null}"> <span class="formatted-price" th:text="${product.newPrice}"></span> </h5>
-                                <h5 th:if="${product.discount==null}"><span class="formatted-price" th:text="${product.price}"></span> </h5>
-
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
-        <!-- Related Section End -->
-    </th:block>
-
-    <th:block id="js">
-        <div sec:authorize="isAuthenticated()">
-            <script>
-                let userId = [[${#authentication.principal.user.id}]];
-                console.log("User ID:", userId); // Example usage
-                let favoriteProductIds = [[${favoriteProductIds}]]
-            </script>
         </div>
-        <script th:inline="javascript">
-            let productId = [[${product.id}]];
-            let product =[[${product}]]
-            let favorites =[[${favorites}]]
-            let favorite =[[${favorite}]]
-            let reviews = [[${reviews}]]
-            const stockMap = [[${stockMap}]]
-            document.addEventListener('DOMContentLoaded', function() {
-                // Định dạng tất cả các giá
-                document.querySelectorAll('.formatted-price').forEach(function(element) {
-                    let rawValue = parseLong(element.textContent);
-                    element.textContent = formatCurrency(rawValue);
-                });
-            });
+        </div>
+        </div>
+    </section>
+    <!-- Shop Details Section End -->
+
+    <!-- Related Section Begin -->
+    <section class="related spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h3 class="related-title">Các Sản Phẩm Tương Tự</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div th:each="product : ${ListProductDeCu}" class="col-lg-3 col-md-6 col-sm-6 col-sm-6">
+                    <div class="product__item">
+                        <a th:href="@{/product/{id}/{slug}(id=${product.id}, slug=${product.slug})}">
+                            <div class="product__item__pic set-bg" th:data-setbg="${product.poster}">
+                                <span th:if="${product.discount!=null}" class="label">Khuyến mại</span>
+                                <ul class="product__hover">
+                                    <li class="btnFavorite" sec:authorize="isAuthenticated()">
+                                        <!-- Sử dụng div thay vì button và bắt sự kiện click -->
+                                        <button class="border-0 push-favorite bg-white text-center pt-2 pb-2 pl-3 pr-3" th:data-product-id="${product.id}">
+                                            <i class="fas fa-heart text-danger" th:if="${#lists.contains(favoriteProductIds, product.id)}"></i>
+                                            <i class="far fa-heart text-danger" th:unless="${#lists.contains(favoriteProductIds, product.id)}"></i>
+                                        </button>
+                                    </li>
+                                    <li sec:authorize="!isAuthenticated()">
+                                        <button class="border-0 push-favorite bg-white text-center pt-2 pb-2 pl-3 pr-3" >
+                                            <i class="far fa-heart text-danger favoriteButtonAnnotation" ></i>
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </a>
+
+                        <div class="product__item__text">
+                            <h6 th:text="${product.name}">Piqué Biker Jacket</h6>
+                            <a th:href="@{/product/{id}/{slug}(id=${product.id}, slug=${product.slug})}" class="add-cart">Xem chi tiết</a>
+                            <div class="rating d-flex">
+                                <!-- Loop for full stars -->
+                                <i class="fa fa-star mr-1 text-warning " th:each="star, iterStat : ${#numbers.sequence(1, T(java.lang.Math).floor(product.rating))}"></i>
+                                <!-- Half star if rating has a decimal part -->
+                                <i class="fa fa-star-half-o mr-1 text-warning" th:if="${product.rating % 1 != 0}"></i>
+                                <!-- Loop for empty stars -->
+                                <th:block th:if="${product.rating<=4}">
+                                    <i class="fa fa-star-o mr-1 text-warning" th:each="star, iterStat : ${#numbers.sequence(T(java.lang.Math).ceil(product.rating)+1 , 5)}"></i>
+                                </th:block>
+                            </div>
+                            <h5 th:if="${product.discount!=null}"> <span class="formatted-price" th:text="${product.newPrice}"></span> </h5>
+                            <h5 th:if="${product.discount==null}"><span class="formatted-price" th:text="${product.price}"></span> </h5>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Related Section End -->
+</th:block>
+
+
+<th:block id="js">
+    <div sec:authorize="isAuthenticated()">
+        <script>
+            let userId = [[${#authentication.principal.user.id}]];
+            console.log("User ID:", userId); // Example usage
+            let favoriteProductIds = [[${favoriteProductIds}]]
         </script>
-        <script src="/web-assets/js/favorite.js"></script>
-        <script src="/web-assets/js/shop-detail/shop-detail-addToCart.js"></script>
-        <script src="/web-assets/js/shop-detail/review.js"></script>
-        <script src="/web-assets/js/shop-detail/shop-detail-favorite.js"></script>
-        <script src="/web-assets/js/shop-detail/shop-detail-checkQuantity.js"></script>
-    </th:block>
+    </div>
+    <script th:inline="javascript">
+        let productId = [[${product.id}]];
+        let product =[[${product}]]
+        let favorites =[[${favorites}]]
+        let favorite =[[${favorite}]]
+        let reviews = [[${reviews}]]
+        const stockMap = [[${stockMap}]]
+        document.addEventListener('DOMContentLoaded', function() {
+            // Định dạng tất cả các giá
+            document.querySelectorAll('.formatted-price').forEach(function(element) {
+                let rawValue = parseLong(element.textContent);
+                element.textContent = formatCurrency(rawValue);
+            });
+        });
+    </script>
+    <script src="/web-assets/js/favorite.js"></script>
+    <script src="/web-assets/js/shop-detail/shop-detail-addToCart.js"></script>
+    <script src="/web-assets/js/shop-detail/review.js"></script>
+    <script src="/web-assets/js/shop-detail/shop-detail-favorite.js"></script>
+    <script src="/web-assets/js/shop-detail/shop-detail-checkQuantity.js"></script>
+</th:block>
 
 </body>
 

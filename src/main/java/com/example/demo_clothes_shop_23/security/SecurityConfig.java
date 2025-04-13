@@ -81,7 +81,7 @@ public class SecurityConfig {
         //cấu hình login
         http.formLogin(formLogin->{
             formLogin.loginPage("/login"); //trang login do mình thiết kế
-            formLogin.defaultSuccessUrl("/",true); //login thành công chuyenr hg về trang chủ
+            formLogin.defaultSuccessUrl("/",true); //login thành công chuyển hướng về trang chủ
            formLogin.permitAll();//login ai cx truy cập được
         });
 
@@ -100,8 +100,4 @@ public class SecurityConfig {
         http.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
-
-
-
-
 }

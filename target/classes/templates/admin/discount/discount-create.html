@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="/admin-assets/plugins/select2/css/select2.min.css" />
 
     <!--Dateranger-->
-    <link rel="stylesheet" href="/admin-assets/plugins/daterangepicker/daterangepicker.css">
+<!--    <link rel="stylesheet" href="/admin-assets/plugins/daterangepicker/daterangepicker.css">-->
 
   </th:block>
 
@@ -106,18 +106,20 @@
                           </div>
 
                           <div class="form-group">
-                            <label for="reservation">Thời gian áp dụng:</label>
+<!--                            <label for="reservation">Thời gian áp dụng:</label>-->
+                            <label>Thời gian áp dụng:</label>
                             <div class="input-group">
-                              <div class="input-group-prepend">
-                                <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                              </div>
-                              <input type="text" class="form-control float-right" id="reservation">
+<!--                              <div class="input-group-prepend">-->
+<!--                                <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>-->
+<!--                              </div>-->
+<!--                              <input type="text" class="form-control float-right" id="reservation">-->
+                              <!-- Các trường ẩn để lưu giá trị startDate và endDate -->
+                              <input type="datetime-local" step="1" id="startDate" name="startDate"/>
+                              <input type="datetime-local" step="1" id="endDate" name="endDate"/>
                             </div>
                           </div>
 
-                          <!-- Các trường ẩn để lưu giá trị startDate và endDate -->
-                          <input type="hidden" id="startDate" name="startDate"/>
-                          <input type="hidden" id="endDate" name="endDate"/>
+
                         </div>
                       </div>
                     </div>
@@ -137,19 +139,23 @@
 
   <script src="https://cdn.jsdelivr.net/highlight.js/latest/highlight.min.js"></script>
   <!-- Moment.js -->
-  <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<!--  <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>-->
   <!-- Daterangepicker -->
+<!--  <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>-->
+  <script src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
   <!--Date ranger-->
-  <script src="/admin-assets/plugins/moment/moment.min.js"></script>
-  <script src="/admin-assets/plugins/daterangepicker/daterangepicker.js"></script>
+<!--  <script src="/admin-assets/plugins/moment/moment.min.js"></script>-->
+<!--  <script src="/admin-assets/plugins/daterangepicker/daterangepicker.js"></script>-->
 
  <!-- Summernote-->
   <script src="/admin-assets/plugins/summernote/summernote-bs4.min.js"></script>
 
  <!-- Select2-->
   <script src="/admin-assets/plugins/select2/js/select2.full.min.js"></script>
+  <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
 
 
 
@@ -182,9 +188,13 @@
 
       // Handle the callback when the date range is selected
       $('#reservation').on('apply.daterangepicker', function (ev, picker) {
-        // Set the hidden start and end date fields when a date is selected
+        // // Set the hidden start and end date fields when a date is selected
         $('#startDate').val(picker.startDate.format('DD/MM/YYYY'));
         $('#endDate').val(picker.endDate.format('DD/MM/YYYY'));
+        // $('#startDate').setData('DD/MM/YYYY',picker.startDate.format('DD/MM/YYYY'));
+        // $('#endDate').setData('DD/MM/YYYY',picker.endDate.format('DD/MM/YYYY'));
+        console.log($('#startDate').val());
+        console.log($('#endDate').val());
       });
     });
 

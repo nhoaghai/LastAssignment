@@ -41,17 +41,17 @@ public class DiscountService {
     }
 
     public void createDiscount(UpsertDiscountRequest upsertDiscountRequest) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
-        LocalDate startDate;
-        LocalDate endDate;
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+//
+//        LocalDate startDate;
+//        LocalDate endDate;
 
         try {
-            startDate = LocalDate.parse(upsertDiscountRequest.getStartDate(), formatter);
-            endDate = LocalDate.parse(upsertDiscountRequest.getEndDate(), formatter);
-
-            LocalDateTime startDateTime = LocalDateTime.of(startDate, LocalTime.of(0, 0)); // 00:00:00
-            LocalDateTime endDateTime = LocalDateTime.of(endDate, LocalTime.of(23, 59, 59));
+//            startDate = LocalDate.parse(upsertDiscountRequest.getStartDate(), formatter);
+//            endDate = LocalDate.parse(upsertDiscountRequest.getEndDate(), formatter);
+//
+//            LocalDateTime startDateTime = LocalDateTime.of(startDate, LocalTime.of(0, 0)); // 00:00:00
+//            LocalDateTime endDateTime = LocalDateTime.of(endDate, LocalTime.of(23, 59, 59));
 
             Discount discount = Discount.builder()
                 .name(upsertDiscountRequest.getName())
@@ -59,8 +59,8 @@ public class DiscountService {
                 .type(DiscountType.valueOf(upsertDiscountRequest.getType()))
                 .amount(upsertDiscountRequest.getAmount())
                 .active(upsertDiscountRequest.getActive())
-                .startDate(startDateTime)
-                .endDate(endDateTime)
+                .startDate(LocalDateTime.parse(upsertDiscountRequest.getStartDate()))
+                .endDate(LocalDateTime.parse(upsertDiscountRequest.getEndDate()))
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();

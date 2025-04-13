@@ -82,7 +82,7 @@ public class UserService {
         tokenConfirmRepository.save(token);
 
         //Tạo link xác thực đăng kí
-        String link = "http://localhost:8080/verifyAccount?token=" + token.getToken();
+        String link = "https://dacsanxanh.shop/verifyAccount?token=" + token.getToken();
 
         //Gửi mail xác thực
         mailService.sendMail2(user, "Xác thực tài khoản", link);

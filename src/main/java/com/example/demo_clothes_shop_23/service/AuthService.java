@@ -107,7 +107,7 @@ public class AuthService {
         tokenConfirmRepository.save(token);
 
         //Tạo link xác thực đăng kí
-        String link = "http://localhost:8080/verifyAccount?token=" + token.getToken();
+        String link = "https://dacsanxanh.shop/verifyAccount?token=" + token.getToken();
 
         //Gửi mail xác thực
         mailService.sendMail2(user, "Xác thực tài khoản", link);
@@ -209,7 +209,7 @@ public class AuthService {
         tokenConfirmRepository.save(token);
 
         //Tạo link
-        String link = "http://localhost:8080/changePassword?token=" + token.getToken();
+        String link = "https://dacsanxanh.shop/changePassword?token=" + token.getToken();
 
         //Gửi mail
         mailService.sendMail3(user.get(), "Thay đổi mật khẩu", link);
