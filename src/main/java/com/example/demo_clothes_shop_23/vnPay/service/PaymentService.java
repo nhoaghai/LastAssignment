@@ -24,7 +24,7 @@ public class PaymentService {
             () -> new RuntimeException("Order not found")
         );
 
-        long amountInCents = order.getFinalTotal()*100L; // Ví dụ số tiền: 10,000 VND = 1000000 cents
+        long amountInCents = order.getFinalTotal()*100; // Ví dụ số tiền: 10,000 VND = 1000000 cents
         String vnp_TxnRef = PaymentConfig.getRandomNumber(8);
         String vnp_IpAddr = PaymentConfig.getIpAddress(request);
 
@@ -44,7 +44,7 @@ public class PaymentService {
         vnp_Params.put("vnp_ReturnUrl", PaymentConfig.vnp_ReturnUrl);
         vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
-        Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Asia/Bangkok"));
+        Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
         String vnp_CreateDate = formatter.format(cld.getTime());
         vnp_Params.put("vnp_CreateDate", vnp_CreateDate);

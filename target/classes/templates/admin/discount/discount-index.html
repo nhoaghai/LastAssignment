@@ -4,117 +4,124 @@
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<title>Danh sách khuyến mại</title>
+	<title>Danh sách đơn hàng</title>
 
-	<!--Data table-->
 	<th:block id="css">
+		<!--Data table-->
 		<link rel="stylesheet" href="/admin-assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
 		<link rel="stylesheet" href="/admin-assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
 		<link rel="stylesheet" href="/admin-assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+		<style>
+
+		</style>
 	</th:block>
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
-	<div class="wrapper">
-		<!-- Content Wrapper. Contains page content -->
-		<div class="content-wrapper">
-			<!-- Content Header (Page header) -->
-			<div class="content-header">
-				<div class="container-fluid">
-					<div class="row mb-2">
-						<div class="col-sm-12">
-							<ol class="breadcrumb">
-								<li class="breadcrumb-item">
-									<a th:href="@{/admin/dashboard}">Dashboard</a>
-								</li>
-								<li class="breadcrumb-item active">
-									Danh sách khuyến mại
-								</li>
-							</ol>
-						</div>
+<div class="wrapper">
+	<!-- Content Wrapper. Contains page content -->
+	<div class="content-wrapper">
+		<!-- Content Header (Page header) -->
+		<div class="content-header">
+			<div class="container-fluid">
+				<div class="row mb-2">
+					<div class="col-sm-12">
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item">
+								<a th:href="@{/admin/dashboard}">Dashboard</a>
+							</li>
+							<li class="breadcrumb-item active">
+								Danh sách đơn hàng
+							</li>
+						</ol>
 					</div>
 				</div>
 			</div>
+		</div>
 
-			<!-- Main content -->
-			<section class="content">
-				<div class="container-fluid">
-					<div class="row py-2">
-						<div class="col-12">
-							<button type="button" class="btn btn-primary" onclick="window.location.href='/admin/discounts/create'">
-								<i class="fas fa-plus"></i> Tạo khuyến mại
-							</button>
-						</div>
+		<!-- Main content -->
+		<section class="content">
+			<div class="container-fluid">
+				<div class="row py-2">
+					<div class="col-12">
+						<button type="button" class="btn btn-primary" onclick="window.location.href='/admin/orders/create'">
+							<i class="fas fa-plus"></i> Tạo đơn hàng
+						</button>
 					</div>
-					<div class="row">
-						<div class="col-12">
-							<div class="card">
-								<div class="card-body">
-									<table class="table table-bordered table-hover" id="table-discount">
-										<thead >
-											<tr>
-												<th>Tên khuyến mại</th>
-												<th>Trạng thái</th>
-												<th>Hình thức giảm</th>
-												<th>Giá trị giảm</th>
-												<th>Thời gian</th>
-												<th>Số sản phẩm</th>
-												<th>Ngày tạo</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr th:each="discount : ${discounts}">
-												<td>
-													<a th:href="@{/admin/discounts/{id} (id=${discount.getId()})}" th:text="${discount.name}"></a>
-												</td>
-												<td th:text="${discount.active ? 'Kích hoạt' : 'Ẩn'}" >Công khai</td>
-												<td th:text="${discount.type.toString() == 'PERCENT' ? 'Phần trăm' :
-                                                                 discount.type.toString() == 'SAME_PRICE' ? 'Giá cố định' :
-                                                                 discount.type.toString() == 'AMOUNT' ? 'Số tiền' :
+				</div>
+				<div class="row">
+					<div class="col-12">
+						<div class="card">
+							<div class="card-body">
+								<table class="table table-bordered table-hover" id="table-order">
+									<thead >
+									<tr>
+										<th>Mã đơn hàng</th>
+										<th>Tên tài khoản</th>
+										<th>Tên người nhận</th>
+										<th>Email</th>
+										<th>Số điện thoại</th>
+										<th>Số tiền</th>
+										<th>Hình thức thanh toán</th>
+										<th>Trạng thái</th>
+										<th>Ngày tạo</th>
+									</tr>
+									</thead>
+									<tbody>
+									<tr th:each="order : ${orders}">
+										<td><a th:href="@{/admin/orders/{codeOrder} (codeOrder=${order.codeOrder})}">#[[${order.codeOrder}]]</a></td>
+										<td>
+											<a th:if="${order.user!=null}" th:href="@{/admin/users/{id}(id=${order.user.id})}" th:text="${order.user.name}"></a>
+											<p th:if="${order.user==null}">NULL</p>
+										</td>
+										<td th:text="${order.receiverName}"></td>
+										<td th:text="${order.email}"></td>
+										<td th:text="${order.phone}"></td>
+										<td><span class="formatted-price" th:text="${order.finalTotal}"></span></td>
+										<td th:text="${order.payment.toString()}"></td>
+										<td
+												th:text="${order.status.toString() == 'CHO_XAC_NHAN' ? 'Chờ xác nhận' :
+                                                                 order.status.toString() == 'CHO_GIAO_HANG' ? 'Chờ giao hàng' :
+                                                                 order.status.toString() == 'DANG_GIAO' ? 'Đang giao' :
+                                                                 order.status.toString() == 'DA_GIAO' ? 'Đã giao' :
+                                                                 order.status.toString() == 'DA_HUY' ? 'Đã hủy' :
+                                                                 order.status.toString() == 'TRA_HANG' ? 'Trả hàng' :
                                                                  'Unknown Status'}" >
-												</td>
-												<td>
-													<span th:if="${discount.type.toString()=='PERCENT'}"
-														  th:text="${discount.amount}+'%'">
-													</span>
-													<span th:if="${discount.type.toString()!='PERCENT'}"
-														  class="formatted-price">[[${discount.amount}]]</span>
-												</td>
-												<td>[[${#temporals.format(discount.startDate, 'dd/MM/yyyy')}]]-[[${#temporals.format(discount.endDate, 'dd/MM/yyyy')}]]</td>
-												<td>[[${productsByDiscountId.get(discount.id).size}]]</td>
-												<td th:text="${#temporals.format(discount.createdAt, 'dd/MM/yyyy')}">06-07-2022</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
+										</td>
+										<td th:text="${#temporals.format(order.createdAt,'dd/MM/yyyy')}"></td>
+									</tr>
+									</tbody>
+								</table>
 							</div>
 						</div>
 					</div>
 				</div>
-			</section>
-		</div>
+			</div>
+		</section>
 	</div>
+</div>
 
+<th:block id="js">
 	<!--DataTable	-->
-	<th:block id="js">
-		<script src="/admin-assets/plugins/datatables/jquery.dataTables.min.js"></script>
-		<script src="/admin-assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-		<script src="/admin-assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-		<script src="/admin-assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
-		<script src="/admin-assets/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-		<script src="/admin-assets/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
-		<script th:inline="javascript">
-			$('#table-discount').DataTable({
-				"paging": true,
-				"lengthChange": false,
-				"searching": true,
-				"ordering": true,
-				"info": true,
-				"autoWidth": true,
-				"responsive": true,
-			});
-		</script>
-	</th:block>
+	<script src="/admin-assets/plugins/datatables/jquery.dataTables.min.js"></script>
+	<script src="/admin-assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+	<script src="/admin-assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+	<script src="/admin-assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+	<script src="/admin-assets/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+	<script src="/admin-assets/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+	<script th:inline="javascript">
+		$('#table-order').DataTable({
+			"paging": true,
+			"lengthChange": false,
+			"searching": true,
+			"ordering": true,
+			"info": true,
+			"autoWidth": false,
+			"responsive": true,
+			"order": [8, 'desc'],
+		});
+	</script>
+</th:block>
 </body>
 
 </html>

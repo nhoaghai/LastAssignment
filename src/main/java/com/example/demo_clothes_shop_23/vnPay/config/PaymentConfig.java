@@ -15,7 +15,8 @@ public class PaymentConfig {
     public static String vnp_Command = "pay";
     public static String orderType = "other";
     public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    public static String vnp_ReturnUrl = "https://dacsanxanh.shop/payment_return";
+//    public static String vnp_ReturnUrl = "https://dacsanxanh.shop/payment_return";
+    public static String vnp_ReturnUrl = "http://localhost:8080/payment_return";
     public static String vnp_TmnCode = "JQOZP6KG";
     public static String secretKey = "RMM43JIX4A9DN4IFCJSXW1LC81U508QI";
     public static String vnp_ApiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
@@ -102,16 +103,16 @@ public class PaymentConfig {
     }
 
     public static String getIpAddress(HttpServletRequest request) {
-        String ipAddress;
+        String ipAdress;
         try {
-            ipAddress = request.getHeader("X-FORWARDED-FOR");
-            if (ipAddress == null) {
-                ipAddress = request.getRemoteAddr();
+            ipAdress = request.getHeader("X-FORWARDED-FOR");
+            if (ipAdress == null) {
+                ipAdress = request.getLocalAddr();
             }
         } catch (Exception e) {
-            ipAddress = "Invalid IP:" + e.getMessage();
+            ipAdress = "Invalid IP:" + e.getMessage();
         }
-        return ipAddress;
+        return ipAdress;
     }
 
     public static String getRandomNumber(int len) {
