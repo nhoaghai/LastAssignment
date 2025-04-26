@@ -1,21 +1,22 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout/layout :: layout(~{:: title},~{:: #css},~{:: .content-wrapper},~{:: #js})}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout/layout :: layout(~{:: title},~{:: #css},~{:: .content-wrapper},~{:: #js})}">
 
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title> Tạo khuyến mại</title>
 
     <th:block id="css">
         <!--Easymde-->
-        <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css" />
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/highlight.js/latest/styles/github.min.css" />
+        <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css"/>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/highlight.js/latest/styles/github.min.css"/>
 
         <!--Summernote-->
         <link rel="stylesheet" href="/admin-assets/plugins/summernote/summernote-bs4.min.css">
 
         <!--Select2-->
-        <link rel="stylesheet" href="/admin-assets/plugins/select2/css/select2.min.css" />
+        <link rel="stylesheet" href="/admin-assets/plugins/select2/css/select2.min.css"/>
 
         <!--Dateranger-->
         <link rel="stylesheet" href="/admin-assets/plugins/daterangepicker/daterangepicker.css">
@@ -81,12 +82,14 @@
                                         <div class="col-md-8">
                                             <div class="form-group">
                                                 <label for="name">Tên khuyến mại</label>
-                                                <input type="text" class="form-control" id="name" name="name" placeholder="Nhập tên khuyến mại"/>
+                                                <input type="text" class="form-control" id="name" name="name"
+                                                       placeholder="Nhập tên khuyến mại"/>
                                             </div>
 
                                             <div class="form-group">
                                                 <label for="description">Mô tả</label>
-                                                <textarea id="description" class="form-control" rows="3" name="description" placeholder="Nhập mô tả"></textarea>
+                                                <textarea id="description" class="form-control" rows="3"
+                                                          name="description" placeholder="Nhập mô tả"></textarea>
                                             </div>
 
                                             <div class="form-group">
@@ -101,7 +104,8 @@
 
                                             <div class="form-group">
                                                 <label for="amount">Giá trị giảm</label>
-                                                <input type="number" class="form-control" id="amount" name="amount" placeholder="Nhập giá trị giảm"/>
+                                                <input type="number" class="form-control" id="amount" name="amount"
+                                                       placeholder="Nhập giá trị giảm"/>
                                             </div>
 
                                             <div class="form-group">
@@ -112,40 +116,40 @@
                                                     <option value="1">Kích hoạt</option>
                                                 </select>
                                             </div>
-
                                             <div class="form-group">
-                                                <label for="reservation">Thời gian áp dụng:</label>
+                                                <label>Thời gian áp dụng:</label>
                                                 <div class="input-group">
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                                                    </div>
-                                                    <input type="text" class="form-control float-right" id="reservation">
+                                                    <input type="datetime-local" step="1" id="startDate"
+                                                           name="startDate"/>
+                                                    <input type="datetime-local" step="1" id="endDate" name="endDate"/>
                                                 </div>
                                             </div>
-
-                                            <!-- Các trường ẩn để lưu giá trị startDate và endDate -->
-                                            <input type="hidden" id="startDate" name="startDate"/>
-                                            <input type="hidden" id="endDate" name="endDate"/>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="product">Chọn sản phẩm</label>
-                                                    <div class="select2-purple">
-                                                        <select class="select2 form-control" multiple="multiple" id="product" name="product" >
-                                                            <option th:each="product : ${products}"
-                                                                    th:text="${product.name}"
-                                                                    th:value="${product.id}">
-                                                            </option>
-                                                        </select>
-                                                    </div>
-                                                <button type="button" id="clear-all" class="btn btn-danger mt-2">Xóa tất cả</button>
-                                                <button type="button" id="select-by-category" class="btn btn-primary mt-2">Chọn theo danh mục con</button>
+                                                <div class="select2-purple">
+                                                    <select class="select2 form-control" multiple="multiple"
+                                                            id="product" name="product">
+                                                        <option th:each="product : ${products}"
+                                                                th:text="${product.name}"
+                                                                th:value="${product.id}">
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                                <button type="button" id="clear-all" class="btn btn-danger mt-2">Xóa tất
+                                                    cả
+                                                </button>
+                                                <button type="button" id="select-by-category"
+                                                        class="btn btn-primary mt-2">Chọn theo danh mục con
+                                                </button>
                                             </div>
                                             <div class="form-group">
                                                 <div class="thumbnail-preview-container mb-3">
                                                     <img class="m-0" th:src="${discount.imageUrl}" alt="" id="poster">
                                                 </div>
-                                                <label for="input-poster" class="btn btn-info btn-flat" data-toggle="modal" data-target="#modal-xl">
+                                                <label for="input-poster" class="btn btn-info btn-flat"
+                                                       data-toggle="modal" data-target="#modal-xl">
                                                     Chọn hình ảnh
                                                 </label>
                                                 <input type="file" id="input-poster" class="d-none">
@@ -161,7 +165,8 @@
                 </div>
 
                 <!-- Modal chọn theo danh mục con -->
-                <div class="modal fade" id="category-modal" tabindex="-1" role="dialog" aria-labelledby="categoryModalLabel" aria-hidden="true">
+                <div class="modal fade" id="category-modal" tabindex="-1" role="dialog"
+                     aria-labelledby="categoryModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -170,7 +175,8 @@
                             <div class="modal-body">
                                 <label for="product">Chọn theo danh mục</label>
                                 <div class="select2-purple">
-                                    <select class="select2 form-control" multiple="multiple" id="category-select" name="category-select" style="width: 100%">
+                                    <select class="select2 form-control" multiple="multiple" id="category-select"
+                                            name="category-select" style="width: 100%">
                                         <option th:each="categoty : ${categories}"
                                                 th:text="${categoty.name}"
                                                 th:value="${categoty.id}">
@@ -210,7 +216,6 @@
     <script src="/admin-assets/plugins/select2/js/select2.full.min.js"></script>
 
 
-
     <script th:inline="javascript">
         let discount = [[${discount}]]
 
@@ -235,22 +240,20 @@
         $('#product').val(productsByDiscount).trigger('change');
 
 
-
-
         // Xóa tất cả lựa chọn
-        $('#clear-all').on('click', function() {
+        $('#clear-all').on('click', function () {
             $('#product').val(null).trigger('change');
             $('#category-select').val(null).trigger('change');
         });
 
         // Mở modal để chọn theo danh mục con
-        $('#select-by-category').on('click', function() {
+        $('#select-by-category').on('click', function () {
             // Giả sử bạn sẽ thêm các tùy chọn cho danh mục con động từ máy chủ
             $('#category-modal').modal('show');
         });
 
         // Xác nhận lựa chọn trong modal
-        $('#confirm-selection').on('click', function() {
+        $('#confirm-selection').on('click', function () {
             let selectedCategories = $('#category-select').val();
             let newProductIds = [];
 
@@ -272,14 +275,14 @@
             },
             startDate: moment().startOf('day'),
             endDate: moment().endOf('day')
-        }, function(start, end) {
+        }, function (start, end) {
             // Update hidden fields with the selected date range
             $('#startDate').val(start.format('DD/MM/YYYY'));
             $('#endDate').val(end.format('DD/MM/YYYY'));
         });
 
         // Event listener for the icon click
-        $('#reservation').on('click', function() {
+        $('#reservation').on('click', function () {
             $(this).daterangepicker({
                 opens: 'left',
                 locale: {
@@ -291,16 +294,18 @@
         });
 
 
-        document.addEventListener("DOMContentLoaded",()=>{
-            document.getElementById("name").value=discount.name
-            document.getElementById("description").value=discount.description
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("name").value = discount.name
+            document.getElementById("description").value = discount.description
             $('#active').val(discount.active ? "1" : "0");
-            document.getElementById("amount").value=discount.amount
-            document.getElementById("type").value=discount.type
-            $('#startDate').val(moment(discount.startDate).format('DD/MM/YYYY'));
-            $('#endDate').val(moment(discount.endDate).format('DD/MM/YYYY'));
-            $('#reservation').data('daterangepicker').setStartDate($('#startDate').val());
-            $('#reservation').data('daterangepicker').setEndDate($('#endDate').val());
+            document.getElementById("amount").value = discount.amount
+            document.getElementById("type").value = discount.type
+            // $('#startDate').val(moment(discount.startDate).format('DD/MM/YYYY'));
+            // $('#endDate').val(moment(discount.endDate).format('DD/MM/YYYY'));
+            // $('#reservation').data('daterangepicker').setStartDate($('#startDate').val());
+            // $('#reservation').data('daterangepicker').setEndDate($('#endDate').val());
+            document.getElementById("startDate").value = discount.startDate
+            document.getElementById("endDate").value = discount.endDate
         })
 
 
@@ -323,10 +328,12 @@
                     required: true
                 },
                 startDate: {
-                    required: true
+                    required: true,
+                    step: false
                 },
                 endDate: {
-                    required: true
+                    required: true,
+                    step: false
                 }
             },
             messages: {
@@ -366,7 +373,7 @@
             }
         });
 
-        document.getElementById("btnUpdateDiscount").addEventListener("click",async (e)=>{
+        document.getElementById("btnUpdateDiscount").addEventListener("click", async (e) => {
             e.preventDefault();
 
             if (!$('#form-discount').valid()) {
@@ -377,7 +384,7 @@
             let description = $('#description').val().trim();
             let type = $('#type').val();
             let amount = $('#amount').val().trim();
-            let active = $('#active').val()==="1"
+            let active = $('#active').val() === "1"
             let startDate = $('#startDate').val();
             let endDate = $('#endDate').val();
             let productIds = $('#product').val()
@@ -395,10 +402,10 @@
 
             // In ra dữ liệu hoặc gửi đến server
             console.log('Dữ liệu khuyến mại:', data);
-            try{
-                let res = await axios.put(`/api/admin/discounts/${discount.id}/update`,data)
+            try {
+                let res = await axios.put(`/api/admin/discounts/${discount.id}/update`, data)
                 toastr.success("Cập nhật khuyến mại thành công!")
-            }catch (e){
+            } catch (e) {
                 toastr.error(e.response.data.message)
             }
 

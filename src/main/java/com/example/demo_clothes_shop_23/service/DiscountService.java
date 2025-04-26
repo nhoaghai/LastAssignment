@@ -72,28 +72,28 @@ public class DiscountService {
     }
 
     public void updateDiscount(UpsertDiscountRequest upsertDiscountRequest, Integer discountId) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
-        LocalDate startDate;
-        LocalDate endDate;
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+//
+//        LocalDate startDate;
+//        LocalDate endDate;
 
         try {
             Discount discount = discountRepository.findById(discountId).orElseThrow(
                 () -> new RuntimeException("Discount not found"));
 
-            startDate = LocalDate.parse(upsertDiscountRequest.getStartDate(), formatter);
-            endDate = LocalDate.parse(upsertDiscountRequest.getEndDate(), formatter);
-
-            LocalDateTime startDateTime = LocalDateTime.of(startDate, LocalTime.of(0, 0)); // 00:00:00
-            LocalDateTime endDateTime = LocalDateTime.of(endDate, LocalTime.of(23, 59, 59));
+//            startDate = LocalDate.parse(upsertDiscountRequest.getStartDate(), formatter);
+//            endDate = LocalDate.parse(upsertDiscountRequest.getEndDate(), formatter);
+//
+//            LocalDateTime startDateTime = LocalDateTime.of(startDate, LocalTime.of(0, 0)); // 00:00:00
+//            LocalDateTime endDateTime = LocalDateTime.of(endDate, LocalTime.of(23, 59, 59));
 
             discount.setName(upsertDiscountRequest.getName());
             discount.setDescription(upsertDiscountRequest.getDescription());
             discount.setType(DiscountType.valueOf(upsertDiscountRequest.getType()));
             discount.setAmount(upsertDiscountRequest.getAmount());
             discount.setActive(upsertDiscountRequest.getActive());
-            discount.setStartDate(startDateTime);
-            discount.setEndDate(endDateTime);
+            discount.setStartDate(LocalDateTime.parse(upsertDiscountRequest.getStartDate()));
+            discount.setEndDate(LocalDateTime.parse(upsertDiscountRequest.getEndDate()));
             discount.setUpdatedAt(LocalDateTime.now());
 
             discountRepository.save(discount);
